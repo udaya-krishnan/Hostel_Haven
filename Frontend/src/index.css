@@ -1,0 +1,28 @@
+/* Tailwind CSS Import */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 12px; /* width of the entire scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #3C3633; /* color of the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; /* color of the scroll thumb */
+  border-radius: 6px; /* roundness of the scroll thumb */
+  border: 3px solid #3C3633; /* creates padding around scroll thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* color of the scroll thumb when hovered */
+}
+
+/* Add Poppins as the default font for the body */
+body {
+  @apply font-poppins;
+}
