@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import background from "../../../public/banner/login.jpg";
-import google from "../../../public/icons/google-brands-solid.svg";
-import { Link } from "react-router-dom";
 
 function ForgotPassword() {
   return (

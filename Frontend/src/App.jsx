@@ -2,6 +2,7 @@
 
 import { BrowserRouter ,Route,Routes} from 'react-router-dom'
 import UserRoute from './Routes/UserRoutes/UserRoute'
+import HostRoutes from './Routes/HostRoutes/HostRoutes'
 
 function App() {
  
@@ -11,6 +12,7 @@ function App() {
    <BrowserRouter>
       <Routes>
         <Route path={'/*'} element={<UserRoute/>} />
+        <Route path={'/host/*'} element={<HostRoutes/>}/>
       </Routes>
    </BrowserRouter>
    </>

@@ -4,7 +4,13 @@ import google from "../../../public/icons/google-brands-solid.svg";
 import { Link } from "react-router-dom";
 
 function Register() {
-  return (
+
+  const [name,setName]=useState('') 
+  const [email,setEmail]=useState('')
+  const [password,setPassword] = useState('')
+
+
+  return ( 
     <main className="flex-grow bg-gray-100">
       <div
         className="h-screen flex items-center justify-center bg-cover bg-center"
@@ -31,6 +37,8 @@ function Register() {
                   className="w-full mt-2 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-btncolor"
                   type="text"
                   placeholder="Enter Your Name"
+                  value={name}
+                  onChange={(e)=>setName(e.target.value)}
                 />
               </div>
 
@@ -40,6 +48,8 @@ function Register() {
                   className="w-full mt-2 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-btncolor"
                   type="text"
                   placeholder="Enter Your Email"
+                  value={email}
+                  onChange={(e)=>setEmail(e.target.value)}
                 />
               </div>
               <div className="mb-4">
@@ -48,6 +58,8 @@ function Register() {
                   className="w-full mt-2 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-btncolor"
                   type="text"
                   placeholder="Enter Your Password"
+                  value={password}
+                  onChange={(e)=>setPassword(e.target.value)}
                 />
               </div>
               <button className="w-full bg-btncolor text-white py-2 px-4 rounded">
