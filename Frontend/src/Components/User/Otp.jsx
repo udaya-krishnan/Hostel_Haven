@@ -24,6 +24,19 @@ function Otp() {
     }
   };
 
+  function onSubmit(){
+    let otp=""
+    for(let i=0;i<inputs.current.length;i++){
+      otp+=inputs.current[i].value
+    }
+
+    if(otp.length!==6){
+      //i want show error in this field using the fomi
+    }
+
+
+  }
+
   return (
     <main className="flex-grow bg-gray-100">
       <div
@@ -71,7 +84,8 @@ function Otp() {
               </p>
               <span className="text-gray-800">02:32</span>
             </div>
-            <button className="w-full bg-btncolor text-white py-2 rounded focus:outline-none hover:bg-gray-700">
+            <button className="w-full bg-btncolor text-white py-2 rounded focus:outline-none hover:bg-gray-700"
+            onClick={onSubmit}>
               Continue
             </button>
           </div>

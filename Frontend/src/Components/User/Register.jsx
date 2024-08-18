@@ -1,22 +1,58 @@
 import React, { useState } from "react";
 import background from "../../../public/banner/login.jpg";
 import google from "../../../public/icons/google-brands-solid.svg";
-import { Link } from "react-router-dom";
+import { registerValidationSchema } from "../../utils/validation";
+import {useDispatch} from 'react-redux'
+import { Link, useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import { register } from "../../features/auth/authAction";
 
 function Register() {
+  const [error, setError] = useState(null);
+  const navigate=useNavigate()
+  const dispatch=useDispatch()
 
-  const [name,setName]=useState('') 
-  const [email,setEmail]=useState('')
-  const [password,setPassword] = useState('')
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      password: ""
+    },
+    validationSchema: registerValidationSchema,
+    onSubmit:async (values) => {
+      try {
+        const result = await dispatch(register(values.name, values.email, values.password));
+    
+        // Assuming `result` has a `message` field for errors
+        if (result.message === "email exists") {
+          formik.setErrors({ email: 'Email already exists' });
+        } else {
+          navigate('/otp')
+        }
+        
+      } catch (error) {
+        console.error("Error registering:", error);
+      }
+    }
+  });
 
+  const getBorderColor = (field) => {
+    if (formik.touched[field] && formik.errors[field]) {
+      return "border-red-500 focus:ring-red-500";
+    } else if (formik.touched[field] && !formik.errors[field]) {
+      return "border-green-500 focus:ring-green-500";
+    } else {
+      return "border-gray-300 focus:ring-btncolor";
+    }
+  };
 
-  return ( 
+  return (
     <main className="flex-grow bg-gray-100">
       <div
-        className="h-screen flex items-center justify-center bg-cover bg-center"
+        className="min-h-screen flex items-center justify-center bg-cover bg-center"
         style={{ backgroundImage: `url(${background})` }}
       >
-        <div className="flex flex-col md:flex-row bg-black bg-opacity-50 w-full h-full p-6 md:p-20">
+        <div className="flex flex-col md:flex-row bg-black bg-opacity-50 w-full p-6 md:p-20">
           <div className="text-left text-white md:w-1/2 mr-auto my-auto">
             <h1 className="hidden text-2xl md:text-4xl md:flex font-bold mb-4">
               Unlock Your Ideal Stay at Hostel Haven
@@ -30,42 +66,70 @@ function Register() {
             <h2 className="text-xl md:text-2xl font-bold mb-4 text-btncolor">
               Create an account
             </h2>
-            <form>
+            <form onSubmit={formik.handleSubmit}>
               <div className="mb-4">
                 <label className="block text-btncolor">Name</label>
                 <input
-                  className="w-full mt-2 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-btncolor"
+                  className={`w-full mt-2 px-3 py-2 border rounded focus:outline-none focus:ring-2 ${getBorderColor(
+                    "name"
+                  )}`}
                   type="text"
                   placeholder="Enter Your Name"
-                  value={name}
-                  onChange={(e)=>setName(e.target.value)}
+                  name="name"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.name && formik.errors.name ? (
+                  <div className="text-red-500 text-xs mt-1">
+                    {formik.errors.name}
+                  </div>
+                ) : null}
               </div>
 
               <div className="mb-4">
                 <label className="block text-btncolor">Email Address</label>
                 <input
-                  className="w-full mt-2 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-btncolor"
+                  className={`w-full mt-2 px-3 py-2 border rounded focus:outline-none focus:ring-2 ${getBorderColor(
+                    "email"
+                  )}`}
                   type="text"
                   placeholder="Enter Your Email"
-                  value={email}
-                  onChange={(e)=>setEmail(e.target.value)}
+                  name="email"
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.email && formik.errors.email ? (
+                  <div className="text-red-500 text-xs mt-1">
+                    {formik.errors.email}
+                  </div>
+                ) : null}
               </div>
               <div className="mb-4">
                 <label className="block text-btncolor">Password</label>
                 <input
-                  className="w-full mt-2 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-btncolor"
-                  type="text"
+                  className={`w-full mt-2 px-3 py-2 border rounded focus:outline-none focus:ring-2 ${getBorderColor(
+                    "password"
+                  )}`}
+                  type="password"
                   placeholder="Enter Your Password"
-                  value={password}
-                  onChange={(e)=>setPassword(e.target.value)}
+                  name="password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.password && formik.errors.password ? (
+                  <div className="text-red-500 text-xs mt-1">
+                    {formik.errors.password}
+                  </div>
+                ) : null}
               </div>
-              <button className="w-full bg-btncolor text-white py-2 px-4 rounded">
+              <button className="w-full bg-btncolor text-white py-2 px-4 rounded"
+              >
                 Continue
               </button>
-              <div className="mt-1 text-center"> {/* Center-align the link */}
+              <div className="mt-1 text-center">
                 <p className="text-gray-800">
                   <Link to="/login">I already have an account</Link>
                 </p>
