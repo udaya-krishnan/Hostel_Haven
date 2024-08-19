@@ -237,13 +237,13 @@ console.log(`PASS: ${process.env.PASS}`);
         }
 
 
-       await transporter.verify((error, success) => {
-            if (error) {
-                console.error('Error in SMTP configuration:', error);
-            } else {
-                console.log('SMTP configuration is correct.');
-            }
-        });
+      //  await transporter.verify((error, success) => {
+      //       if (error) {
+      //           console.error('Error in SMTP configuration:', error);
+      //       } else {
+      //           console.log('SMTP configuration is correct.');
+      //       }
+      //   });
 
         const mailed=await transporter.sendMail(message,(error)=>{
             if(error){

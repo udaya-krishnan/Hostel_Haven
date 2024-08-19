@@ -1,15 +1,20 @@
 import React, { useRef } from "react";
 import background from "../../../public/banner/login.jpg";
+import { useDispatch } from "react-redux";
+import { otpVerify } from "../../features/auth/authAction";
+import { useNavigate } from "react-router-dom";
 
 function Otp() {
   const inputs = useRef([]);
+  const dispatch = useDispatch()
+  const navigate=useNavigate()
 
   const handleInput = (e, index) => {
     const value = e.target.value;
 
-    // Only allow numeric values
+   
     if (!/^[0-9]$/.test(value)) {
-      e.target.value = ""; // Clear the input if it's not a number
+      e.target.value = ""; 
       return;
     }
 
@@ -24,19 +29,42 @@ function Otp() {
     }
   };
 
-  function onSubmit(){
-    let otp=""
-    for(let i=0;i<inputs.current.length;i++){
-      otp+=inputs.current[i].value
+ async function onSubmit() {
+    let otp = "";
+    for (let i = 0; i < inputs.current.length; i++) {
+      otp += inputs.current[i].value;
     }
+  
+    if (otp.length !== 6 ) {
+      for (let i = 0; i < inputs.current.length; i++) {
+        inputs.current[i].style.border = "1px solid red";
+      }
+  
+      document.getElementById("error").style.display = "block";
+    } else {
+      
+      console.log("OTP submitted:", otp);
+  
+      
+      for (let i = 0; i < inputs.current.length; i++) {
+        inputs.current[i].style.border = "";
+      }
+      document.getElementById("error").style.display = "none";
 
-    if(otp.length!==6){
-      //i want show error in this field using the fomi
+      const result=await dispatch(otpVerify(otp))
+
+      if(result.message==="Incorrect OTP"){
+        for (let i = 0; i < inputs.current.length; i++) {
+          inputs.current[i].style.border = "1px solid red";
+        }
+    
+        document.getElementById("error").style.display = "block";
+      }else{
+        navigate('/login')
+      }
+    
     }
-
-
   }
-
   return (
     <main className="flex-grow bg-gray-100">
       <div
@@ -75,6 +103,9 @@ function Otp() {
                 />
               ))}
             </div>
+            <div className="text-red-500 text-xm mt-1 hidden" id="error">
+                    Incorrect Otp
+              </div>
             <div className="flex justify-between items-center mb-6">
               <p className="text-btncolor">
                 I didn't receive any code.{" "}

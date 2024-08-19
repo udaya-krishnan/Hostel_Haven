@@ -4,6 +4,12 @@ export interface User{
     name:string;
     email:string;
     password:string;
-    userType:UserType;
+    userType:string;
 }
 
+
+export interface UserEntities{
+    name?:string,
+    email?:string,
+    userType?:string,
+}

@@ -1,10 +1,11 @@
-import { RegisterUseCase } from "../../domain/usecase/RegisterUseCase";
-import { User } from "../../domain/entities/User";
-import { UserRepository } from "../interfaces/UserRepository";
+import { RegisterUseCase } from "../../../domain/usecase/User/RegisterUseCase";
+import { User } from "../../../domain/entities/User";
+import { UserRepository } from "../../interfaces/User/UserRepository";
 import bcrypt from 'bcrypt'
 
 
 export class RegisterService implements RegisterUseCase{
+    
     constructor (private userRepository:UserRepository){}
 
     async execute(user: User): Promise<string> {

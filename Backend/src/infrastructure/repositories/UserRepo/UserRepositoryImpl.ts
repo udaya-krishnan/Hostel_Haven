@@ -1,7 +1,7 @@
-import { UserRepository } from "../../application/interfaces/UserRepository";
-import { UserDocument } from "../database/models/UserModel";
-import { User } from "../../domain/entities/User";
-import UserModel from "../database/models/UserModel";
+import { UserRepository } from "../../../application/interfaces/User/UserRepository";
+import { UserDocument } from "../../database/models/UserModel";
+import { User } from "../../../domain/entities/User";
+import UserModel from "../../database/models/UserModel";
 
 export class UserRepositoryImpl implements UserRepository{
 
