@@ -1,0 +1,5 @@
+export const REGISTER_URL='/register'
+export const VERIFY_OTP='/verify'
+export const LOGIN='/login'
+export const RESEND='/resend'
+export const GOOGLE_AUTH='/google'

@@ -49,9 +49,9 @@ export const otpVerify = async (req: Request , res: Response) => {
   try {
     console.log("hai there");
     const token = req.cookies.jwt
-    console.log(token);
+    // console.log(token);
     const decodedData = await verifyToken(token)
-    console.log(decodedData);
+    // console.log(decodedData);
     if (!decodedData) {
       return res.status(400).json({ message: "Session expired or no data found in session." });
     }
@@ -60,10 +60,13 @@ export const otpVerify = async (req: Request , res: Response) => {
     // console.log("Session Data:", sessionData);
 
     if (otp === req.body.otp) {
-      await registerService.execute({ name, email, password, userType });
+      let image='anony.webp'
+      await registerService.execute({ name, email, password, userType ,image});
       return res.status(200).json({ message: "OTP verified and registration successful" });
     } else {
-      return res.status(400).json({ message: "Incorrect OTP" });
+      console.log('incorrect otp');
+      
+      return res.status(200).json({ message: "Incorrect OTP" });
     }
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
@@ -86,8 +89,8 @@ export const loginUser=async(req:Request,res:Response)=>{
     }else if(data==="Password was wrong"){
       res.status(200).json({message:"Password was wrong"})
     }else{
-      let {name,email,userType}=data
-      let user={name:name,email:email,userType:userType}
+      let {name,email,userType,image}=data
+      let user={name:name,email:email,userType:userType,image:image}
      
       
       const token= await createToken(user,res)
@@ -102,5 +105,64 @@ export const loginUser=async(req:Request,res:Response)=>{
     
   } catch (error:any) {
     return res.status(500).json({ message: error.message });
+  }
+}
+
+
+export const resendUser=async(req:Request,res:Response)=>{
+  try {
+    
+    const token =req.cookies.jwt
+    console.log(token);
+    
+    const decoded=await verifyToken(token)
+    console.log(decoded);
+    const otp=generateOtp()
+
+    const data = {
+      name: decoded.name,
+      email: decoded.email,
+      password: decoded.password,
+      userType: decoded.userType,
+      otp: otp,
+    };
+
+    await createToken(data,res)
+    await sendMail(decoded.email,otp,decoded.name)
+    console.log(otp);
+
+    console.log('resen send success');
+    
+    res.status(200).json({message:"resend otp sent success"})
+    
+  } catch (error:any) {
+    console.log(error.message);
+    
+  }
+}
+
+export const googleRegister=async(req:Request,res:Response)=>{
+  try {
+    // console.log(req.body.data)
+    const {email,displayName,photoURL}=req.body.data
+    const userType=req.body.userType
+    const user={email:email,name:displayName,image:photoURL,userType:userType}
+    const userExists=await registerService.find(email)
+   const token= await createToken(user,res)
+
+    if(userExists){
+      console.log(userExists,"user exists");
+      
+      res.status(200).json({user:userExists,token:token,message:"user exists"})
+    }else{
+      const newUser=await registerService.GoogleRegister(user)
+      console.log(newUser);
+      
+      res.status(200).json({user:newUser,token:token,message:"create new User"})
+    }
+
+  } catch (error:any) {
+    console.log(error.message);
+    
   }
 }

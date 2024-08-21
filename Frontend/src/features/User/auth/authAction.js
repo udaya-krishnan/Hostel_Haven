@@ -1,4 +1,4 @@
-import AuthService from "../../services/AuthService";
+import AuthService from "../../../services/AuthService";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const register=(name,email,password)=>async()=>{
@@ -11,6 +11,8 @@ export const otpVerify=(otp)=>async()=>{
     const data=await AuthService.otpVerify(otp)
     return data
 }
+
+
 
 
 export const login =createAsyncThunk(
@@ -33,3 +35,22 @@ export const login =createAsyncThunk(
 )
 
 
+export const resendOtp = createAsyncThunk(
+    'auth/resendOtp',
+    async () => {
+      const response = await AuthService.resendOtp()
+      return response.data;
+    }
+  );
+
+
+  export const googleRegister =createAsyncThunk(
+    'auth/googleRegister',
+    async({data},{rejectWithValue})=>{
+        const response=await AuthService.googleRegister(data)
+
+        console.log(response,"in action");
+        
+        return response
+    }
+  )

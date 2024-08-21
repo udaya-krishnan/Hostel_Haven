@@ -5,12 +5,27 @@ import { registerValidationSchema } from "../../utils/validation";
 import {useDispatch} from 'react-redux'
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import { register } from "../../features/auth/authAction";
+import { googleRegister, register } from "../../features/User/auth/authAction";
+import { auth,provider } from "../../config/firebase/firebase";
+import { signInWithPopup } from "firebase/auth";
 
 function Register() {
   const [error, setError] = useState(null);
   const navigate=useNavigate()
   const dispatch=useDispatch()
+
+ function googleAuth(){
+    signInWithPopup(auth,provider).then(async(data)=>{
+      console.log("google data");
+     const res=await dispatch(googleRegister({data:data.user}))
+     console.log(res,"google register");
+
+     if(res.meta.requestStatus==="fulfilled"){
+      navigate('/')
+     } 
+     
+    })
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -135,8 +150,10 @@ function Register() {
                 </p>
               </div>
               <div className="text-center my-4">Or Continue With</div>
+            </form>
               <div className="flex justify-center">
-                <button className="bg-btncolor text-white py-2 px-4 rounded-3xl flex justify-center items-center">
+                <button className="bg-btncolor text-white py-2 px-4 rounded-3xl flex justify-center items-cente</form>r"
+                onClick={googleAuth}>
                   <img
                     src={google}
                     alt="Google Icon"
@@ -145,7 +162,7 @@ function Register() {
                   Google
                 </button>
               </div>
-            </form>
+            
           </div>
         </div>
       </div>

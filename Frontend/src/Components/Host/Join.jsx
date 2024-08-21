@@ -1,7 +1,12 @@
 import React from "react";
 import background from "../../../public/banner/businessman.jpeg";
+import { useNavigate } from "react-router-dom";
 
 function Join() {
+  const navigate=useNavigate()
+  function join(){
+    navigate('/host/login')
+  }
   return (
     <main className="flex-grow bg-gray-100">
   <div
@@ -19,7 +24,7 @@ function Join() {
 
  
     <div className="flex justify-center pb-6">
-      <button className="w-64 h-14 bg-btncolor text-bgcolor font-extrabold text-2xl rounded-2xl">
+      <button className="w-64 h-14 bg-btncolor text-bgcolor font-extrabold text-2xl rounded-2xl" onClick={join}>
         JOIN
       </button>
     </div>

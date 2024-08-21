@@ -38,3 +38,19 @@ export const loginschema = Yup.object({
       "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     )
 });
+
+
+
+export const loginHostSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+    password: Yup.string().trim()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .max(32, "Password can't be longer than 32 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    )
+});

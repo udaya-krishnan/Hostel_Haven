@@ -1,18 +1,35 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import background from "../../../public/banner/login.jpg";
 import { useDispatch } from "react-redux";
-import { otpVerify } from "../../features/auth/authAction";
+import { otpVerify, resendOtp } from "../../features/User/auth/authAction";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Make sure you import the CSS for toastify
+
 
 function Otp() {
   const inputs = useRef([]);
-  const dispatch = useDispatch()
-  const navigate=useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [timer, setTimer] = useState(30); // Set initial time (e.g., 150 seconds or 2 minutes 30 seconds)
+  const [otpExpired, setOtpExpired] = useState(false); // To track if OTP is expired
+
+  useEffect(() => {
+    if (timer > 0) {
+      const countdown = setInterval(() => {
+        setTimer((prevTime) => prevTime - 1);
+      }, 1000);
+
+      return () => clearInterval(countdown);
+    } else {
+      setOtpExpired(true); // Set OTP as expired when timer reaches 0
+    }
+  }, [timer]);
 
   const handleInput = (e, index) => {
     const value = e.target.value;
 
-   
     if (!/^[0-9]$/.test(value)) {
       e.target.value = ""; 
       return;
@@ -29,44 +46,74 @@ function Otp() {
     }
   };
 
- async function onSubmit() {
+  async function onSubmit() {
+    if (otpExpired) {
+      alert("OTP has expired. Please request a new OTP.");
+      return;
+    }
+
     let otp = "";
     for (let i = 0; i < inputs.current.length; i++) {
       otp += inputs.current[i].value;
     }
-  
-    if (otp.length !== 6 ) {
+
+    if (otp.length !== 6) {
       for (let i = 0; i < inputs.current.length; i++) {
         inputs.current[i].style.border = "1px solid red";
       }
-  
+
       document.getElementById("error").style.display = "block";
     } else {
-      
       console.log("OTP submitted:", otp);
-  
-      
+
       for (let i = 0; i < inputs.current.length; i++) {
         inputs.current[i].style.border = "";
       }
       document.getElementById("error").style.display = "none";
 
-      const result=await dispatch(otpVerify(otp))
+      const result = await dispatch(otpVerify(otp));
 
-      if(result.message==="Incorrect OTP"){
+      console.log(result,"rrrrrrrrrrrrrrres");
+      
+
+      if (result.message === "Incorrect OTP") {
         for (let i = 0; i < inputs.current.length; i++) {
           inputs.current[i].style.border = "1px solid red";
         }
-    
         document.getElementById("error").style.display = "block";
-      }else{
-        navigate('/login')
+      } else {
+        toast.success('Register Success', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 })
+        setTimeout(()=>{
+
+          navigate("/login");
+        },2000)
       }
-    
     }
   }
+
+  const resendOtpa = async() => {
+    setTimer(30);
+    setOtpExpired(false); 
+    inputs.current.forEach(input => (input.value = ""));
+    console.log("OTP resent!");
+    await dispatch(resendOtp())
+  };
+
   return (
     <main className="flex-grow bg-gray-100">
+       <ToastContainer 
+        position="top-right" 
+        autoClose={5000} 
+        hideProgressBar={false} 
+        newestOnTop={false} 
+        closeOnClick 
+        rtl={false} 
+        pauseOnFocusLoss 
+        draggable 
+        pauseOnHover 
+        className="text-sm font-medium" // Custom class for styling
+        style={{ width: "350px", top: "20px", right: "20px" }} // Inline styles
+      />
       <div
         className="h-screen flex items-center justify-center bg-cover bg-center"
         style={{ backgroundImage: `url(${background})` }}
@@ -99,24 +146,39 @@ function Otp() {
                   maxLength="1"
                   onChange={(e) => handleInput(e, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
-                  inputMode="numeric" // Makes it mobile-friendly for numeric input
+                  inputMode="numeric" 
+                  disabled={otpExpired} // Disable input if OTP is expired
                 />
               ))}
             </div>
             <div className="text-red-500 text-xm mt-1 hidden" id="error">
-                    Incorrect Otp
-              </div>
+              Incorrect Otp
+            </div>
             <div className="flex justify-between items-center mb-6">
               <p className="text-btncolor">
                 I didn't receive any code.{" "}
-                <a href="#" className="text-blue-500">
+                <a href="#" className="text-blue-500" onClick={resendOtpa}>
                   RESEND
                 </a>
               </p>
-              <span className="text-gray-800">02:32</span>
+              <span className="text-gray-800">
+                {`${Math.floor(timer / 60)
+                  .toString()
+                  .padStart(1, "0")}:${(timer % 60)
+                  .toString()
+                  .padStart(1, "0")}`}
+              </span>
             </div>
-            <button className="w-full bg-btncolor text-white py-2 rounded focus:outline-none hover:bg-gray-700"
-            onClick={onSubmit}>
+            {otpExpired && (
+              <div className="text-red-500 text-sm mb-4">
+                OTP has expired. Please request a new OTP.
+              </div>
+            )}
+            <button
+              className="w-full bg-btncolor text-white py-2 rounded focus:outline-none hover:bg-gray-700"
+              onClick={onSubmit}
+              disabled={otpExpired} // Disable button if OTP is expired
+            >
               Continue
             </button>
           </div>

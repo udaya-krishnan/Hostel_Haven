@@ -5,6 +5,7 @@ import UserLogin from "../../Pages/User/Auth/UserLogin";
 import UserOtp from "../../Pages/User/Auth/UserOtp";
 import UserForgotPass from "../../Pages/User/Auth/UserForgotPass";
 import UserHome from "../../Pages/User/UserHome";
+import UserAuth from "../../Components/User/middlewares/userAuth";
 
 function UserRoute() {
   return (

@@ -19,5 +19,10 @@ export class UserRepositoryImpl implements UserRepository{
             throw error;
         }
     }
+
+    async googleRegister(user: any): Promise<any | null> {
+        const createUser:UserDocument =await UserModel.create(user)
+        return createUser.toObject() as User
+    }
     
 }

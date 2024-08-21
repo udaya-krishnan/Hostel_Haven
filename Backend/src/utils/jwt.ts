@@ -10,21 +10,17 @@ const JWT_AUTHCSEC =process.env.JWT_AUTHSECRET!;
 
 export const createToken = async (data: any, res: Response) => {
     try {
-      // Ensure data is an object
-     
-  
-      // Correct format for expiresIn: '30m'
       const token = jwt.sign(data, JWT_AUTHCSEC, { expiresIn: "30m" });
   
       console.log(token, "created token");
   
       res.cookie('jwt', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
-        maxAge: 3600000, // 1 hour in milliseconds
-        sameSite: 'strict', // Helps prevent CSRF attacks
+        secure: process.env.NODE_ENV === 'production', 
+        maxAge: 180000, 
+        sameSite: 'strict', 
       });
-  
+
       return token;
     } catch (error: any) {
       console.error("Error creating token:", error.message);

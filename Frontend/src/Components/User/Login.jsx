@@ -6,9 +6,11 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { ToastContainer, toast } from 'react-toastify';
 import { loginschema } from "../../utils/validation";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../features/auth/authAction";
+import { login ,googleRegister} from "../../features/User/auth/authAction";
 import 'react-toastify/dist/ReactToastify.css'; // Make sure you import the CSS for toastify
-import { selectToken } from "../../features/auth/authSelectors";
+import { selectToken } from "../../features/User/auth/authSelectors";
+import { auth,provider } from "../../config/firebase/firebase";
+import { signInWithPopup } from "firebase/auth";
 
 function Login() {
   const dispatch = useDispatch();
@@ -16,9 +18,29 @@ function Login() {
 
   const token =useSelector(selectToken)
 
+
+
+ function googleAuth(){
+  signInWithPopup(auth,provider).then(async(data)=>{
+    console.log("google data");
+   const res=await dispatch(googleRegister({data:data.user}))
+   console.log(res,"google register");
+
+   if(res.meta.requestStatus==="fulfilled"){
+    navigate('/')
+   } 
+  })
+}
+
   useEffect(()=>{
-    if(token!==""){
+    console.log("not render");
+    
+    if(token!==null){
+      console.log("token",token);
       navigate('/')
+    }else{
+      console.log(token);
+      
     }
   },[token])
 
@@ -111,12 +133,13 @@ function Login() {
             </Formik>
             <div className="mt-1 text-center">
               <p className="text-gray-800">
-                <Link to="/login">I already have an account</Link>
+                <Link to="/register">I don't have a account</Link>
               </p>
             </div>
             <div className="text-center my-4">Or Continue With</div>
             <div className="flex justify-center">
-              <button className="bg-btncolor text-white py-2 px-4 rounded-3xl flex justify-center items-center">
+              <button className="bg-btncolor text-white py-2 px-4 rounded-3xl flex justify-center items-center"
+              onClick={googleAuth}>
                 <img src={google} alt="Google Icon" className="w-5 h-5 mr-2" />
                 Google
               </button>

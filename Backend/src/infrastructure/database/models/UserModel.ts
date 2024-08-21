@@ -12,6 +12,7 @@ export interface User {
     password:string;
     mobile:number;
     userType:UserType ;
+    image:string;
     address:string;
     latitude:number;
     longitude:number;
@@ -26,9 +27,10 @@ export interface UserDocument extends User,Document{
 const UserSchema:Schema<UserDocument>=new Schema({
     name:{type:String,required:true},
     email:{type:String,required:true},
-    password:{type:String,required:true},
+    password:{type:String,required:false},
     mobile:{type:Number,required:false},
     userType: { type: String, enum: UserType, required: true },
+    image:{type:String,required:false},
     address: { type: String, required: false },
     latitude: { type: Number, required: false },
     longitude: { type: Number, required: false },

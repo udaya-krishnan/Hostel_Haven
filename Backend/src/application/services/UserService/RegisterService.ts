@@ -20,4 +20,11 @@ export class RegisterService implements RegisterUseCase{
         return emailExist
     }
 
+
+    async GoogleRegister(user:any):Promise<any|null>{
+        const newUser=await this.userRepository.googleRegister(user)
+        return newUser
+    }
+    
+
 }
