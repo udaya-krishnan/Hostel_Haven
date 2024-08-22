@@ -25,6 +25,13 @@ export class RegisterService implements RegisterUseCase{
         const newUser=await this.userRepository.googleRegister(user)
         return newUser
     }
+
+    async forgotpass(email:string,password:string):Promise<any|null>{
+        const byripassword=await bcrypt.hash(password,10);
+        const update=await this.userRepository.forgot(email,byripassword)
+
+        return update
+    }
     
 
 }

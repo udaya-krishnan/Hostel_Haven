@@ -54,3 +54,15 @@ export const resendOtp = createAsyncThunk(
         return response
     }
   )
+
+
+  export const verifyEmail=(email)=>async()=>{
+    const data=await AuthService.verifyEmail(email)
+    console.log(data,"data");
+    return data
+  }
+
+  export const forgotPass=(data)=>async()=>{
+    const res=await AuthService.forgotpass(data)
+    return res
+  }

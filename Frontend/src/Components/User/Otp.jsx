@@ -12,7 +12,7 @@ function Otp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [timer, setTimer] = useState(30); // Set initial time (e.g., 150 seconds or 2 minutes 30 seconds)
+  const [timer, setTimer] = useState(60); // Set initial time (e.g., 150 seconds or 2 minutes 30 seconds)
   const [otpExpired, setOtpExpired] = useState(false); // To track if OTP is expired
 
   useEffect(() => {
@@ -81,12 +81,20 @@ function Otp() {
           inputs.current[i].style.border = "1px solid red";
         }
         document.getElementById("error").style.display = "block";
-      } else {
+      } else if(result.message==="OTP verified and registration successful"){
         toast.success('Register Success', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 })
         setTimeout(()=>{
 
           navigate("/login");
         },2000)
+      }else if(result.message==="Otp verified "){
+        console.log('forgot pAGE');
+        
+        toast.success('Otp verified', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 })
+        setTimeout(()=>{
+          navigate('/forgot')
+        },2000)
+
       }
     }
   }

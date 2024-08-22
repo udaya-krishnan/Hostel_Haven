@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import background from "../../../public/banner/login.jpg";
 import google from "../../../public/icons/google-brands-solid.svg";
 import { registerValidationSchema } from "../../utils/validation";
@@ -6,49 +8,50 @@ import {useDispatch} from 'react-redux'
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { googleRegister, register } from "../../features/User/auth/authAction";
-import { auth,provider } from "../../config/firebase/firebase";
+import { auth, provider } from "../../config/firebase/firebase";
 import { signInWithPopup } from "firebase/auth";
 
 function Register() {
   const [error, setError] = useState(null);
-  const navigate=useNavigate()
-  const dispatch=useDispatch()
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
- function googleAuth(){
-    signInWithPopup(auth,provider).then(async(data)=>{
+  function googleAuth() {
+    signInWithPopup(auth, provider).then(async (data) => {
       console.log("google data");
-     const res=await dispatch(googleRegister({data:data.user}))
-     console.log(res,"google register");
+      const res = await dispatch(googleRegister({ data: data.user }));
+      console.log(res, "google register");
 
-     if(res.meta.requestStatus==="fulfilled"){
-      navigate('/')
-     } 
-     
-    })
+      if (res.meta.requestStatus === "fulfilled") {
+        navigate("/");
+      }
+    });
   }
 
   const formik = useFormik({
     initialValues: {
       name: "",
       email: "",
-      password: ""
+      password: "",
     },
     validationSchema: registerValidationSchema,
-    onSubmit:async (values) => {
+    onSubmit: async (values) => {
       try {
-        const result = await dispatch(register(values.name, values.email, values.password));
-    
+        const result = await dispatch(
+          register(values.name, values.email, values.password)
+        );
+
         // Assuming `result` has a `message` field for errors
         if (result.message === "email exists") {
-          formik.setErrors({ email: 'Email already exists' });
+          formik.setErrors({ email: "Email already exists" });
         } else {
-          navigate('/otp')
+          navigate("/otp");
         }
-        
       } catch (error) {
         console.error("Error registering:", error);
       }
-    }
+    },
   });
 
   const getBorderColor = (field) => {
@@ -121,18 +124,23 @@ function Register() {
                   </div>
                 ) : null}
               </div>
-              <div className="mb-4">
+              <div className="mb-4 relative">
                 <label className="block text-btncolor">Password</label>
                 <input
                   className={`w-full mt-2 px-3 py-2 border rounded focus:outline-none focus:ring-2 ${getBorderColor(
                     "password"
                   )}`}
-                  type="password"
+                  type={showPassword ? "text" : "password"} // Toggle input type based on showPassword state
                   placeholder="Enter Your Password"
                   name="password"
                   value={formik.values.password}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                />
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye} // Change icon based on showPassword state
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-14 transform -translate-y-1/2 text-btncolor cursor-pointer"
                 />
                 {formik.touched.password && formik.errors.password ? (
                   <div className="text-red-500 text-xs mt-1">
@@ -140,7 +148,8 @@ function Register() {
                   </div>
                 ) : null}
               </div>
-              <button className="w-full bg-btncolor text-white py-2 px-4 rounded"
+              <button
+                className="w-full bg-btncolor text-white py-2 px-4 rounded"
               >
                 Continue
               </button>
@@ -151,18 +160,19 @@ function Register() {
               </div>
               <div className="text-center my-4">Or Continue With</div>
             </form>
-              <div className="flex justify-center">
-                <button className="bg-btncolor text-white py-2 px-4 rounded-3xl flex justify-center items-cente</form>r"
-                onClick={googleAuth}>
-                  <img
-                    src={google}
-                    alt="Google Icon"
-                    className="w-5 h-5 mr-2"
-                  />
-                  Google
-                </button>
-              </div>
-            
+            <div className="flex justify-center">
+              <button
+                className="bg-btncolor text-white py-2 px-4 rounded-3xl flex justify-center items-center"
+                onClick={googleAuth}
+              >
+                <img
+                  src={google}
+                  alt="Google Icon"
+                  className="w-5 h-5 mr-2"
+                />
+                Google
+              </button>
+            </div>
           </div>
         </div>
       </div>

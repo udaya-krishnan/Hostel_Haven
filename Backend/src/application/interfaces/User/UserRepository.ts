@@ -4,4 +4,5 @@ export interface UserRepository {
     createUser(user:User):Promise<User>;
     findUser(user:string):Promise<any|null>;
     googleRegister(user:any):Promise<any |null>;
+    forgot(email:string,password:string):Promise<any|null>
 }

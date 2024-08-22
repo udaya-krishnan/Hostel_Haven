@@ -24,5 +24,14 @@ export class UserRepositoryImpl implements UserRepository{
         const createUser:UserDocument =await UserModel.create(user)
         return createUser.toObject() as User
     }
+
+    async forgot(email: string, password: string): Promise<any | null> {
+        return await UserModel.findOneAndUpdate({email:email},{
+            password:password
+        })
+        
+    }
+
+
     
 }
