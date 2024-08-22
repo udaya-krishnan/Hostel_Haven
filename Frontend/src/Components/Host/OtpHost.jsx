@@ -106,7 +106,7 @@ function OtpHost() {
 
 
   const resendOtpa = async() => {
-    setTimer(30);
+    setTimer(60);
     setOtpExpired(false); 
     inputs.current.forEach(input => (input.value = ""));
     console.log("OTP resent!");
