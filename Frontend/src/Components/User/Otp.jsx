@@ -12,7 +12,7 @@ function Otp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [timer, setTimer] = useState(60); // Set initial time (e.g., 150 seconds or 2 minutes 30 seconds)
+  const [timer, setTimer] = useState(30); // Set initial time (e.g., 150 seconds or 2 minutes 30 seconds)
   const [otpExpired, setOtpExpired] = useState(false); // To track if OTP is expired
 
   useEffect(() => {
@@ -100,10 +100,13 @@ function Otp() {
   }
 
   const resendOtpa = async() => {
-    setTimer(60);
+    setTimer(30);
     setOtpExpired(false); 
     inputs.current.forEach(input => (input.value = ""));
+    inputs.current.forEach(input=>(input.style.border="1px solid gray"))
+    document.getElementById("error").style.display = "none";
     console.log("OTP resent!");
+
     await dispatch(resendOtp())
   };
 

@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import { Session } from './utils/session'
 import dotenv from "dotenv"
 import hostRouter from './presentation/routes/Host/HostAuthRoutes';
+import adminRoute from './presentation/routes/Admin/AdminAuthRoutes';
 dotenv.config()
 
 const app=express()
@@ -28,6 +29,7 @@ app.use(cookieSession({
 
 app.use('/',userRouter)
 app.use('/host',hostRouter)
+app.use('/admin',adminRoute)
 
 connectDatabase()
 app.listen(3000,()=>{

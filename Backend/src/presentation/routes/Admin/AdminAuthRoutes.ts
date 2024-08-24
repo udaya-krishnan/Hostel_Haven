@@ -4,3 +4,5 @@ const adminRoute=Router()
 
 
 adminRoute.post('/login',adminLogin)
+
+export default adminRoute
