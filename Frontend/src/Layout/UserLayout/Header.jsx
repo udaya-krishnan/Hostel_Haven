@@ -47,7 +47,7 @@ function Header() {
           <div className="text-2xl font-bold text-btncolor">Hostel Haven</div>
 
           <nav className="hidden md:flex items-center space-x-4">
-            <a href="#" className="text-btncolor">
+            <a href="/" className="text-btncolor">
               Home
             </a>
             <a href="#" className="text-btncolor">

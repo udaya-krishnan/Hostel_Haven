@@ -31,7 +31,6 @@ const authSlice = createSlice({
             .addCase(editprofile.fulfilled,(state,action)=>{
                 state.user=action.payload.userData;
             })
-
             .addCase(uploadphoto.fulfilled,(state,action)=>{
                 console.log('success fully changed');
                 state.user=action.payload.userData

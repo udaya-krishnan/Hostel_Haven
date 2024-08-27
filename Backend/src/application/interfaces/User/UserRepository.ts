@@ -8,4 +8,5 @@ export interface UserRepository {
     forgot(email:string,password:string):Promise<any|null>
     edit(values:EditUser):Promise<any|null>
     image(name:string,email:string):Promise<any|null>
+    changepassword(password:string,email:string):Promise<any|null>
 }

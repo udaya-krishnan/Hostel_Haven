@@ -1,5 +1,6 @@
 import { createAsyncThunk, isRejectedWithValue } from "@reduxjs/toolkit";
 import HostAuthService from "../../../services/HostAuthService"
+import HostAccountService from "../../../services/HostAccountService";
 
 
 export const hostLogin=(email, password, toast) => async (dispatch) => {
@@ -48,3 +49,41 @@ export const hostresendOtp=createAsyncThunk(
         return response.data
     }
 )
+
+export const editprofile=createAsyncThunk(
+    'hostAuth/editprofile',
+    async({values},{rejectWithValue})=>{
+      console.log('values from  action',values);
+      
+      const response =await HostAccountService.hosteditProfile(values)
+      console.log(response);
+      
+
+      return response
+    }
+  )
+
+
+export const hostuploadphoto=createAsyncThunk(
+    'auth/uploadphoto',
+    async({file,email},{rejectWithValue})=>{
+      console.log(file,email,"from action");
+      
+      const response =await HostAccountService.hostuploadPhoto(file,email)
+      return response
+    }
+  )
+
+
+
+  export const hostchangePassword=(password,email)=>async()=>{
+    try {
+
+      const res=await HostAccountService.hostchangePassword(password,email)
+      return res
+      
+    } catch (error) {
+      console.log(error.message);
+      
+    }
+  }

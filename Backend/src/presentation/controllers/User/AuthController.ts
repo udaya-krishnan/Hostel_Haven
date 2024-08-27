@@ -36,6 +36,9 @@ export const register = async (req: Request, res: Response) => {
             otp: otp,
             message:"register"
           };
+
+          console.log('data from the register');
+          
           console.log(data);
          const token= await createToken(data,res)
            await sendMail(email,otp,name)
@@ -110,8 +113,8 @@ export const loginUser=async(req:Request,res:Response)=>{
     }else if(data==="Password was wrong"){
       res.status(200).json({message:"Password was wrong"})
     }else{
-      let {name,email,userType,image}=data
-      let user={name:name,email:email,userType:userType,image:image}
+      let {name,email,userType,image,mobile,about,location,work,pinCode}=data
+      let user={name:name,email:email,userType:userType,image:image,mobile:mobile,about:about,location:location,work:work,pinCode:pinCode}
      
       
       const token= await createToken(user,res)
@@ -132,6 +135,9 @@ export const loginUser=async(req:Request,res:Response)=>{
 
 export const resendUser=async(req:Request,res:Response)=>{
   try {
+
+    console.log('resend otp controller from the user');
+    
     
     const token =req.cookies.jwt
     console.log(token);

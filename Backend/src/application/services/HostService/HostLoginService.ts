@@ -20,6 +20,7 @@ export class HostLoginService implements HostLoginUseCase{
 
     async rolechange(email: string): Promise<any | null> {
         const data=await this.hostRepository.ruleChange(email)
+        return data
     }
 
     

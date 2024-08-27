@@ -76,7 +76,6 @@ export const resendOtp = createAsyncThunk(
       const response =await AccountService.editProfile(values)
       console.log(response);
       
-
       return response
     }
   )
@@ -91,3 +90,16 @@ export const resendOtp = createAsyncThunk(
       return response
     }
   )
+
+
+  export const changePassword=(password,email)=>async()=>{
+    try {
+
+      const res=await AccountService.changePassword(password,email)
+      return res
+      
+    } catch (error) {
+      console.log(error.message);
+      
+    }
+  }

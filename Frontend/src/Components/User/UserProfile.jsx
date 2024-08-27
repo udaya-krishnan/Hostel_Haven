@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import ProfileSide from "../../Layout/UserLayout/ProfileSide";
-import { accountEditSchema } from "../../utils/validation";
+import { accountEditSchema ,passwordSchema} from "../../utils/validation";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../../features/User/auth/authSelectors";
-import { editprofile } from "../../features/User/auth/authAction";
+import { changePassword, editprofile } from "../../features/User/auth/authAction";
+import { Toaster, toast } from "sonner";
 
 function UserProfile() {
   const [edit, setEdit] = useState(false);
@@ -13,127 +14,138 @@ function UserProfile() {
   const dispatch = useDispatch();
   const date = new Date(userData.createdAt);
 
-  const options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-
+  const options = { year: "numeric", month: "long", day: "numeric" };
   const formattedDate = date.toLocaleDateString("en-US", options);
 
-  // console.log(userData);
-
   const handleSubmit = (values, { setSubmitting }) => {
-    console.log("Form Submitted:", values);
-
     values.email = userData.email;
 
-    dispatch(editprofile({ values }));
+    toast.promise( 
+      new Promise((resolve, reject) => {
+        dispatch(editprofile({ values }))
+          .then(() => {
+            resolve();
+            setEdit(false);
+          })
+          .catch(() => {
+            reject();
+          })
+          .finally(() => {
+            setSubmitting(false);
+          });
+      }),
+      {
+        loading: "Updating profile...",
+        success: "Profile updated successfully!",
+        error: "Failed to update profile. Please try again.",
+      }
+    );
+  };
 
+  const handleCancel = () => {
+    setEdit(false); 
+    toast.info("Changes discarded.");
+  };
+
+  const handlePasswordChangeSubmit = async(values, { setSubmitting }) => {
+
+    if (values.newPassword === values.confirmPassword) {
+   const res= await  dispatch(changePassword(values.newPassword,userData.email))
+   if(res.message=="password change success"){
+    toast.success("Password changed successfully!");
+    setPass(false); 
+   }else{
+    console.log("password not changed");
+    
+   }
+     
+    } else {
+     
+      toast.error("Passwords do not match!"); 
+    }
     setSubmitting(false);
-    setEdit(false);
   };
 
   return (
     <main className="flex-grow bg-gray-100 min-h-screen p-10">
+      <Toaster />
       <div className="bg-white shadow-md rounded-lg p-8 flex flex-col lg:flex-row h-full">
-        {/* Left Side - Profile Details */}
         <ProfileSide change={setPass} value={changepass} userData={userData} />
 
-        {/* Right Side - Main Profile Info */}
         <div className="w-full lg:w-2/3 lg:pl-10 mt-6 lg:mt-0">
-          <h1 className="text-2xl font-bold mb-2">Hello,{userData.name}</h1>
+          <h1 className="text-2xl font-bold mb-2">Hello, {userData.name}</h1>
 
-          {changepass === true ? (
-            <form className="bg-white p-8 rounded-lg shadow-md w-full">
-              <div className="mb-4">
-                <label
-                  className="block text-sm font-medium text-gray-700"
-                  htmlFor="name"
-                >
-                  New Password
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-btncolor"
-                  placeholder="Enter your name"
-                />
-              </div>
-
-              {/* Number Input */}
-              <div className="mb-4">
-                <label
-                  className="block text-sm font-medium text-gray-700"
-                  htmlFor="number"
-                >
-                  Confirm Password
-                </label>
-                <input
-                  type="text"
-                  id="number"
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-btncolor"
-                  placeholder="Enter your number"
-                />
-              </div>
-              <div className="flex justify-end  space-x-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mt-2 text-gray-400"
-                  viewBox="0 0 384 512"
-                >
-                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-                </svg>
-
-                <button className="text-gray-600 mr-2">Cancel</button>
-                <button className="bg-btncolor text-white pl-7 pr-7 py-2 rounded-3xl">
-                  Change
-                </button>
-              </div>
-            </form>
-          ) : edit === false ? (
-            <>
-              <p className="text-sm text-gray-600 mb-6">
-                Joined in {formattedDate}
-              </p>
-              <button
-                className="border border-btncolor text-btncolor py-2 px-4 rounded-md mb-6"
-                onClick={() => setEdit(!edit)}
-              >
-                Edit Profile
-              </button>
-              <hr className="mb-6" />
-              <div className="flex items-center">
-                <span className="bg-btncolor text-white py-1 px-4 rounded-lg text-sm mr-2">
-                  JOHN24
-                </span>
-                <button className="text-btncolor">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M7.707 14.707a1 1 0 01-1.414-1.414L11.586 8l-5.293-5.293a1 1 0 111.414-1.414l6 6a1 1 0 010 1.414l-6 6z" />
-                  </svg>
-                </button>
-              </div>
-            </>
-          ) : (
+          {changepass ? (
             <Formik
-            initialValues={{
-              name: userData.name || "",
-              mobile: userData?.mobile || "",
-              about: userData?.about || "",
-              location: userData?.location || "",
-              work: userData?.work || "",
-              pinCode: userData?.pinCode || "", // Adding pinCode to initial values
-            }}
-            validationSchema={accountEditSchema}
-            onSubmit={handleSubmit} // Passing the handleSubmit function
-          >
-            {({ isSubmitting }) => (
-              <Form className="bg-white p-8 rounded-lg shadow-md w-full">
+              initialValues={{ newPassword: "", confirmPassword: "" }}
+              validationSchema={passwordSchema} // Define a schema for password change
+              onSubmit={handlePasswordChangeSubmit}
+            >
+              {({ isSubmitting }) => (
+                <Form className="bg-white p-8 rounded-lg shadow-md w-full">
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="newPassword">
+                      New Password
+                    </label>
+                    <Field
+                      type="password"
+                      id="newPassword"
+                      name="newPassword"
+                      className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-btncolor"
+                      placeholder="Enter new password"
+                    />
+                    <ErrorMessage name="newPassword" component="div" className="text-red-500 text-sm mt-1" />
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700" htmlFor="confirmPassword">
+                      Confirm Password
+                    </label>
+                    <Field
+                      type="password"
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-btncolor"
+                      placeholder="Confirm new password"
+                    />
+                    <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-sm mt-1" />
+                  </div>
+
+                  <div className="flex justify-end space-x-4">
+                    <button
+                      type="button"
+                      className="text-gray-600 mr-2"
+                      onClick={() => setPass(false)}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-btncolor text-white px-4 py-2 rounded-3xl"
+                      disabled={isSubmitting}
+                    >
+                      Change
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          ) : edit ? (
+            <Formik
+              initialValues={{
+                name: userData.name || "",
+                mobile: userData.mobile || "",
+                about: userData.about || "",
+                location: userData.location || "",
+                work: userData.work || "",
+                pinCode: userData.pinCode || "",
+              }}
+              validationSchema={accountEditSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ isSubmitting }) => (
+                <Form className="bg-white p-8 rounded-lg shadow-md w-full">
                 {/* Name Input */}
                 <div className="mb-4">
                   <label
@@ -155,7 +167,7 @@ function UserProfile() {
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
-          
+
                 {/* Mobile Input */}
                 <div className="mb-4">
                   <label
@@ -177,7 +189,7 @@ function UserProfile() {
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
-          
+
                 {/* About Textarea */}
                 <div className="mb-4">
                   <label
@@ -195,7 +207,7 @@ function UserProfile() {
                     rows="4"
                   />
                 </div>
-          
+
                 {/* Location Input */}
                 <div className="mb-4">
                   <label
@@ -211,7 +223,10 @@ function UserProfile() {
                     className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-btncolor"
                     placeholder="Enter your location"
                     onInput={(e) => {
-                      e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                      e.target.value = e.target.value.replace(
+                        /[^a-zA-Z\s]/g,
+                        ""
+                      );
                     }}
                   />
                   <ErrorMessage
@@ -220,7 +235,7 @@ function UserProfile() {
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
-          
+
                 {/* Work Input */}
                 <div className="mb-4">
                   <label
@@ -237,7 +252,7 @@ function UserProfile() {
                     placeholder="Enter your work"
                   />
                 </div>
-          
+
                 {/* Pin Code Input */}
                 <div className="mb-4">
                   <label
@@ -259,12 +274,13 @@ function UserProfile() {
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
-          
+
+                {/* Form Action Buttons */}
                 <div className="mb-4 flex justify-between items-center">
                   <span className="text-gray-400 text-xs">
                     All the required user information can be added here...
                   </span>
-          
+
                   <div className="flex items-center space-x-4">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -273,11 +289,14 @@ function UserProfile() {
                     >
                       <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                     </svg>
-          
+
                     <button
                       type="button"
                       className="text-gray-600 mr-2"
-                      onClick={() => setEdit(false)}
+                      onClick={() => {
+                        setEdit(false)
+                        handleCancel()
+                      }}
                     >
                       Cancel
                     </button>
@@ -291,9 +310,20 @@ function UserProfile() {
                   </div>
                 </div>
               </Form>
-            )}
-          </Formik>
-          
+              )}
+            </Formik>
+          ) : (
+            <>
+              <p className="text-sm text-gray-600 mb-6">Joined in {formattedDate}</p>
+              <button
+                className="border border-btncolor text-btncolor py-2 px-4 rounded-md mb-6"
+                onClick={() => setEdit(true)}
+              >
+                Edit Profile
+              </button>
+              <hr className="mb-6" />
+              {/* Other static user details */}
+            </>
           )}
         </div>
       </div>

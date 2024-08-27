@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { googleRegister, loginUser, otpVerify, register, resendUser, verifyemail,forgotPassword } from "../../controllers/User/AuthController";
-import { updateProfile, uploadImag } from "../../controllers/User/ProfileController";
+import { changepassword, updateProfile, uploadImag } from "../../controllers/User/ProfileController";
 import { upload } from "../../../config/multer";
 
 
@@ -15,5 +15,6 @@ userRouter.post('/register',register)
           .post('/forgot',forgotPassword)
           .post('/editprofile',updateProfile)
           .post('/upload',upload.single("file"),uploadImag)
+          .post('/changepassword',changepassword)
 
 export default userRouter

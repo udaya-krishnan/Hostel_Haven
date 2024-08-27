@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { FORGOT_PASS, GOOGLE_AUTH, LOGIN, REGISTER_URL, RESEND, VERIFY_EMAIL, VERIFY_OTP } from '../features/User/auth/authTypes';
+import { HOST_RESEND } from '../features/Host/auth/authTypes';
 const API_URL='http://localhost:3000';
 
 const register=async(name,email,password)=>{
@@ -28,8 +29,8 @@ const loginverify=async(email,password)=>{
 }
 
 const resendOtp=async()=>{
-    console.log("otp in service")
-    const response=await axios.get(API_URL + RESEND, { withCredentials: true });
+    console.log("resend otp  in service")
+    const response=await axios.get(API_URL +RESEND, { withCredentials: true });
     console.log(response);
     
 

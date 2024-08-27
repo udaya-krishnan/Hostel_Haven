@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { EDIT_PROFILE, PROFILE_UPLOAD } from '../features/User/auth/authTypes';
+import { CHANGE_PASS, EDIT_PROFILE, PROFILE_UPLOAD } from '../features/User/auth/authTypes';
 
 const API_URL='http://localhost:3000';
 
@@ -14,19 +14,30 @@ const uploadPhoto=async(file,email)=>{
     const formData=new FormData()
     formData.append('file',file)
     formData.append('email',email)
-
     const response=await axios.post(API_URL+PROFILE_UPLOAD,formData,{
         headers:{
             'Content-Type':'multipart/form-data'
         }
     })
-
     return response.data
+}
+
+const changePassword=async(password,email)=>{
+    try {
+
+        const response =await axios.post(API_URL+CHANGE_PASS,{password,email},{withCredentials:true})
+        return response.data
+        
+    } catch (error) {
+        console.log(error.message);
+        
+    }
 }
 
 const AccountService={
     editProfile,
-    uploadPhoto
+    uploadPhoto,
+    changePassword
 }
 
 export default AccountService

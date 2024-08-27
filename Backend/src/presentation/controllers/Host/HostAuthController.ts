@@ -23,6 +23,8 @@ export const verifyhost=async(req:Request,res:Response)=>{
             res.status(200).json({message:"Password was wrong"})
         }else{
             const otp=generateOtp()
+            console.log("login otp",otp);
+            
             const data={
                 name:hostexists.name,
                 email:email,
@@ -55,7 +57,7 @@ export const verifyOtp=async(req:Request,res:Response)=>{
             
                 console.log('token created');
                 
-            res.status(200).json({host:decoded,token:tokenCreate,message:"verifyed host"})
+            res.status(200).json({host:data,token:tokenCreate,message:"verifyed host"})
         }else{
             res.status(200).json({message:"incorrect otp"})
         }
@@ -68,19 +70,25 @@ export const verifyOtp=async(req:Request,res:Response)=>{
 export const resendHost=async(req:Request,res:Response)=>{
     try {
 
+        console.log('resend otp controller');
+        
         const token=req.cookies.jwt
-
-        console.log(token)
+        console.log('resend otp');
+        
+        // console.log(token)
         const decoded=await verifyToken(token)
-        console.log(decoded);
+        console.log(decoded,"in resend opt");
         
         const otp=generateOtp()
-
+        console.log(otp);
+        
         const data={
             name:decoded.name,
             email:decoded.password,
+            otp:otp,
             password:decoded.password
         }
+        console.log("data",data);
         await createToken(data,res)
         await sendMail(decoded.email,otp,decoded.name)
 

@@ -10,9 +10,12 @@ const JWT_AUTHCSEC =process.env.JWT_AUTHSECRET!;
 
 export const createToken = async (data: any, res: Response) => {
     try {
+
+      console.log(data,"create Token");
+      
       const token = jwt.sign(data, JWT_AUTHCSEC, { expiresIn: "30m" });
   
-      console.log(token, "created token");
+      // console.log(token, "created token");
   
       res.cookie('jwt', token, {
         httpOnly: true,

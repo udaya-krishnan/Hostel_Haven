@@ -1,22 +1,23 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { HostLogout } from "../../features/Host/auth/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch ,useSelector} from "react-redux";
+import { selectHost } from "../../features/Host/auth/authSelectors";
 
 function Header() {
-    const dispatch=useDispatch()
-    const navigate=useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const hostData=useSelector(selectHost)
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const logout=()=>{
-    dispatch(HostLogout())
-    navigate('/host/login')
-  }
-
+  const logout = () => {
+    dispatch(HostLogout());
+    navigate("/host/login");
+  };
 
   return (
     <header className="bg-[#DABFAA] py-4 px-6 flex justify-between items-center">
@@ -24,24 +25,33 @@ function Header() {
         <h1 className="text-2xl font-bold text-gray-800">Hostel Haven</h1>
       </div>
 
-     
       <nav className="hidden md:flex space-x-8 items-center">
-        <Link to="/home" className="text-gray-800 hover:text-gray-600">
+        <Link to="/host/home" className="text-gray-800 hover:text-gray-600">
           Home
         </Link>
-        <Link to="/host/properties" className="text-gray-800 hover:text-gray-600">
+        <Link
+          to="/host/properties"
+          className="text-gray-800 hover:text-gray-600"
+        >
           Properties
         </Link>
         <Link to="/host/about-us" className="text-gray-800 hover:text-gray-600">
           About Us
         </Link>
-        <Link to="/host/contact-us" className="text-gray-800 hover:text-gray-600">
+        <Link
+          to="/host/contact-us"
+          className="text-gray-800 hover:text-gray-600"
+        >
           Contact Us
         </Link>
         <div className="relative">
           <div onClick={toggleDropdown} className="cursor-pointer">
             <img
-              src={`../../../public/profile/`} 
+              src={
+                hostData?.image?.startsWith("http")
+                  ? hostData.image
+                  : `../../../public/profile/${hostData?.image || "anony.webp"}`
+              }
               alt="User"
               className="h-10 w-10 rounded-full object-cover"
             />
@@ -77,7 +87,6 @@ function Header() {
         </div>
       </nav>
 
-      
       <div className="md:hidden flex items-center">
         <button className="text-gray-800 focus:outline-none">
           <svg

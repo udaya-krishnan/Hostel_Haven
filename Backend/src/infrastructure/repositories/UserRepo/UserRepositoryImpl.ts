@@ -53,5 +53,12 @@ export class UserRepositoryImpl implements UserRepository{
         ).select('-password');
     }
 
+    async changepassword(password: string,email:string): Promise<any | null> {
+        return await UserModel.findOneAndUpdate(
+            {email:email},
+            {$set:{password:password}}
+        )
+    }
+
     
 }

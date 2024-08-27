@@ -1,9 +1,10 @@
 import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { uploadphoto } from "../../features/User/auth/authAction";
+// import { uploadphoto } from "../../features/User/auth/authAction";
 import {toast,Toaster} from 'sonner'
+import { hostuploadphoto } from "../../features/Host/auth/authAction";
 
-function ProfileSide({ change, value, userData }) {
+function HostProfile({ change, value, hostData }) {
   const fileInputRef = useRef(null);
   const [error, setError] = useState(""); 
   const dispatch=useDispatch()
@@ -23,7 +24,7 @@ function ProfileSide({ change, value, userData }) {
 
       toast.promise(
         new Promise((resolve, reject) => {
-          dispatch(uploadphoto({ file, email: userData.email }))
+          dispatch(hostuploadphoto({ file, email: hostData.email }))
             .then(() => {
               resolve();
               console.log("Selected file:", file);
@@ -54,9 +55,9 @@ function ProfileSide({ change, value, userData }) {
           <div className="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center mb-4 overflow-hidden">
             <img
               src={
-                userData?.image?.startsWith("http")
-                  ? userData.image
-                  : `../../../public/profile/${userData?.image || "anony.webp"}`
+                hostData?.image?.startsWith("http")
+                  ? hostData.image
+                  : `../../../public/profile/${hostData?.image || "anony.webp"}`
               }
               alt="User"
               className="h-full w-full object-cover"
@@ -79,20 +80,19 @@ function ProfileSide({ change, value, userData }) {
             onChange={handleFileChange}
           />
 
-         
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         </div>
         <div className="mb-4">
           <h2 className="font-bold text-btncolor">About</h2>
           <p className="text-sm text-gray-600">
-            {userData.about}
+            {hostData.about}
           </p>
         </div>
         <div className="mb-4">
-          <h3 className="font-bold">{userData.name}</h3>
+          <h3 className="font-bold">{hostData.name}</h3>
         
           <p className="text-sm text-green-500">✓ Email Confirmed</p>
-          {userData.mobile&&  <p className="text-sm text-green-500">✓ Mobile Confirmed</p>}
+          {hostData.mobile&&  <p className="text-sm text-green-500">✓ Mobile Confirmed</p>}
         </div>
         <button
           className="bg-gray-300 text-btncolor py-2 px-4 rounded-md w-full"
@@ -106,4 +106,4 @@ function ProfileSide({ change, value, userData }) {
   );
 }
 
-export default ProfileSide;
+export default HostProfile;

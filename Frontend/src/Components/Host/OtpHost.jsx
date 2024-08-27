@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
 import background from "../../../public/banner/businessman.jpeg";
 import { useDispatch, useSelector } from "react-redux";
-import { otpVerify, resendOtp } from "../../features/User/auth/authAction";
+// import { otpVerify, resendOtp } from "../../features/User/auth/authAction";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { verifyHostOtp } from "../../features/Host/auth/authAction";
+import { verifyHostOtp,hostresendOtp } from "../../features/Host/auth/authAction";
 import {  selectHostToken } from "../../features/Host/auth/authSelectors";
 import { HostLogout } from "../../features/Host/auth/authSlice";
 
@@ -13,13 +13,13 @@ function OtpHost() {
     const inputs = useRef([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const token=useSelector(selectHostToken)
+  // const token=useSelector(selectHostToken)
 
-  useEffect(()=>{
-    if(token){
-      navigate('/host/home')
-    }
-  },[token])
+  // useEffect(()=>{
+  //   if(token){
+  //     navigate('/host/home')
+  //   }
+  // },[token])
 
   const [timer, setTimer] = useState(120); // Set initial time (e.g., 150 seconds or 2 minutes 30 seconds)
   const [otpExpired, setOtpExpired] = useState(false); // To track if OTP is expired
@@ -85,18 +85,18 @@ function OtpHost() {
       console.log(result,"rrrrrrrrrrrrrrres");
       
 
-      // if (result.message === "Incorrect OTP") {
-      //   for (let i = 0; i < inputs.current.length; i++) {
-      //     inputs.current[i].style.border = "1px solid red";
-      //   }
-      //   document.getElementById("error").style.display = "block";
-      // } else {
-      //   toast.success('Register Success', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 })
-      //   setTimeout(()=>{
+      if (result.message === "Incorrect OTP") {
+        for (let i = 0; i < inputs.current.length; i++) {
+          inputs.current[i].style.border = "1px solid red";
+        }
+        document.getElementById("error").style.display = "block";
+      } else {
+        toast.success('Verification Success', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 })
+        setTimeout(()=>{
 
-      //     navigate("/login");
-      //   },2000)
-      // }
+          navigate("/host/home");
+        },2000)
+      }
     }
 
 
@@ -110,7 +110,7 @@ function OtpHost() {
     setOtpExpired(false); 
     inputs.current.forEach(input => (input.value = ""));
     console.log("OTP resent!");
-    await dispatch(resendOtp())
+    await dispatch(hostresendOtp()) 
   };
 
   return (
