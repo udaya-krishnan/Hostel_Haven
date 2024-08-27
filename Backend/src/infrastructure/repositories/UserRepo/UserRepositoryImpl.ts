@@ -2,6 +2,7 @@ import { UserRepository } from "../../../application/interfaces/User/UserReposit
 import { UserDocument } from "../../database/models/UserModel";
 import { User } from "../../../domain/entities/User";
 import UserModel from "../../database/models/UserModel";
+import { EditUser } from "../../../domain/entities/EditUser";
 
 export class UserRepositoryImpl implements UserRepository{
 
@@ -32,6 +33,25 @@ export class UserRepositoryImpl implements UserRepository{
         
     }
 
+    async edit(values: EditUser): Promise<any | null> {
+        console.log(values,"userrepos");
+        return await UserModel.findOneAndUpdate(
+            { email: values.email },
+            { $set: values },    
+            { new: true }        
+          ).select('-password');
+          
+    }
+
+    async image(name: string,email:string): Promise<any | null> {
+        return await UserModel.findOneAndUpdate(
+            {email:email},
+            {$set:{
+                image:name
+            }},
+            {new:true}
+        ).select('-password');
+    }
 
     
 }

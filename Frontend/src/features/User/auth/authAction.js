@@ -1,5 +1,6 @@
 import AuthService from "../../../services/AuthService";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import AccountService from "../../../services/UserAccountService";
 
 export const register=(name,email,password)=>async()=>{
     const data=await AuthService.register(name,email,password)
@@ -66,3 +67,27 @@ export const resendOtp = createAsyncThunk(
     const res=await AuthService.forgotpass(data)
     return res
   }
+
+  export const editprofile=createAsyncThunk(
+    'auth/editprofile',
+    async({values},{rejectWithValue})=>{
+      console.log('values from  action',values);
+      
+      const response =await AccountService.editProfile(values)
+      console.log(response);
+      
+
+      return response
+    }
+  )
+
+
+  export const uploadphoto=createAsyncThunk(
+    'auth/uploadphoto',
+    async({file,email},{rejectWithValue})=>{
+      console.log(file,email,"from action");
+      
+      const response =await AccountService.uploadPhoto(file,email)
+      return response
+    }
+  )

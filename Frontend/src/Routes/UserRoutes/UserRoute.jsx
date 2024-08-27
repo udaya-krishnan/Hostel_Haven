@@ -7,6 +7,7 @@ import UserForgotPass from "../../Pages/User/Auth/UserForgotPass";
 import UserHome from "../../Pages/User/UserHome";
 import UserAuth from "../../Components/User/middlewares/userAuth";
 import UserEmail from "../../Pages/User/Auth/UserEmail";
+import Profile from "../../Pages/User/Account/Profile";
 
 function UserRoute() {
   return (
@@ -18,6 +19,7 @@ function UserRoute() {
         <Route path={'/emailverify'} element={<UserAuth><UserEmail/></UserAuth>}/>
         <Route path={'/forgot'} element={<UserForgotPass/>} />
         <Route path={'/'} element={<UserHome/>}/>
+        <Route path={'/profile'} element={<Profile/>}/>
       </Routes>
     </>
   );

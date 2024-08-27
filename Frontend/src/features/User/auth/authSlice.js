@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { login, googleRegister } from './authAction';
+import { login, googleRegister, editprofile,uploadphoto } from './authAction';
 
 const initialState = {
     token: null,
@@ -27,7 +27,15 @@ const authSlice = createSlice({
                 const { user, token } = action.payload;
                 state.token = token;
                 state.user = user;
-            });
+            })
+            .addCase(editprofile.fulfilled,(state,action)=>{
+                state.user=action.payload.userData;
+            })
+
+            .addCase(uploadphoto.fulfilled,(state,action)=>{
+                console.log('success fully changed');
+                state.user=action.payload.userData
+            })
     },
 });
 

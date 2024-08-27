@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { FORGOT_PASS, GOOGLE_AUTH, LOGIN, REGISTER_URL, RESEND, VERIFY_EMAIL, VERIFY_OTP } from '../features/User/auth/authTypes';
-
 const API_URL='http://localhost:3000';
 
 const register=async(name,email,password)=>{
@@ -10,6 +9,7 @@ const register=async(name,email,password)=>{
     
     return response.data
 }
+
 
 const otpVerify=async(otp)=>{
     console.log("otpverify in service");

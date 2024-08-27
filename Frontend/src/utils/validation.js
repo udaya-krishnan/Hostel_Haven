@@ -81,5 +81,14 @@ export const adminvalidationSchema = Yup.object({
     .required("Email is required"),
   password: Yup.string()
     .required("Password is required")
-    
+     
+});
+
+
+export const accountEditSchema = Yup.object({
+  name: Yup.string().required('Name is required'),
+  mobile: Yup.string().required('Number is required'),
+  about: Yup.string(),
+  location: Yup.string(),
+  work: Yup.string(),
 });

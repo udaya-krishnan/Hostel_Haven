@@ -82,7 +82,7 @@ function Header() {
                       userData?.image?.startsWith("http")
                         ? userData.image
                         : `../../../public/profile/${
-                            userData?.image || "defaultProfileImage.png"
+                            userData?.image || "anony.webp"
                           }`
                     }
                     alt="User"
