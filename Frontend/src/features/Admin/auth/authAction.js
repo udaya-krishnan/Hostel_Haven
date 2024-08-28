@@ -14,3 +14,13 @@ export const  loginadmin=createAsyncThunk(
         
     }
 )
+
+export const fetchinguser=()=>async()=>{
+    const response=await AdminService.FetchingUser()
+    return response
+}
+
+export const actionUser=(id)=>async()=>{
+    const response=await AdminService.ActionUser(id)
+    return response
+}
