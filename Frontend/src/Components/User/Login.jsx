@@ -37,10 +37,11 @@ function Login() {
     if (token !== null) {
       navigate("/");
     }
-  }, [token, navigate]);
+  }, [token]);
+
 
   const handleSubmit = async (values) => {
-    await dispatch(
+ await dispatch(
       login({ email: values.email, password: values.password, toast })
     );
   };

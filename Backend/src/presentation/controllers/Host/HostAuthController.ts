@@ -21,6 +21,8 @@ export const verifyhost=async(req:Request,res:Response)=>{
             
         }else if(hostexists==="Password was wrong"){
             res.status(200).json({message:"Password was wrong"})
+        }else if(hostexists==="Account blocked"){
+            res.status(200).json({message:'Account blocked'})
         }else{
             const otp=generateOtp()
             console.log("login otp",otp);

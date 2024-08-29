@@ -2,31 +2,30 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../../Layout/AdminLayout/Sidebar";
 import Header from "../../Layout/AdminLayout/Header";
 import { useDispatch } from "react-redux";
-import { actionUser, fetchinguser } from "../../features/Admin/auth/authAction";
+import { actionUser, fetchinghost } from "../../features/Admin/auth/authAction";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
-import AdminUserDetails from "../../Pages/Admin/AdminUserDetails";
 import { useNavigate } from "react-router-dom";
 
-function AdminUser() {
+function AdminHost() {
   const dispatch = useDispatch();
+  const [hostData, setHostData] = useState([]);
   const navigate=useNavigate()
-  const [userData, setUserData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 6; // Minimum users per page
+  const usersPerPage = 6; 
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchHostData = async () => {
       try {
-        const data = await dispatch(fetchinguser());
-        setUserData(data.userData);
+        const data = await dispatch(fetchinghost());
+        setHostData(data.hostData);
       } catch (error) {
         console.error("Failed to fetch user data", error);
       }
     };
 
-    fetchUserData();
+    fetchHostData();
   }, [dispatch]);
 
   const action = async (id) => {
@@ -41,11 +40,11 @@ function AdminUser() {
                 closeToast();
                 try {
                   const userId = await dispatch(actionUser(id));
-                  setUserData((prevUserData) =>
-                    prevUserData.map((user) =>
-                      user._id === userId.id
-                        ? { ...user, is_blocked: !user.is_blocked }
-                        : user
+                  setHostData((prevUserData) =>
+                    prevUserData.map((host) =>
+                        host._id === userId.id
+                        ? { ...host, is_blocked: !host.is_blocked }
+                        : host
                     )
                   );
                 } catch (error) {
@@ -71,13 +70,13 @@ function AdminUser() {
     }
   };
 
-  const filteredUsers = userData.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUsers = hostData.filter(
+    (host) =>
+        host.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    host.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Pagination logic
+ 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
@@ -85,8 +84,6 @@ function AdminUser() {
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  
 
   return (
     <div className="flex">
@@ -116,8 +113,8 @@ function AdminUser() {
                 </tr>
               </thead>
               <tbody>
-                {currentUsers.map((user) => {
-                  const date = new Date(user.createdAt);
+                {currentUsers.map((host) => {
+                  const date = new Date(host.createdAt);
                   const options = {
                     year: "numeric",
                     month: "long",
@@ -129,40 +126,40 @@ function AdminUser() {
                   );
 
                   return (
-                    <tr key={user._id} className="border-t">
-                      <td className="px-4 py-2">{user.name}</td>
-                      <td className="px-4 py-2">{user.email}</td>
+                    <tr key={host._id} className="border-t">
+                      <td className="px-4 py-2">{host.name}</td>
+                      <td className="px-4 py-2">{host.email}</td>
                       <td className="px-4 py-2">{formattedDate}</td>
                       <td className="px-4 py-2">
                         <span
                           className={`px-2 py-1 rounded ${
-                            user.is_blocked
+                            host.is_blocked
                               ? "bg-red-100 text-red-600"
                               : "bg-green-100 text-green-600"
                           }`}
                         >
-                          {user.is_blocked ? "Blocked" : "Active"}
+                          {host.is_blocked ? "Blocked" : "Active"}
                         </span>
                       </td>
                       <td className="px-4 py-2">
                         <div className="flex items-center gap-2">
-                          {user.is_blocked ? (
+                          {host.is_blocked ? (
                             <button
                               className="bg-btncolor text-white text-base px-4 py-2 rounded-lg w-24"
-                              onClick={() => action(user._id)}
+                              onClick={() => action(host._id)}
                             >
                               Unblock
                             </button>
                           ) : (
                             <button
                               className="bg-btncolor text-white text-base px-4 py-2 rounded-lg w-24"
-                              onClick={() => action(user._id)}
+                              onClick={() => action(host._id)}
                             >
                               Block
                             </button>
                           )}
                           <button className="bg-btncolor text-white text-base px-5 py-2 rounded-lg"
-                            onClick={()=>navigate(`/admin/userdetails?user_id=${user._id}`)}
+                          onClick={()=>navigate(`/admin/hostdetails?host_id=${host._id}`)}
                           >
                             Details
                           </button>
@@ -212,4 +209,4 @@ function AdminUser() {
   );
 }
 
-export default AdminUser;
+export default AdminHost;

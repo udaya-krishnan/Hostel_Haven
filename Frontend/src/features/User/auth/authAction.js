@@ -29,8 +29,11 @@ export const login =createAsyncThunk(
         }else if(response.data.message==="Password was wrong"){
             toast.error('Incorrect Password', { hideProgressBar: true, className: 'custom-toast-error', autoClose: 2000 })
             return rejectWithValue('incorrect')
+        }else if(response.data.message==="Account Blocked"){
+          toast.error('Your Account Blocked', { hideProgressBar: true, className: 'custom-toast-error', autoClose: 2000 })
+          return rejectWithValue('block')
         }else{
-            return response.data
+          return response.data
         }
     }
 )

@@ -5,16 +5,19 @@ import HostAccountService from "../../../services/HostAccountService";
 
 export const hostLogin=(email, password, toast) => async (dispatch) => {
     try {
-        const data = await HostAuthService.LoginHost(email, password);
-        
+        const data = await HostAuthService.LoginHost(email, password)
         if (data.message === "Email was wrong") {
             toast.error('User Not Found', { hideProgressBar: true, className: 'custom-toast-error', autoClose: 2000 });
         } else if (data.message === "Password was wrong") {
             toast.error('Incorrect password', { hideProgressBar: true, className: 'custom-toast-error', autoClose: 2000 });
+        }else if(data.message==="Account blocked"){
+          toast.error('Account Blocked', { hideProgressBar: true, className: 'custom-toast-error', autoClose: 2000 });
+        }else{
+          dispatch({ type: 'LOGIN_SUCCESS', payload: data });  // This is an example
+
+          return data.message;
         }
 
-        dispatch({ type: 'LOGIN_SUCCESS', payload: data });  // This is an example
-        return data.message;
     } catch (error) {
         console.log(error.message);
         return null;  // or dispatch a failure action if needed

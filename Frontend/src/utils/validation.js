@@ -94,3 +94,10 @@ export const accountEditSchema = Yup.object({
   location: Yup.string(),
   work: Yup.string(),
 });
+
+
+export  const amenities = Yup.object({
+  amenity: Yup.string()
+    .matches(/^[A-Za-z\s]+$/, "Only letters are allowed")
+    .required("Amenity name is required"),
+});

@@ -9,7 +9,14 @@ export class HostLoginService implements HostLoginUseCase{
         const data=await this.hostRepository.findHost(email)
         if(data){
             if(await bcrypt.compare(password, data.password)){
-                return data
+                if(data.is_blocked===true){
+                    console.log('account blocked');
+                    
+                    return "Account blocked"
+                }else{
+
+                    return data
+                }
             }else{
                 return "Password was wrong"
             }

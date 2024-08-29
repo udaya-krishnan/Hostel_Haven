@@ -59,6 +59,19 @@ const Sidebar = () => {
               <span className="ml-2">Host list</span>
             </a>
           </li>
+          <li className="mb-4">
+            <a
+              href="/admin/amenities"
+              onClick={() => handleItemClick("amenities")}
+              className={`flex items-center p-2 rounded ${
+                activeItem === "amenities"
+                  ? "bg-gray-200 text-black"
+                  : "text-gray-700 hover:text-black"
+              }`}
+            >
+              <span className="ml-2">Amenities</span>
+            </a>
+          </li>
           {/* Add more list items as needed */}
         </ul>
       </div>

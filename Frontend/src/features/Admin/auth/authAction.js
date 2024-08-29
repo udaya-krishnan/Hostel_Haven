@@ -24,3 +24,32 @@ export const actionUser=(id)=>async()=>{
     const response=await AdminService.ActionUser(id)
     return response
 }
+
+export const fetchinghost=()=>async()=>{
+    const response=await AdminService.FetchingHost()
+    return response
+}
+
+export const userdatails=(id)=>async()=>{
+    const response =await AdminService.userDatails(id)
+    return response
+}
+
+export const hostdetails=(id)=>async()=>{
+    const response =await AdminService.hostDetails(id)
+    return response
+}
+
+export const addAmenities=(value)=>async()=>{
+    const response=await AdminService.Addamenities(value)
+    return response
+}
+export const fetchamenities=()=>async()=>{
+    const response=await AdminService.fetchAmenities()
+    return response
+}
+
+export const actionAmenities=(id)=>async()=>{
+    const response =await AdminService.actionAmenities(id)
+    return response
+}
