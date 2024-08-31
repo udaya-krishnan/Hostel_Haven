@@ -1,5 +1,5 @@
 import React from 'react'
-import UserDetailes from '../../Components/Admin/UserDetailes'
+import UserDetailes from '../../Components/Admin/User/UserDetailes'
 
 function AdminUserDetails() {
   return (

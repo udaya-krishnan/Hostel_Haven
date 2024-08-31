@@ -2,6 +2,8 @@ import { AdminRepository } from "../../../application/interfaces/Admin/AdminRepo
 import UserModel from "../../database/models/UserModel";
 import AmenitesModel from "../../database/models/AmenitesModel";
 import { AmenitiesDocument } from "../../database/models/AmenitesModel";
+import SafetyModel from "../../database/models/SafetyModel";
+import { SafetyDocument } from "../../database/models/SafetyModel";
 
 export class AdminRepositoryImpl implements AdminRepository{
 
@@ -91,5 +93,54 @@ export class AdminRepositoryImpl implements AdminRepository{
     }
     
 
+    async updateAmenities(id: string, name: string): Promise<any | null> {
+        const update=await AmenitesModel.findByIdAndUpdate({_id:id},{
+            $set:{name:name}
+        })
+        return update 
+    }
+
+    async addsafety(name: string): Promise<any | null> {
+        const addSafety:SafetyDocument=await SafetyModel.create({name:name})
+        const allSafety=await SafetyModel.find()
+        return allSafety
+    }
+
+    async fetchsafety(): Promise<any | null> {
+        const data=await SafetyModel.find()
+        return data
+    }
+
+    async actionSafety(id: string): Promise<any | null> {
+        const findSafety=await SafetyModel.findById({_id:id})
+        console.log(findSafety);
+        
+        if(findSafety?.is_blocked===true){
+            console.log("unblock");
+            
+             await SafetyModel.findByIdAndUpdate({_id:id},{
+                $set:{
+                    is_blocked:false
+                }
+            })
+        }else{
+            console.log("block");
+            
+             await SafetyModel.findByIdAndUpdate({_id:id},{
+                $set:{
+                    is_blocked:true
+                }
+            })
+        }
+
+        return findSafety?._id
+    }
+
+    async updateSafety(id: string, name: string): Promise<any | null> {
+        const update=await SafetyModel.findByIdAndUpdate({_id:id},{
+            $set:{name:name}
+        })
+        return update 
+    }
 
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import HostDetailes from '../../Components/Admin/HostDetailes'
+import HostDetailes from '../../Components/Admin/Host/HostDetailes'
 
 function AdminHostDetails() {
   return (

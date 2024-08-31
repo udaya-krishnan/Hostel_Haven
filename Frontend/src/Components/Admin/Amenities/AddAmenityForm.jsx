@@ -2,10 +2,13 @@
 
 import React from "react";
 import { useFormik } from "formik";
-import { amenities } from "../../utils/validation";
+import { amenities } from "../../../utils/validation";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
 
 const AddAmenityForm = ({ allAmenities, setAmenities, addAmenities }) => {
+
+  const dispatch=useDispatch()
   const formik = useFormik({
     initialValues: {
       amenity: "",
@@ -18,7 +21,7 @@ const AddAmenityForm = ({ allAmenities, setAmenities, addAmenities }) => {
 
       if (isUnique) {
         try {
-          const data = await addAmenities(values.amenity);
+          const data = await dispatch(addAmenities(values.amenity))
           setAmenities(data.allData);
           toast.success("Amenity added successfully!");
           resetForm();
@@ -32,7 +35,7 @@ const AddAmenityForm = ({ allAmenities, setAmenities, addAmenities }) => {
   });
 
   return (
-    <div className="bg-white p-6 rounded-xl w-1/4 shadow mt-4 ml-10 h-60">
+    <div className="bg-white p-6 rounded-xl w-10/12 shadow mt-4 ml-10 h-60">
       <h2 className="text-xl font-semibold text-center mb-4">Add Amenities</h2>
       <form onSubmit={formik.handleSubmit} className="mb-4">
         <input

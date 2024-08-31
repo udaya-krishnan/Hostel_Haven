@@ -38,3 +38,17 @@ export const actionAmenities=async(req:Request,res:Response)=>{
         console.log(error.message)
     }
 }
+
+export const updateAmenities=async(req:Request,res:Response)=>{
+    try {
+        const {id,name}=req.body
+        const update=await adminRepository.updateAmenities(id,name)
+
+        if(update){
+            res.status(200).json({message:"update amenities"})
+        }
+        
+    } catch (error:any) {
+        console.log(error.message)
+    }
+}

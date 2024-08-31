@@ -53,3 +53,34 @@ export const actionAmenities=(id)=>async()=>{
     const response =await AdminService.actionAmenities(id)
     return response
 }
+
+export const updateAmenities=({id,name})=>async()=>{
+    
+    const response =await AdminService.updateamenities(id,name)
+   return response
+    
+}
+
+
+export const fetchSafetyMeasures=()=>async()=>{
+    const response=await AdminService.fetchSafety()
+    return response
+    
+}
+
+export const actionSafety=(id)=>async()=>{
+    const response=await AdminService.actionsafety(id)
+    return response
+}
+
+export const addSafety=(name)=>async()=>{
+    console.log('safety',name);
+    
+    const response=await AdminService.addsafety(name)
+    return response
+}
+
+export const updateSafety=(id,value)=>async()=>{
+    const response=await AdminService.updatesafety(id,value)
+    return response
+}

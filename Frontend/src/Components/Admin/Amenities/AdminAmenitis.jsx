@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../../Layout/AdminLayout/Sidebar";
-import Header from "../../Layout/AdminLayout/Header";
+import Sidebar from "../../../Layout/AdminLayout/Sidebar";
+import Header from "../../../Layout/AdminLayout/Header";
 import { useDispatch } from "react-redux";
 import {
   actionAmenities,
   addAmenities,
   fetchamenities,
-} from "../../features/Admin/auth/authAction";
+  updateAmenities, // Make sure to import the update action
+} from "../../../features/Admin/auth/authAction";
 import { toast, ToastContainer } from "react-toastify";
 import { Toaster } from "sonner";
-import AddAmenityForm from "../../Components/Admin/AddAmenityForm"; // Import the new component
+import AddAmenityForm from "./AddAmenityForm";
+// import EditAmenityForm from "../../Components/Admin/EditAmenityForm";
+import EditAmenityForm from "./EditAmenityForm";
+ // Import the Edit component
 
 function AdminAmenities() {
   const dispatch = useDispatch();
   const [allAmenities, setAmenities] = useState([]);
+  const [selectedAmenity, setSelectedAmenity] = useState(null); 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const amenitiePerPage = 6; 
+  const amenitiePerPage = 6;
 
   useEffect(() => {
     const fetchalldata = async () => {
@@ -68,14 +73,20 @@ function AdminAmenities() {
     }
   };
 
+  const handleEditClick = (amenity) => {
+    setSelectedAmenity(amenity); 
+  };
+
   const filteredAmenitie = allAmenities.filter((amenitie) =>
     amenitie.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Pagination logic
   const indexOfLastAmenitie = currentPage * amenitiePerPage;
   const indexOfFirstUser = indexOfLastAmenitie - amenitiePerPage;
-  const currentUsers = filteredAmenitie.slice(indexOfFirstUser, indexOfLastAmenitie);
+  const currentUsers = filteredAmenitie.slice(
+    indexOfFirstUser,
+    indexOfLastAmenitie
+  );
 
   const totalPages = Math.ceil(filteredAmenitie.length / amenitiePerPage);
 
@@ -145,7 +156,11 @@ function AdminAmenities() {
                             List
                           </button>
                         )}
-                        <button className="bg-btncolor text-white text-base px-3 py-1 rounded-lg w-24">
+                        {/* Edit Button */}
+                        <button
+                          className="bg-gray-300 text-black text-base px-3 py-1 rounded-lg w-24"
+                          onClick={() => handleEditClick(amenitie)}
+                        >
                           Edit
                         </button>
                       </div>
@@ -154,45 +169,36 @@ function AdminAmenities() {
                 ))}
               </tbody>
             </table>
-
-            {/* Pagination Controls */}
+            {/* Pagination */}
             <div className="flex justify-center mt-4">
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-3 py-1 mx-1 bg-gray-200 rounded disabled:opacity-50"
-              >
-                Previous
-              </button>
               {Array.from({ length: totalPages }, (_, index) => (
                 <button
                   key={index}
                   onClick={() => paginate(index + 1)}
-                  className={`px-3 py-1 mx-1 ${
+                  className={`${
                     currentPage === index + 1
                       ? "bg-btncolor text-white"
-                      : "bg-gray-200"
-                  } rounded`}
+                      : "bg-gray-200 text-black"
+                  } mx-1 px-3 py-1 rounded`}
                 >
                   {index + 1}
                 </button>
               ))}
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1 mx-1 bg-gray-200 rounded disabled:opacity-50"
-              >
-                Next
-              </button>
             </div>
           </div>
 
-          {/* Add new amenity form component */}
-          <AddAmenityForm
-            allAmenities={allAmenities}
-            setAmenities={setAmenities}
-            addAmenities={(amenity) => dispatch(addAmenities(amenity))}
-          />
+          <div >
+            {selectedAmenity ? (
+              <EditAmenityForm
+                selectedAmenity={selectedAmenity}
+                setAmenities={setAmenities}
+                updateAmenities={updateAmenities}
+                setSelectedAmenity={setSelectedAmenity} // Passing update function
+              />
+            ) : (
+              <AddAmenityForm setAmenities={setAmenities} allAmenities={allAmenities} addAmenities={addAmenities} />
+            )}
+          </div>
         </div>
       </div>
       <ToastContainer />

@@ -18,4 +18,9 @@ export class AdminAmenitieService implements AdminAmenities{
         const action=await this.adminRepository.actionAmenities(id)
         return action
     }
+
+    async updateAmenities(id: string, name: string): Promise<any | null> {
+        const update =await this.adminRepository.updateAmenities(id,name)
+        return update
+    }
 }

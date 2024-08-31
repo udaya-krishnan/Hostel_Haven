@@ -7,18 +7,21 @@ import Hostmenagement from '../../Pages/Admin/Hostmenagement';
 import AdminUserDetails from '../../Pages/Admin/AdminUserDetails';
 import AdminHostDetails from '../../Pages/Admin/AdminHostDetails';
 import Amenitiesmenagement from '../../Pages/Admin/Amenitiesmenagement';
+import AdminAuth from '../../Components/Admin/middleware/AdminAuth';
+import Safetymenagement from '../../Pages/Admin/Safetymenagement';
 
 function AdmnRoutes() {
   return (
     <>
       <Routes>
         <Route path={"/"} element={<AdminLogin/>} />
-        <Route path={"/dashboard"} element={<AdminDashboard/>} />
-        <Route path={'/user'} element={<Usermenagement/>}/>
-        <Route path={'/host'} element={<Hostmenagement/>}/>
-        <Route path={'/userdetails'} element={<AdminUserDetails/>}/>
-        <Route path={'/hostdetails'} element={<AdminHostDetails/>}/>
-        <Route path={'amenities'} element={<Amenitiesmenagement/>}/>
+        <Route path={"/dashboard"} element={<AdminAuth><AdminDashboard/></AdminAuth>} />
+        <Route path={'/user'} element={<AdminAuth><Usermenagement/></AdminAuth>}/>
+        <Route path={'/host'} element={<AdminAuth><Hostmenagement/></AdminAuth>}/>
+        <Route path={'/userdetails'} element={<AdminAuth><AdminUserDetails/></AdminAuth>}/>
+        <Route path={'/hostdetails'} element={<AdminAuth><AdminHostDetails/></AdminAuth>}/>
+        <Route path={'/amenities'} element={<AdminAuth><Amenitiesmenagement/></AdminAuth>}/>
+        <Route path={'/safety'} element={<AdminAuth><Safetymenagement/></AdminAuth>}/>
       </Routes>
     </>
   )

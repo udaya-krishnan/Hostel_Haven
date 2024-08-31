@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../../Layout/AdminLayout/Sidebar';
-import Header from '../../Layout/AdminLayout/Header';
+import Sidebar from '../../../Layout/AdminLayout/Sidebar';
+import Header from '../../../Layout/AdminLayout/Header';
 import { useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { userdatails } from '../../features/Admin/auth/authAction';
+import { hostdetails } from '../../../features/Admin/auth/authAction';
 
-function UserDetailes() {
+function HostDetailes() {
   const location = useLocation();  // Correctly use the useLocation hook
   const queryParams = new URLSearchParams(location.search);
-  const userId = queryParams.get('user_id');
+  const hostId = queryParams.get('host_id');
   const dispatch = useDispatch();
-  const [userData, setData] = useState({});
+  const [hostData, setData] = useState({});
   const [place, setPlace] = useState('');
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      if (userId) {
+      if (hostId) {
         try {
-          const data = await dispatch(userdatails(userId));
-          setData(data.userData);
+          const data = await dispatch(hostdetails(hostId));
+          setData(data.hostData);
         } catch (error) {
           console.error('Failed to fetch user details:', error);
         }
@@ -26,13 +26,13 @@ function UserDetailes() {
     };
 
     fetchUserDetails();
-  }, [userId, dispatch]); // Add dependencies to re-run effect only when userId or dispatch changes
+  }, [hostId, dispatch]); 
 
   useEffect(() => {
-    if (userData.latitude && userData.longitude) {
+    if (hostData.latitude && hostData.longitude) {
       const fetchPlace = async () => {
         try {
-          const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${userData.latitude}&lon=${userData.longitude}`;
+          const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${hostData.latitude}&lon=${hostData.longitude}`;
           const response = await fetch(url);
           const data = await response.json();
           setPlace(data.display_name);
@@ -43,7 +43,7 @@ function UserDetailes() {
 
       fetchPlace();
     }
-  }, [userData.latitude, userData.longitude]); // Add latitude and longitude as dependencies
+  }, [hostData.latitude, hostData.longitude]); // Add latitude and longitude as dependencies
 
   return (
     <div className="flex">
@@ -55,17 +55,17 @@ function UserDetailes() {
             <div className="flex items-center">
               <img
                 src={
-                  userData?.image?.startsWith("http")
-                    ? userData.image
-                    : `../../../public/profile/${userData?.image || "anony.webp"}`
+                    hostData?.image?.startsWith("http")
+                    ? hostData.image
+                    : `../../../public/profile/${hostData?.image || "anony.webp"}`
                 }
                 alt="User Profile"
                 className="w-24 h-24 rounded-full object-cover mr-4"
               />
               <div>
-                <h2 className="text-xl font-bold">{userData.name}</h2>
-                <p className="text-gray-600">{userData.email}</p>
-                <p className="text-gray-600">{userData.location}</p>
+                <h2 className="text-xl font-bold">{hostData.name}</h2>
+                <p className="text-gray-600">{hostData.email}</p>
+                <p className="text-gray-600">{hostData.location}</p>
               </div>
             </div>
             <div className="mt-4">
@@ -74,7 +74,7 @@ function UserDetailes() {
             </div>
             <div className="mt-4">
               <h3 className="text-lg font-semibold">About</h3>
-              <p className="text-gray-600">{userData.about}</p>
+              <p className="text-gray-600">{hostData.about}</p>
             </div>
           </div>
         </div>
@@ -83,4 +83,4 @@ function UserDetailes() {
   );
 }
 
-export default UserDetailes;
+export default HostDetailes;

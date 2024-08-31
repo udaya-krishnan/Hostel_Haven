@@ -8,4 +8,9 @@ export interface AdminRepository{
     addamenities(value:string):Promise<any|null>
     fetchamenities():Promise<any|null>
     actionAmenities(id:string):Promise<any|null>
+    updateAmenities(id:string,name:string):Promise<any|null>
+    addsafety(name:string):Promise<any|null>
+    fetchsafety():Promise<any|null>
+    actionSafety(id:string):Promise<any|null>
+    updateSafety(id:string,name:string):Promise<any|null>
 }
