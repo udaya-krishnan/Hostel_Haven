@@ -6,4 +6,6 @@ export interface HostRepository{
     edit(values:EditHost):Promise<any|null>
     image(name:string,email:string):Promise<any|null>
     changepassword(password:string,email:string):Promise<any|null>
+    fetchamenities():Promise<any|null>
+    fetchsafety():Promise<any|null>
 }

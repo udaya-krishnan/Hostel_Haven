@@ -1,6 +1,8 @@
 import { HostRepository } from "../../../application/interfaces/Host/HostRepository";
 import { EditHost } from "../../../domain/entities/EditHost";
 import UserModel from "../../database/models/UserModel";
+import AmenitesModel from "../../database/models/AmenitesModel";
+import SafetyModel from "../../database/models/SafetyModel";
 
 
 export class HostRepositoryImpl implements HostRepository{
@@ -40,6 +42,15 @@ export class HostRepositoryImpl implements HostRepository{
             {email:email},
             {$set:{password:password}}
         )
+    }
+
+    async fetchamenities(): Promise<any | null> {
+        return await AmenitesModel.find({is_blocked:false})
+    }
+
+    async fetchsafety(): Promise<any | null> {
+        return await SafetyModel.find({is_blocked:false})
+        
     }
 
 }

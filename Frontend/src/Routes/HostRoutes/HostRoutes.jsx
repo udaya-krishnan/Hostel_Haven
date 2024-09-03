@@ -5,6 +5,7 @@ import HostLogin from '../../Pages/Host/Auth/HostLogin'
 import HostOtp from '../../Pages/Host/Auth/HostOtp'
 import HostHome from '../../Pages/Host/HostHome'
 import HostProfile from '../../Pages/Host/Account/HostProfile'
+import PropertList from '../../Pages/Host/Property/PropertList'
 
 function HostRoutes() {
   return (
@@ -15,6 +16,7 @@ function HostRoutes() {
         <Route path={'/otp'} element={<HostOtp/>}/>
         <Route path={'/home'} element={<HostHome/>}/>
         <Route path={'/profile'} element={<HostProfile/>}/>
+        <Route path={'/property'} element={<PropertList/>}/>
     </Routes>
     </>
   )

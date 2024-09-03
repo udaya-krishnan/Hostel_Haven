@@ -1,6 +1,7 @@
 import { createAsyncThunk, isRejectedWithValue } from "@reduxjs/toolkit";
 import HostAuthService from "../../../services/HostAuthService"
 import HostAccountService from "../../../services/HostAccountService";
+import AddPropertyService from "../../../services/HostPropertyService";
 
 
 export const hostLogin=(email, password, toast) => async (dispatch) => {
@@ -87,6 +88,30 @@ export const hostuploadphoto=createAsyncThunk(
       
     } catch (error) {
       console.log(error.message);
+      
+    }
+  }
+
+  
+  export const fetchamenities=()=>async()=>{
+    try {
+
+      const res=await AddPropertyService.fetchamenities()
+      return res
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+
+  export const fetchsafety=()=>async()=>{
+    try {
+      const res=await AddPropertyService.fetchsafety()
+      return res
+    } catch (error) {
+      console.log(error);
       
     }
   }

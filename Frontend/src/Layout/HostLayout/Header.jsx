@@ -30,7 +30,7 @@ function Header() {
           Home
         </Link>
         <Link
-          to="/host/properties"
+          to="/host/property"
           className="text-gray-800 hover:text-gray-600"
         >
           Properties
