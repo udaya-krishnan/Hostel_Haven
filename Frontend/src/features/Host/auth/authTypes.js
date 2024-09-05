@@ -7,3 +7,5 @@ export const HOST_CHANGE_PASS='/host/changepass'
 
 export const FETCH_AMENITIES='/host/amenities'
 export const FETCH_SAFETY='/host/safety'
+export const ADD_PROPERTY='/host/addproperty'
+export const FETCH_PROPERTY='/host/property'

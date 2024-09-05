@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import hostroom from "../../../../../public/icons/hostalroom3.jpeg";
 import room from "../../../../../public/icons/Details1.jpg";
-
+import { Toaster, toast } from "sonner";
 function Addproperty1({ handleBack, formData, handlePropertyTypeChange }) {
   const [selected, setSelected] = useState(formData.propertyType || null);
 
@@ -9,12 +9,13 @@ function Addproperty1({ handleBack, formData, handlePropertyTypeChange }) {
     if (selected) {
       handlePropertyTypeChange(selected); // directly pass the selected type
     } else {
-      alert("Please select a property type.");
+      toast.error("Please select a property type.");
     }
   };
 
   return (
     <div className="flex justify-center items-center">
+    
       <div className="mt-24">
         <h1 className="text-4xl text-btncolor font-extrabold text-center">
           What kind of place will you
@@ -63,6 +64,7 @@ function Addproperty1({ handleBack, formData, handlePropertyTypeChange }) {
           </button>
         </div>
       </div>
+      <Toaster position="top-right" />
     </div>
   );
 }

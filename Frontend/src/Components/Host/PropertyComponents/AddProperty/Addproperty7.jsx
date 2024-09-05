@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import React from 'react'
 import {useDispatch} from 'react-redux'
 import {fetchsafety}from '../../../../features/Host/auth/authAction'
+import { Toaster,toast } from "sonner";
 
 
 function Addproperty7({ handleBack,formData ,handleSafety}) {
@@ -22,10 +23,10 @@ function Addproperty7({ handleBack,formData ,handleSafety}) {
     
       // Function to toggle amenity selection
       const toggleSafety = (safety) => {
-        if (selectedSafety.some((selected) => selected.name === safety.name)) {
+        if (selectedSafety.some((selected) => selected === safety)) {
           // If the amenity is already selected, remove it
           setSelectedSafety((prevState) =>
-            prevState.filter((selected) => selected.name !== safety.name)
+            prevState.filter((selected) => selected !== safety)
           );
         } else {
         
@@ -37,7 +38,7 @@ function Addproperty7({ handleBack,formData ,handleSafety}) {
         if(selectedSafety.length>0){
             handleSafety(selectedSafety)
         }else{
-            alert('select safety')
+          toast.error('select safety')
         }
       }
     
@@ -52,12 +53,12 @@ function Addproperty7({ handleBack,formData ,handleSafety}) {
             key={safety._id}
             className={`w-40 h-20 flex items-center justify-center rounded-lg ${
                 selectedSafety.some(
-                (selected) => selected.name === safety.name
+                (selected) => selected === safety.name
               )
                 ? "bg-gray-400 text-white"
                 : "bg-gray-100 text-gray-600"
             } hover:bg-gray-200`}
-            onClick={() => toggleSafety(safety)}
+            onClick={() => toggleSafety(safety.name)}
           >
             {safety.name}
           </button>
@@ -79,6 +80,7 @@ function Addproperty7({ handleBack,formData ,handleSafety}) {
               Next
             </button>
           </div>
+          <Toaster position="top-right" />
         </div>
       );
     }

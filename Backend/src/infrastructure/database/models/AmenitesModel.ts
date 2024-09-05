@@ -4,7 +4,7 @@ export interface Amenities{
     name:string,
     is_blocked:boolean
 }
-
+ 
 export interface AmenitiesDocument extends Amenities,Document{
     _id:string
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { fetchamenities } from "../../../../features/Host/auth/authAction";
+import { Toaster,toast } from "sonner";
 
 function Addproperty6({ handleBack, formData, handleAmenities }) {
   const dispatch = useDispatch();
@@ -16,15 +17,15 @@ function Addproperty6({ handleBack, formData, handleAmenities }) {
   }, [dispatch]);
 
   const [selectedAmenities, setSelectedAmenities] = useState(
-    formData.propertyAemnities || []
+    formData.propertyAmenities || []
   );
 
   
   const toggleAmenity = (amenity) => {
-    if (selectedAmenities.some((selected) => selected.name === amenity.name)) {
+    if (selectedAmenities.some((selected) => selected === amenity)) {
       // If the amenity is already selected, remove it
       setSelectedAmenities((prevState) =>
-        prevState.filter((selected) => selected.name !== amenity.name)
+        prevState.filter((selected) => selected !== amenity)
       );
     } else {
       // If the amenity is not selected, add it
@@ -34,9 +35,11 @@ function Addproperty6({ handleBack, formData, handleAmenities }) {
 
   const handleNext = () => {
     if (selectedAmenities.length > 0) {
+      console.log(selectedAmenities);
+      
       handleAmenities(selectedAmenities); 
     } else {
-      alert("Please select at least one amenity.");
+      toast.error("Please select at least one amenity.");
     }
   };
 
@@ -51,12 +54,12 @@ function Addproperty6({ handleBack, formData, handleAmenities }) {
             key={amenity._id}
             className={`w-40 h-20 flex items-center justify-center rounded-lg ${
               selectedAmenities.some(
-                (selected) => selected.name === amenity.name
+                (selected) => selected === amenity.name
               )
                 ? "bg-gray-400 text-white"
                 : "bg-gray-100 text-gray-600"
             } hover:bg-gray-200`}
-            onClick={() => toggleAmenity(amenity)}
+            onClick={() => toggleAmenity(amenity.name)}
           >
             {amenity.name}
           </button>
@@ -78,6 +81,7 @@ function Addproperty6({ handleBack, formData, handleAmenities }) {
           Next
         </button>
       </div>
+      <Toaster position="top-right" />
     </div>
   );
 }

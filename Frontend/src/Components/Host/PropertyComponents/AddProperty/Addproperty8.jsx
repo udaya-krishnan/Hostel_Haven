@@ -1,6 +1,7 @@
 // src/Addproperty8.jsx
 
 import React, { useState } from 'react';
+import { Toaster,toast } from 'sonner';
 
 function Addproperty8({ formData, propertyPolicies, handleBack }) {
   const [policy, setPolicy] = useState('');
@@ -25,7 +26,7 @@ function Addproperty8({ formData, propertyPolicies, handleBack }) {
         console.log(policies);
         propertyPolicies(policies);
     } else {
-      alert('Please add at least one policy.');
+      toast.error('Please add at least one policy.');
     }
   };
 
@@ -91,11 +92,7 @@ function Addproperty8({ formData, propertyPolicies, handleBack }) {
       </div>
 
       </div>
-      
-      
-
-        
-     
+      <Toaster position="top-right" />
     </div>
   );
 }

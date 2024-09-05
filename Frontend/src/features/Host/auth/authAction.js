@@ -115,3 +115,27 @@ export const hostuploadphoto=createAsyncThunk(
       
     }
   }
+
+  export const addproperty=(formData)=>async()=>{
+    try {
+
+      const response=await AddPropertyService.addproperty(formData)
+      return response
+      
+    } catch (error) {
+     console.log(error.message);
+      
+    }
+  }
+
+  export const fetchproperty=(id)=>async()=>{
+    try {
+
+      const response=await AddPropertyService.fetchProperty(id)
+      return response
+      
+    } catch (error) {
+      console.log(error.message);
+      
+    }
+  }

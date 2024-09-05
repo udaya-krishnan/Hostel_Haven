@@ -1,4 +1,5 @@
 import React,{useState} from 'react'
+import { Toaster,toast } from 'sonner';
 
 function Addproperty5({formData, handleBack,propertyFacilities }) {
   // Initial state for the number of bedrooms, bathrooms, and parking
@@ -20,10 +21,10 @@ function Addproperty5({formData, handleBack,propertyFacilities }) {
   };
 
   const handleNext=()=>{
-    if(facilities){
+    if(facilities.rooms>0||facilities.bathrooms>0||facilities.parking>0){
       propertyFacilities(facilities)
     }else{
-      alert("add facilites")
+      toast.error("add facilites")
     }
   }
 
@@ -103,6 +104,7 @@ function Addproperty5({formData, handleBack,propertyFacilities }) {
           Next
         </button>
       </div>
+      <Toaster position="top-right" />
     </div>
   );
 }

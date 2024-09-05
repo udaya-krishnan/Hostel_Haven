@@ -35,3 +35,40 @@ export const s3Upload=async(file:any)=>{
         
     }
 }
+export const s3BucketForProperty = async (files: any) => {
+  try {
+      let cretificateUrl: string | undefined;
+      let imageUrl: string[] = [];
+
+      if (files.propertyCertificate) {
+          const certificateParams = {
+              Bucket: bucketName,
+              Key: files.propertyCertificate[0].originalname,
+              Body: files.propertyCertificate[0].buffer,
+              ContentType: files.propertyCertificate[0].mimetype,
+          };
+          await s3Client.send(new PutObjectCommand(certificateParams));
+          cretificateUrl = `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${files.propertyCertificate[0].originalname}`;
+      }
+
+      if (files.propertyImages) {
+          for (const file of files.propertyImages) {
+              const imageParams = {
+                  Bucket: bucketName,
+                  Key: file.originalname,
+                  Body: file.buffer,
+                  ContentType: file.mimetype,
+              };
+              await s3Client.send(new PutObjectCommand(imageParams));
+              let url = `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${file.originalname}`;
+              imageUrl.push(url);
+          }
+      }
+
+      return { cretificateUrl, imageUrl };
+  } catch (error: any) {
+      console.log(error.message);
+      return { cretificateUrl: undefined, imageUrl: [] }; 
+  }
+}
+

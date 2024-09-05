@@ -2,7 +2,7 @@ import { Router } from "express";
 import { verifyhost, verifyOtp ,resendHost} from "../../controllers/Host/HostAuthController";
 import { changepassword, hostupdateProfile ,uploadImag} from "../../controllers/Host/HostProfileController";
 import { upload } from "../../../config/multer";
-import { fetchamenities, fetchsafety } from "../../controllers/Host/HostPropertyController";
+import { addproperty, fetchamenities, fetchProperty, fetchsafety } from "../../controllers/Host/HostPropertyController";
 // import { fet } from "../../controllers/Admin/AdminSafetyController";
 
 
@@ -16,5 +16,10 @@ hostRouter.post('/login',verifyhost)
           .post('/changepass',changepassword)
           .get('/amenities',fetchamenities)
           .get('/safety',fetchsafety)
+          .post('/addproperty',upload.fields([
+            { name: 'propertyCertificate', maxCount: 1 },
+            { name: 'propertyImages', maxCount: 10 }
+          ]),addproperty)
+          .post('/property',fetchProperty)
 
 export default hostRouter

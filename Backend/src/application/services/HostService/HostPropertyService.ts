@@ -13,4 +13,15 @@ export class HostPropertyService implements FetchProperty{
         const data=await this.hostrepository.fetchsafety()
         return data
     }
+
+    async addproperty(data: any): Promise<any | null> {
+        const res=await this.hostrepository.addProperty(data)
+        return res
+    }
+
+    async fetchProperty(id: string): Promise<any | null> {
+        const res=await this.hostrepository.fetchproperty(id)
+        return res
+    }
+    
 }

@@ -8,4 +8,6 @@ export interface HostRepository{
     changepassword(password:string,email:string):Promise<any|null>
     fetchamenities():Promise<any|null>
     fetchsafety():Promise<any|null>
+    addProperty(data:any):Promise<any|null>
+    fetchproperty(id:string):Promise<any|null>
 }

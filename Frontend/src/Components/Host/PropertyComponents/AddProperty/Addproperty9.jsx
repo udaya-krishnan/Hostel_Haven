@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PropertyMap from "./PropertyMap";
+import { Toaster, toast } from "sonner";
 
 function Addproperty9({
   handleNext,
@@ -13,6 +14,8 @@ function Addproperty9({
 }) {
   // State to store the property location
   const [propertyLocation, setPropertyLocation] = useState("");
+  // State to store the image previews
+  const [imagePreviews, setImagePreviews] = useState([]);
 
   const handleLocationUpdate = (location) => {
     setPropertyLocation(location.name);
@@ -22,14 +25,29 @@ function Addproperty9({
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     if (files.length < 5) {
-      alert("Please upload at least 5 images.");
+      toast.error("Please upload at least 5 images.");
     } else {
-        handleImageFileChange(e);
+      handleImageFileChange(e);
+
+      // Create previews for selected images
+      const filePreviews = files.map((file) => URL.createObjectURL(file));
+      setImagePreviews(filePreviews);
     }
   };
 
+  const validateLicenseNumber = () => {
+    if (formData.propertyLicense.length !== 21) {
+      toast.error("License number must be exactly 21 characters.");
+      return false;
+    }
+    return true;
+  };
 
-  
+  const handleFormSubmit = () => {
+    if (validateLicenseNumber()) {
+      handleSubmit();
+    }
+  };
 
   return (
     <div className="flex justify-between p-8 bg-background">
@@ -48,9 +66,21 @@ function Addproperty9({
                 <input
                   type="file"
                   className="mt-4"
-                  onChange={handleImageUpload} 
-                  multiple// Handle file input change
+                  onChange={handleImageUpload}
+                  multiple
                 />
+              </div>
+
+              {/* Preview Images */}
+              <div className="mt-4 grid grid-cols-3 gap-4">
+                {imagePreviews.map((src, index) => (
+                  <img
+                    key={index}
+                    src={src}
+                    alt={`Preview ${index}`}
+                    className="w-24 h-24 object-cover rounded"
+                  />
+                ))}
               </div>
             </div>
 
@@ -113,7 +143,7 @@ function Addproperty9({
             </button>
             <button
               className="px-8 py-2 bg-btncolor text-white rounded-lg"
-              onClick={handleSubmit}
+              onClick={handleFormSubmit} // Use the new handleFormSubmit function
             >
               Submit
             </button>
@@ -123,6 +153,8 @@ function Addproperty9({
       <div className="w-1/3">
         <PropertyMap onLocationSelect={handleLocationUpdate} />
       </div>
+
+      <Toaster position="top-right" />
     </div>
   );
 }

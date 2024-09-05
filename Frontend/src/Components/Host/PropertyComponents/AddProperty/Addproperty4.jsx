@@ -5,6 +5,7 @@ import adults from '../../../../../public/icons/adults.jpg'
 import coed from '../../../../../public/icons/co-ed.jpeg'
 import men from '../../../../../public/icons/men.jpeg'
 import women from '../../../../../public/icons/women.webp'
+import { toast ,Toaster} from "sonner";
 
 function Addproperty4({ handleBack, formData, handleForWhomChange }) {
     const [selected, setSelected] = useState(formData.propertyForWhom || null);
@@ -16,6 +17,8 @@ function Addproperty4({ handleBack, formData, handleForWhomChange }) {
     const handleNext = () => {
         if (selected) {
             handleForWhomChange(selected);
+        }else{
+            toast.error("Please select For Everyone")
         }
     };
 
@@ -75,6 +78,7 @@ function Addproperty4({ handleBack, formData, handleForWhomChange }) {
                     </button>
                 </div>
             </div>
+            <Toaster position="top-right" />
         </div>
     );
 }
