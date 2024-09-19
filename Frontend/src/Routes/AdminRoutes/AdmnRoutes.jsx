@@ -9,6 +9,8 @@ import AdminHostDetails from '../../Pages/Admin/AdminHostDetails';
 import Amenitiesmenagement from '../../Pages/Admin/Amenitiesmenagement';
 import AdminAuth from '../../Components/Admin/middleware/AdminAuth';
 import Safetymenagement from '../../Pages/Admin/Safetymenagement';
+import AdminHostProperty from '../../Pages/Admin/AdminHostProperty';
+import AdminPropertyDetails from '../../Pages/Admin/AdminPropertyDetails';
 
 function AdmnRoutes() {
   return (
@@ -22,6 +24,8 @@ function AdmnRoutes() {
         <Route path={'/hostdetails'} element={<AdminAuth><AdminHostDetails/></AdminAuth>}/>
         <Route path={'/amenities'} element={<AdminAuth><Amenitiesmenagement/></AdminAuth>}/>
         <Route path={'/safety'} element={<AdminAuth><Safetymenagement/></AdminAuth>}/>
+        <Route path={'/hostproperty'} element={<AdminAuth><AdminHostProperty/></AdminAuth>}/>
+        <Route path={'/propertydetails'} element={<AdminAuth><AdminPropertyDetails/></AdminAuth>}/>
       </Routes>
     </>
   )

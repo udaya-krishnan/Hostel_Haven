@@ -84,3 +84,26 @@ export const updateSafety=(id,value)=>async()=>{
     const response=await AdminService.updatesafety(id,value)
     return response
 }
+
+export const fetchHostProperty=(id)=>async()=>{
+    console.log(id,"id in the fecth");
+    
+    const response =await AdminService.fetchHostProperty(id)
+    return response
+}
+
+export const property=(id)=>async()=>{
+    const response=await AdminService.propertyDetails(id)
+    return response
+}
+
+export const approveProperty=(id)=>async()=>{
+    const response=await AdminService.approveproperty(id)
+    return response
+}
+
+export const rejectProperty=(id)=>async()=>{
+    const response=await AdminService.rejectproperty(id)
+    return response
+}
+

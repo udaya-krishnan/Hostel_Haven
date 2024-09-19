@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../../../Layout/AdminLayout/Sidebar';
 import Header from '../../../Layout/AdminLayout/Header';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { hostdetails } from '../../../features/Admin/auth/authAction';
 
 function HostDetailes() {
-  const location = useLocation();  // Correctly use the useLocation hook
+  const location = useLocation();  
   const queryParams = new URLSearchParams(location.search);
   const hostId = queryParams.get('host_id');
+  const navigate=useNavigate()
   const dispatch = useDispatch();
   const [hostData, setData] = useState({});
   const [place, setPlace] = useState('');
@@ -43,7 +44,7 @@ function HostDetailes() {
 
       fetchPlace();
     }
-  }, [hostData.latitude, hostData.longitude]); // Add latitude and longitude as dependencies
+  }, [hostData.latitude, hostData.longitude]); 
 
   return (
     <div className="flex">
@@ -52,7 +53,7 @@ function HostDetailes() {
         <Header />
         <div className="p-6 mt-20">
           <div className="bg-white ml-64 p-4 rounded-xl w-94 shadow mt-4">
-            <div className="flex items-center">
+            <div className="flex items-center ">
               <img
                 src={
                     hostData?.image?.startsWith("http")
@@ -67,6 +68,9 @@ function HostDetailes() {
                 <p className="text-gray-600">{hostData.email}</p>
                 <p className="text-gray-600">{hostData.location}</p>
               </div>
+              <button className='bg-btncolor text-white py-2 px-5 ml-auto'
+              onClick={()=>navigate(`/admin/hostproperty?host_id=${hostData._id}`)}
+              >Property</button> {/* ml-auto added */}
             </div>
             <div className="mt-4">
               <h3 className="text-lg font-semibold">Address</h3>

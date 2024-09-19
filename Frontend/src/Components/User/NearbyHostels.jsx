@@ -1,38 +1,62 @@
-import React from 'react';
-import card1 from '../../../public/cards/card1.webp'
-import card2 from '../../../public/cards/card2.webp'
-import card3 from '../../../public/cards/card3.webp'
-import card4 from '../../../public/cards/card4.webp'
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { fetchHostel } from '../../features/User/auth/authAction';
 
 const NearbyHostels = () => {
+  const [hostels, setHostels] = useState([]);  // Initialize hostels as an empty array
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchHostels = async () => {
+      const response = await dispatch(fetchHostel());
+      setHostels(response.hostels || []);  // Ensure hostels is an array, even if response.hostels is undefined
+    };
+    fetchHostels();
+  }, [dispatch]);
+
   return (
     <div className="container mx-auto py-12">
-      <h2 className="text-3xl font-bold text-[#3C3633] mb-8">Nearby Listed Hostels</h2>
-      <div className="grid grid-cols-3 gap-6">
-        {/* Card 1 */}
-        <div className="bg-white shadow-lg rounded-lg">
-          <img src={card1} alt="Hostel 1" className="w-full h-48 object-cover rounded-t-lg" />
-          <div className="p-4">
-            <h3 className="font-semibold text-[#3C3633]">Hostel Name 1</h3>
-            <p className="text-[#747264]">Location details</p>
-          </div>
-        </div>
-        {/* Card 2 */}
-        <div className="bg-white shadow-lg rounded-lg">
-          <img src={card2} alt="Hostel 2" className="w-full h-48 object-cover rounded-t-lg" />
-          <div className="p-4">
-            <h3 className="font-semibold text-[#3C3633]">Hostel Name 2</h3>
-            <p className="text-[#747264]">Location details</p>
-          </div>
-        </div>
-        {/* Card 3 */}
-        <div className="bg-white shadow-lg rounded-lg">
-          <img src={card3} alt="Hostel 3" className="w-full h-48 object-cover rounded-t-lg" />
-          <div className="p-4">
-            <h3 className="font-semibold text-[#3C3633]">Hostel Name 3</h3>
-            <p className="text-[#747264]">Location details</p>
-          </div>
-        </div>
+      <h2 className="text-3xl font-bold text-[#3C3633] mb-8">Hostels</h2>
+      <div className="grid grid-cols-4 gap-6">
+        {hostels.length > 0 ? (
+          hostels.map((hostel) => {
+            const { image, regularPrice, offerPrice, location, _id } = hostel;
+
+            // Calculate the discount percentage if both offerPrice and regularPrice are available
+            const discountPercentage = offerPrice ? Math.round(((regularPrice - offerPrice) / regularPrice) * 100) : null;
+
+            return (
+              <div key={_id} className="bg-white shadow-lg rounded-lg">
+                {/* Hostel Image */}
+                <img 
+                  src={image[0]} 
+                  alt="Hostel" 
+                  className="w-full h-48 object-cover rounded-t-lg" 
+                />
+                
+                <div className="p-4">
+                  {/* Prices */}
+                  {offerPrice ? (
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-[#3C3633] line-through">${regularPrice}</span>
+                      <span className="font-semibold text-red-500">${offerPrice}</span>
+                      {discountPercentage && (
+                        <span className="text-green-600">{discountPercentage}% off</span>
+                      )}
+                    </div>
+                  ) : (
+                    <h3 className="font-semibold text-[#3C3633]">${regularPrice}</h3>
+                  )}
+                  
+                  {/* Location */}
+                  <p className="text-[#747264]">{location}</p>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <p>No hostels available.</p>  // Fallback if no hostels are available
+        )}
       </div>
     </div>
   );

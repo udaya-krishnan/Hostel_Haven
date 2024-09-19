@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ACTION_USER, ADMIN_LOGIN, FETCH_USER ,FETCH_HOST, USER_DETAILS, HOST_DETAILS, ADD_AMENITIES, FETCH_AMENITIES, ACTION_AMENITIES, UPDATE_AMENITIES, ADD_SAFETY, FETCH_SAFETY, ACTION_SAFETY, UPDATE_SAFETY} from "../features/Admin/auth/authType";
+import { ACTION_USER, ADMIN_LOGIN, FETCH_USER ,FETCH_HOST, USER_DETAILS, HOST_DETAILS, ADD_AMENITIES, FETCH_AMENITIES, ACTION_AMENITIES, UPDATE_AMENITIES, ADD_SAFETY, FETCH_SAFETY, ACTION_SAFETY, UPDATE_SAFETY, FECTH_HOST_PROPERTY, PROPERTY_DETAILS, APPROVE_PROPERTY, REJECT_PROPERTY} from "../features/Admin/auth/authType";
 
 const API_URL='http://localhost:3000';
 
@@ -83,6 +83,28 @@ const updatesafety=async(id,name)=>{
     return response.data
 }
 
+const fetchHostProperty=async(id)=>{
+    const response=await axios.post(API_URL+FECTH_HOST_PROPERTY,{id})
+    console.log(response.data,"dhfisdhf");
+    
+    return response.data
+}
+
+
+const propertyDetails=async(id)=>{
+    const response=await axios.post(API_URL+PROPERTY_DETAILS,{id})
+    return response.data
+}
+
+const approveproperty=async(id)=>{
+    const response=await axios.post(API_URL+APPROVE_PROPERTY,{id})
+    return response.data
+}
+const rejectproperty=async(id)=>{
+    const response=await axios.post(API_URL+REJECT_PROPERTY,{id})
+    return response.data
+}
+
 const AdminService={
     adminlogin,
     FetchingUser,
@@ -97,7 +119,11 @@ const AdminService={
     addsafety,
     fetchSafety,
     actionsafety,
-    updatesafety
+    updatesafety,
+    fetchHostProperty,
+    propertyDetails,
+    approveproperty,
+    rejectproperty
     
 }
 

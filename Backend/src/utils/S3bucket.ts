@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+// import { isArray } from "util";
 
 const bucketName = process.env.BUCKET_NAME as string;
 const bucketAccessKey = process.env.BUCKET_ACCESS_KEY as string;
@@ -64,6 +65,21 @@ export const s3BucketForProperty = async (files: any) => {
               imageUrl.push(url);
           }
       }
+
+
+      if (Array.isArray(files)) {
+        for (const file of files) {
+            const imageParams = {
+                Bucket: bucketName,
+                Key: file.originalname,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+            };
+            await s3Client.send(new PutObjectCommand(imageParams));
+            let url = `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${file.originalname}`;
+            imageUrl.push(url);
+        }
+    }
 
       return { cretificateUrl, imageUrl };
   } catch (error: any) {

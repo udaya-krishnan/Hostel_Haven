@@ -71,7 +71,7 @@ function Otp() {
       }
       document.getElementById("error").style.display = "none";
 
-      const result = await dispatch(otpVerify(otp));
+      const result = await dispatch(otpVerify({otp}));
 
       console.log(result,"rrrrrrrrrrrrrrres");
       
@@ -85,7 +85,7 @@ function Otp() {
         toast.success('Register Success', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 })
         setTimeout(()=>{
 
-          navigate("/login");
+          navigate("/");
         },2000)
       }else if(result.message==="Otp verified "){
         console.log('forgot pAGE');

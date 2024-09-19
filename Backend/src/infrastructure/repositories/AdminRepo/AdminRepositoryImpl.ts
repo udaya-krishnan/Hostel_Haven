@@ -4,6 +4,7 @@ import AmenitesModel from "../../database/models/AmenitesModel";
 import { AmenitiesDocument } from "../../database/models/AmenitesModel";
 import SafetyModel from "../../database/models/SafetyModel";
 import { SafetyDocument } from "../../database/models/SafetyModel";
+import PropertyModel from "../../database/models/PropertyModel";
 
 export class AdminRepositoryImpl implements AdminRepository{
 
@@ -141,6 +142,39 @@ export class AdminRepositoryImpl implements AdminRepository{
             $set:{name:name}
         })
         return update 
+    }
+
+    async fetchHostProperty(id: string): Promise<any | null> {
+        const fetch=await PropertyModel.find({host_id:id})
+        return fetch
+    }
+
+    async propertyDetails(id: string): Promise<any | null> {
+        const property=await PropertyModel.findById({_id:id})
+        return property
+    }
+
+    async approveproperty(id: string): Promise<any | null> {
+        const property=await PropertyModel.findByIdAndUpdate({_id:id},{
+            $set:{
+                propertyVerified:'approved'
+            }
+        },
+        {new:true}
+    )
+
+    return  property
+    }
+
+    async rejectproperty(id: string): Promise<any | null> {
+        const property=await PropertyModel.findByIdAndUpdate({_id:id},{
+            $set:{
+                propertyVerified:'rejected'
+            }
+        },
+        {new:true})
+
+        return property
     }
 
 }

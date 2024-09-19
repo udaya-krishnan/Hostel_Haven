@@ -139,3 +139,47 @@ export const hostuploadphoto=createAsyncThunk(
       
     }
   }
+
+
+
+  export const updateProperty=(formData)=>async()=>{
+    try {
+      const response=await AddPropertyService.updateproperty(formData)
+      return response
+    } catch (error) {
+     console.log(error.message);
+      
+    }
+  }
+
+
+  export const available=(id,hostId)=>async()=>{
+    try {
+      const response =await AddPropertyService.available(id,hostId)
+      return response
+    } catch (error) {
+      console.log(error.message);
+      
+    }
+  }
+
+  export const fetchreservation =(hostId)=>async()=>{
+    try {
+      const response=await AddPropertyService.reservation(hostId)
+      return response
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+
+  export const actionReservation=(action,id)=>async()=>{
+    try {
+      const response=await AddPropertyService.actionOnReservation(action,id)
+      return response
+    } catch (error) {
+      console.log(error.message);
+      
+    }
+  }

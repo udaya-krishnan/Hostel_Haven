@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../features/User/auth/authSelectors';
 // import image from '../../../public/profile'
+import roombanner from '../../../public/banner/roombanner.jpg'
 
 const Home = () => {
   // const userData=useSelector(selectUser)
@@ -9,7 +10,7 @@ const Home = () => {
   
   return (
     <div className="relative bg-cover bg-center h-[600px] flex items-center justify-center"
-      style={{ backgroundImage: `url()` }}>
+      style={{ backgroundImage: `url(${roombanner})` }}>
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="relative z-10 text-center">
         <h1 className="text-6xl font-bold text-white">HAVEN</h1>

@@ -20,12 +20,69 @@ export const hostDetails=async(req:Request,res:Response)=>{
     try {
 
         const id=req.body.id
+        console.log(id);
+        
         const hostData=await adminRepository.hostDetails(id)
         
         res.status(200).json({hostData:hostData})
+        
 
     } catch (error:any) {
         console.log(error.message);
+        
+    }
+}
+
+export const fetchProperty=async(req:Request,res:Response)=>{
+    try {
+        const id=req.body.id
+        const property=await adminRepository.fetchHostProperty(id)
+        console.log(property);
+        
+        res.status(200).json({property:property})
+    } catch (error:any) {
+        console.log(error.message);
+        
+    }
+}
+
+
+export const propertyDetails=async(req:Request,res:Response)=>{
+    try {
+        const id=req.body.id
+        console.log(id ,"property id");
+        
+        const property=await adminRepository.propertyDetails(id)
+        res.status(200).json({property:property})
+    } catch (error:any) {
+        console.log(error.message);
+        
+    }
+}
+
+export const approveProperty=async(req:Request,res:Response)=>{
+    try {
+        const id=req.body.id
+        const property=await adminRepository.approveproperty(id)
+
+        res.status(200).json({property:property})
+        
+    } catch (error:any) {
+       console.log(error.message);
+        
+    }
+}
+
+
+export const rejecteProperty=async(req:Request,res:Response)=>{
+    try {
+        const id=req.body.id
+        const property=await adminRepository.rejectproperty(id)
+
+        res.status(200).json({property:property})
+        
+    } catch (error:any) {
+       console.log(error.message);
         
     }
 }

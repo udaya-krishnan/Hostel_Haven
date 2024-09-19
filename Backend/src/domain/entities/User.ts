@@ -14,3 +14,12 @@ export interface UserEntities{
     email?:string,
     userType?:string,
 }
+
+
+export interface GusetInfo{
+    _id?:string|null,
+    firstName:string,
+    lastName:string,
+    email:string,
+    mobile:string,
+}

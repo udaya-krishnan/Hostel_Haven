@@ -50,7 +50,7 @@ function Header() {
             <a href="/" className="text-btncolor">
               Home
             </a>
-            <a href="#" className="text-btncolor">
+            <a href="/hostel&room" className="text-btncolor">
               Hostels/Rooms
             </a>
             <a href="#" className="text-btncolor">
@@ -109,6 +109,12 @@ function Header() {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Notifications
+                    </a>
+                    <a
+                      href="/wishlist"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      wishlist
                     </a>
                     <a
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

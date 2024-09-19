@@ -23,5 +23,21 @@ export class HostPropertyService implements FetchProperty{
         const res=await this.hostrepository.fetchproperty(id)
         return res
     }
+
+    async updateproperty(data: any, id: string): Promise<any | null> {
+        const res=await this.hostrepository.updateproperty(data,id)
+        return res
+    }
+
+    async available(id: string): Promise<any | null> {
+        const res=await this.hostrepository.available(id)
+        return res
+    }
+    
+
+    async fetchreservation(id: string): Promise<any | null> {
+        const res=await this.hostrepository.fetchreservation(id)
+        return res
+    }
     
 }

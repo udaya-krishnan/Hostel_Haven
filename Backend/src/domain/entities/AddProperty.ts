@@ -11,10 +11,12 @@ export interface PropertyEntities{
     regularPrice: string,
     offerPrice: string,
     accommodation:string,
+    policies:string,
+    forwhom:string,
     image: string[],   
     amenities: string[],
     safety: string[], 
-    facilities: string[], 
+    facilities: object, 
     license_number: string,
     certificate: string, 
 }

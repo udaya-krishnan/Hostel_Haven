@@ -70,11 +70,21 @@ export const otpVerify = async (req: Request , res: Response) => {
       const { name, email, password, userType, otp } = decodedData;
   
       // console.log("Session Data:", sessionData);
+
+      console.log(req.body.otp,"ooooooooooooooooootttttttttttpppppppppppppppp");
+      
   
       if (otp === req.body.otp) {
+        console.log('inseid the if condintion');
+        
         let image='anony.webp'
-        await registerService.execute({ name, email, password, userType ,image});
-        return res.status(200).json({ message: "OTP verified and registration successful" });
+        const userData=await registerService.execute({ name, email, password, userType ,image});
+        console.log(userData,"userdata djdsfjdsdfsdfsfsfssfsfsfdfdddddddddddddddddd");
+        
+        const token =await createToken(email,res)
+        console.log(userData,"user data dfkjfkdhsdkfhsdfhsdjkh");
+        
+        return res.status(200).json({ message: "OTP verified and registration successful",userData:userData,token:token });
       } else {
         console.log('incorrect otp');
         
@@ -115,8 +125,8 @@ export const loginUser=async(req:Request,res:Response)=>{
     }else if(data==="Account blocked"){
       res.status(200).json({message:"Account Blocked"})
     }else{
-      let {name,email,userType,image,mobile,about,location,work,pinCode}=data
-      let user={name:name,email:email,userType:userType,image:image,mobile:mobile,about:about,location:location,work:work,pinCode:pinCode}
+      let {name,email,userType,image,mobile,about,location,work,pinCode,_id}=data
+      let user={name:name,email:email,userType:userType,image:image,mobile:mobile,about:about,location:location,work:work,pinCode:pinCode,_id:_id}
      
       
       const token= await createToken(user,res)

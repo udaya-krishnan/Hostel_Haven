@@ -1,16 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
 import { Logout } from '../../features/Admin/auth/authSlice';
 import NotificationIcon from "./NotificationIcon";
+import {io} from 'socket.io-client'
+
+const socket = io("http://localhost:3000");
 
 const Header = () => {
   const dispatch = useDispatch();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [notifications, setNotifications] = useState([
-    { id: 1, message: "New property created!" },
-    { id: 2, message: "Host updated a property." },
-    { id: 3, message: "User booked a room." }
-  ]);
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+  
+    socket.on('propertycreated', (data) => {
+
+      console.log(data);
+      
+      setNotifications((prev) => [...prev, data]);
+    });
+
+    
+    return () => {
+      socket.off('propertycreated');
+    };
+  }, []);
+
+ 
 
   function logout() {
     dispatch(Logout());
@@ -36,10 +52,10 @@ const Header = () => {
               {notifications.length ? (
                 notifications.map((notification) => (
                   <li
-                    key={notification.id}
+                    key={notification.email}
                     className="p-2 border rounded-lg hover:bg-gray-100 transition duration-150"
                   >
-                    {notification.message}
+                    {notification.subject}
                   </li>
                 ))
               ) : (

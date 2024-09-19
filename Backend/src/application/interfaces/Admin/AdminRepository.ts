@@ -13,4 +13,8 @@ export interface AdminRepository{
     fetchsafety():Promise<any|null>
     actionSafety(id:string):Promise<any|null>
     updateSafety(id:string,name:string):Promise<any|null>
+    fetchHostProperty(id:string):Promise<any|null>
+    propertyDetails(id:string):Promise<any|null>
+    approveproperty(id:string):Promise<any|null>
+    rejectproperty(id:string):Promise<any|null>
 }

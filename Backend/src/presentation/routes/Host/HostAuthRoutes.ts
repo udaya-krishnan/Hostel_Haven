@@ -2,7 +2,7 @@ import { Router } from "express";
 import { verifyhost, verifyOtp ,resendHost} from "../../controllers/Host/HostAuthController";
 import { changepassword, hostupdateProfile ,uploadImag} from "../../controllers/Host/HostProfileController";
 import { upload } from "../../../config/multer";
-import { addproperty, fetchamenities, fetchProperty, fetchsafety } from "../../controllers/Host/HostPropertyController";
+import { addproperty, availableProperty, fetchamenities, fetchProperty, fetchReservation, fetchsafety, updateProperty } from "../../controllers/Host/HostPropertyController";
 // import { fet } from "../../controllers/Admin/AdminSafetyController";
 
 
@@ -21,5 +21,10 @@ hostRouter.post('/login',verifyhost)
             { name: 'propertyImages', maxCount: 10 }
           ]),addproperty)
           .post('/property',fetchProperty)
+          .post('/updateproperty', upload.array('propertyImages', 5), updateProperty)
+          .post('/available',availableProperty)
+          .post('/fetchreservation',fetchReservation)
+          .post('/actionreservation',)
+
 
 export default hostRouter
