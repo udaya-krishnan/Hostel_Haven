@@ -3,6 +3,7 @@ import { verifyhost, verifyOtp ,resendHost} from "../../controllers/Host/HostAut
 import { changepassword, hostupdateProfile ,uploadImag} from "../../controllers/Host/HostProfileController";
 import { upload } from "../../../config/multer";
 import { addproperty, availableProperty, fetchamenities, fetchProperty, fetchReservation, fetchsafety, updateProperty } from "../../controllers/Host/HostPropertyController";
+import { actionReservation } from "../../controllers/Host/HostReservationController";
 // import { fet } from "../../controllers/Admin/AdminSafetyController";
 
 
@@ -24,7 +25,7 @@ hostRouter.post('/login',verifyhost)
           .post('/updateproperty', upload.array('propertyImages', 5), updateProperty)
           .post('/available',availableProperty)
           .post('/fetchreservation',fetchReservation)
-          .post('/actionreservation',)
+          .post('/actionreservation',actionReservation)
 
 
 export default hostRouter

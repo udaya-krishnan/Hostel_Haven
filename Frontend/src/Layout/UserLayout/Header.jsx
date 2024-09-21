@@ -50,7 +50,7 @@ function Header() {
             <a href="/" className="text-btncolor">
               Home
             </a>
-            <a href="/hostel&room" className="text-btncolor">
+            <a href="/hostelroom" className="text-btncolor">
               Hostels/Rooms
             </a>
             <a href="#" className="text-btncolor">
