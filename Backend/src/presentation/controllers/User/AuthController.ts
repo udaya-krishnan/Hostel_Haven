@@ -7,7 +7,12 @@ import { createToken, verifyToken } from "../../../utils/jwt";
 import { UserEntities } from "../../../domain/entities/User";
 import dotenv from 'dotenv'
 import { LoginService } from "../../../application/services/UserService/LoginService";
+import { addAbortListener } from "events";
 dotenv.config()
+
+
+
+
 
 
 const userRepository = new UserRepositoryImpl();
@@ -29,7 +34,11 @@ export const register = async (req: Request, res: Response) => {
             password: password,
             userType: userType,
             otp: otp,
+            message:"register"
           };
+
+          console.log('data from the register');
+          
           console.log(data);
          const token= await createToken(data,res)
            await sendMail(email,otp,name)
@@ -51,23 +60,48 @@ export const otpVerify = async (req: Request , res: Response) => {
     const token = req.cookies.jwt
     // console.log(token);
     const decodedData = await verifyToken(token)
-    // console.log(decodedData);
+    console.log(decodedData);
+    
     if (!decodedData) {
       return res.status(400).json({ message: "Session expired or no data found in session." });
     }
-    const { name, email, password, userType, otp } = decodedData;
+    if(decodedData.message==="register"){
+     
+      const { name, email, password, userType, otp } = decodedData;
+  
+      // console.log("Session Data:", sessionData);
 
-    // console.log("Session Data:", sessionData);
-
-    if (otp === req.body.otp) {
-      let image='anony.webp'
-      await registerService.execute({ name, email, password, userType ,image});
-      return res.status(200).json({ message: "OTP verified and registration successful" });
-    } else {
-      console.log('incorrect otp');
+      console.log(req.body.otp,"ooooooooooooooooootttttttttttpppppppppppppppp");
       
-      return res.status(200).json({ message: "Incorrect OTP" });
+  
+      if (otp === req.body.otp) {
+        console.log('inseid the if condintion');
+        
+        let image='anony.webp'
+        const userData=await registerService.execute({ name, email, password, userType ,image});
+        console.log(userData,"userdata djdsfjdsdfsdfsfsfssfsfsfdfdddddddddddddddddd");
+        
+        const token =await createToken(email,res)
+        console.log(userData,"user data dfkjfkdhsdkfhsdfhsdjkh");
+        
+        return res.status(200).json({ message: "OTP verified and registration successful",userData:userData,token:token });
+      } else {
+        console.log('incorrect otp');
+        
+        return res.status(200).json({ message: "Incorrect OTP" });
+      }
+    }else if(decodedData.message==="forgot"){
+      const {otp,email,password,userType,name}=decodedData;
+      if(req.body.otp===otp){
+        console.log('verify the otp');
+        
+        return res.status(200).json({message:"Otp verified "})
+      }else{
+        return res.status(200).json({message:"Incorrect OTP"})
+      }
     }
+    // console.log(decodedData);
+    
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
@@ -88,9 +122,11 @@ export const loginUser=async(req:Request,res:Response)=>{
       res.status(200).json({message:"Email was wrong"})
     }else if(data==="Password was wrong"){
       res.status(200).json({message:"Password was wrong"})
+    }else if(data==="Account blocked"){
+      res.status(200).json({message:"Account Blocked"})
     }else{
-      let {name,email,userType,image}=data
-      let user={name:name,email:email,userType:userType,image:image}
+      let {name,email,userType,image,mobile,about,location,work,pinCode,_id}=data
+      let user={name:name,email:email,userType:userType,image:image,mobile:mobile,about:about,location:location,work:work,pinCode:pinCode,_id:_id}
      
       
       const token= await createToken(user,res)
@@ -111,6 +147,9 @@ export const loginUser=async(req:Request,res:Response)=>{
 
 export const resendUser=async(req:Request,res:Response)=>{
   try {
+
+    console.log('resend otp controller from the user');
+    
     
     const token =req.cookies.jwt
     console.log(token);
@@ -125,6 +164,7 @@ export const resendUser=async(req:Request,res:Response)=>{
       password: decoded.password,
       userType: decoded.userType,
       otp: otp,
+      message:decoded.message
     };
 
     await createToken(data,res)
@@ -161,6 +201,58 @@ export const googleRegister=async(req:Request,res:Response)=>{
       res.status(200).json({user:newUser,token:token,message:"create new User"})
     }
 
+  } catch (error:any) {
+    console.log(error.message);
+    
+  }
+}
+
+export const verifyemail=async(req:Request,res:Response)=>{
+  try {
+    const email=req.body.email
+    const userExits=await registerService.find(email)
+    if(userExits){
+      const otp=generateOtp()
+
+      const data={
+        otp:otp,
+        email:userExits.email,
+        name:userExits.name,
+        password:userExits.password,
+        userType:userExits.userType,
+        message:"forgot"
+      }
+      console.log(data);
+      
+      await createToken(data,res)
+      await sendMail(data.email,otp,data.name)
+      console.log(otp);
+
+
+      res.status(200).json({message:'otp send success'})
+
+    }else{
+      res.status(200).json({message:'usernotfound'})
+    }
+    
+  } catch (error:any) {
+    console.log(error.message);
+    
+  }
+}
+
+export const forgotPassword=async(req:Request,res:Response)=>{
+  try {
+    const data=req.body.data
+    const token=req.cookies.jwt
+
+    const decoded=await verifyToken(token)
+
+   await registerService.forgotpass(decoded.email,data.newPassword)
+
+   res.status(200).json({message:"password updated"})
+
+    
   } catch (error:any) {
     console.log(error.message);
     

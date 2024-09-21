@@ -71,7 +71,7 @@ function Otp() {
       }
       document.getElementById("error").style.display = "none";
 
-      const result = await dispatch(otpVerify(otp));
+      const result = await dispatch(otpVerify({otp}));
 
       console.log(result,"rrrrrrrrrrrrrrres");
       
@@ -81,12 +81,20 @@ function Otp() {
           inputs.current[i].style.border = "1px solid red";
         }
         document.getElementById("error").style.display = "block";
-      } else {
+      } else if(result.message==="OTP verified and registration successful"){
         toast.success('Register Success', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 })
         setTimeout(()=>{
 
-          navigate("/login");
+          navigate("/");
         },2000)
+      }else if(result.message==="Otp verified "){
+        console.log('forgot pAGE');
+        
+        toast.success('Otp verified', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 })
+        setTimeout(()=>{
+          navigate('/forgot')
+        },2000)
+
       }
     }
   }
@@ -95,7 +103,10 @@ function Otp() {
     setTimer(30);
     setOtpExpired(false); 
     inputs.current.forEach(input => (input.value = ""));
+    inputs.current.forEach(input=>(input.style.border="1px solid gray"))
+    document.getElementById("error").style.display = "none";
     console.log("OTP resent!");
+
     await dispatch(resendOtp())
   };
 

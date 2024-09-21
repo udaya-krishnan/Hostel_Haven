@@ -10,7 +10,12 @@ export class LoginService implements LoginUseCase{
         const data=await this.userRepository.findUser(email)
         if(data){
             if(await bcrypt.compare(password, data.password)){
-                return data
+                if(data.is_blocked===true){
+                    return "Account blocked"
+                }else{
+
+                    return data
+                }
             }else{
                 return "Password was wrong"
             }

@@ -47,10 +47,10 @@ function Header() {
           <div className="text-2xl font-bold text-btncolor">Hostel Haven</div>
 
           <nav className="hidden md:flex items-center space-x-4">
-            <a href="#" className="text-btncolor">
+            <a href="/" className="text-btncolor">
               Home
             </a>
-            <a href="#" className="text-btncolor">
+            <a href="/hostelroom" className="text-btncolor">
               Hostels/Rooms
             </a>
             <a href="#" className="text-btncolor">
@@ -82,7 +82,7 @@ function Header() {
                       userData?.image?.startsWith("http")
                         ? userData.image
                         : `../../../public/profile/${
-                            userData?.image || "defaultProfileImage.png"
+                            userData?.image || "anony.webp"
                           }`
                     }
                     alt="User"
@@ -109,6 +109,12 @@ function Header() {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Notifications
+                    </a>
+                    <a
+                      href="/wishlist"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      wishlist
                     </a>
                     <a
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

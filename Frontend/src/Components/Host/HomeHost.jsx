@@ -1,7 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import hostbanner from '../../../public/banner/hostbanner.jpg'
+import { useSelector } from 'react-redux'
+import { selectHost } from '../../features/Host/auth/authSelectors'
 function HomeHost() {
+
+  const hostData=useSelector(selectHost)
+
+  useEffect(()=>{
+    console.log(hostData,"host in hoem");
+    
+  },[hostData])
+  
   return (
     
       <section

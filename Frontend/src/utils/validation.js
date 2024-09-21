@@ -54,3 +54,50 @@ export const loginHostSchema = Yup.object().shape({
       "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     )
 });
+
+
+export const emailVerifySchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+});
+
+export  const passwordSchema = Yup.object().shape({
+  newPassword: Yup.string()
+    .required("New password is required")
+    .min(8, "Password must be at least 8 characters")
+    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .matches(/[0-9]/, "Password must contain at least one number")
+    .matches(/[!@#$%^&*]/, "Password must contain at least one special character"),
+  confirmPassword: Yup.string()
+    .required("Confirm password is required")
+    .oneOf([Yup.ref('newPassword')], "Passwords must match"),
+});
+
+
+
+export const adminvalidationSchema = Yup.object({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string()
+    .required("Password is required")
+     
+});
+
+
+export const accountEditSchema = Yup.object({
+  name: Yup.string().required('Name is required'),
+  mobile: Yup.string().required('Number is required'),
+  about: Yup.string(),
+  location: Yup.string(),
+  work: Yup.string(),
+});
+
+
+export  const amenities = Yup.object({
+  amenity: Yup.string()
+    .matches(/^[A-Za-z\s]+$/, "Only letters are allowed")
+    .required("Amenity name is required"),
+});

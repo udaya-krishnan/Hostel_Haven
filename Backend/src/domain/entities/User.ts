@@ -6,7 +6,6 @@ export interface User{
     password:string;
     userType:string;
     image:string
-
 }
 
 
@@ -14,4 +13,13 @@ export interface UserEntities{
     name?:string,
     email?:string,
     userType?:string,
+}
+
+
+export interface GusetInfo{
+    _id?:string|null,
+    firstName:string,
+    lastName:string,
+    email:string,
+    mobile:string,
 }

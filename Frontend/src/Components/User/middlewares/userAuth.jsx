@@ -3,20 +3,20 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { selectToken } from '../../../features/User/auth/authSelectors'
 
-function UserAuth({childern}) {
+function UserAuth({children}) {
     const navigate =useNavigate()
     const token=useSelector(selectToken)
+    console.log(token,'token');
+    
 
     useEffect(()=>{
-        if(token!==""){
+        if(token!==null){
             navigate('/')
         }
 
     },[token])
 
-    if(token===""){
-        return childern
-    }
+    return children
   
 }
 

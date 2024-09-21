@@ -13,8 +13,11 @@ export interface User {
     mobile:number;
     userType:UserType ;
     image:string;
-    address:string;
+    about:string;
+    location:string;
     latitude:number;
+    work:string;
+    pinCode:string;
     longitude:number;
     is_blocked:boolean;
 }
@@ -31,7 +34,10 @@ const UserSchema:Schema<UserDocument>=new Schema({
     mobile:{type:Number,required:false},
     userType: { type: String, enum: UserType, required: true },
     image:{type:String,required:false},
-    address: { type: String, required: false },
+    about:{type:String,required:false},
+    work:{type:String,required:false},
+    location: { type: String, required: false },
+    pinCode:{type:String,required:false},
     latitude: { type: Number, required: false },
     longitude: { type: Number, required: false },
     is_blocked: { type: Boolean, default: false }
