@@ -27,6 +27,7 @@ export interface UserDocument extends User,Document{
 }
 
 
+
 const UserSchema:Schema<UserDocument>=new Schema({
     name:{type:String,required:true},
     email:{type:String,required:true},

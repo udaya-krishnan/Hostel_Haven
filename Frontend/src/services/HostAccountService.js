@@ -5,8 +5,14 @@ const API_URL='http://localhost:3000';
 
 
 const hosteditProfile=async(values)=>{
-    const response=await axios.post(API_URL+HOST_EDIT_PROFILE,{values},{withCredentials:true})
-    return response.data
+
+    try {
+        const response=await axios.post(API_URL+HOST_EDIT_PROFILE,{values},{withCredentials:true})
+        return response.data
+    } catch (error) {
+        throw error
+    }
+   
 }
 
 
@@ -20,7 +26,7 @@ const hostuploadPhoto=async(file,email)=>{
         headers:{
             'Content-Type':'multipart/form-data'
         }
-    })
+    },{withCredentials:true})
     return response.data
 }
 

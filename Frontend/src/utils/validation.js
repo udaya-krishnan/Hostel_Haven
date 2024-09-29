@@ -101,3 +101,20 @@ export  const amenities = Yup.object({
     .matches(/^[A-Za-z\s]+$/, "Only letters are allowed")
     .required("Amenity name is required"),
 });
+
+
+export const CouponSchema = Yup.object({
+  couponName: Yup.string().required("Coupon name is required"),
+  expDate: Yup.date().required("Expiration date is required"),
+  minAmount: Yup.number()
+    .required("Minimum amount is required")
+    .test(
+      "min-less-than-max",
+      "Minimum amount should be less than maximum amount",
+      function (value) {
+        const { maxAmount } = this.parent;
+        return value < maxAmount;
+      }
+    ),
+  maxAmount: Yup.number().required("Maximum amount is required"),
+});

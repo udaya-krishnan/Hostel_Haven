@@ -50,7 +50,7 @@ function Addproperty9({
   };
 
   return (
-    <div className="flex justify-between p-8 bg-background">
+    <div className="flex justify-between p-8 bg-background mt-14">
       <div className="w-2/3">
         <div className="flex flex-col p-8 bg-background">
           <h1 className="text-3xl font-bold text-primary mb-6">

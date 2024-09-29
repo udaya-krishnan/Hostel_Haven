@@ -5,6 +5,8 @@ import { AmenitiesDocument } from "../../database/models/AmenitesModel";
 import SafetyModel from "../../database/models/SafetyModel";
 import { SafetyDocument } from "../../database/models/SafetyModel";
 import PropertyModel from "../../database/models/PropertyModel";
+import CouponModel from "../../database/models/CouponModel";
+import { CouponData } from "../../../domain/entities/Coupon";
 
 export class AdminRepositoryImpl implements AdminRepository{
 
@@ -177,4 +179,58 @@ export class AdminRepositoryImpl implements AdminRepository{
         return property
     }
 
+
+    async addcoupon(data: CouponData): Promise<any | null> {
+        const create=await CouponModel.create({
+            code:data.code,
+            name:data.couponName,
+            expdate:data.expDate,
+            min:data.minAmount,
+            max:data.maxAmount
+        })
+        const allcoupon=await CouponModel.find({})
+
+        return allcoupon
+    }
+
+    async fetchcoupon(): Promise<any | null> {
+        const allcoupon=await CouponModel.find({})
+        return allcoupon
+    }
+
+    async actioncoupon(id: string): Promise<any | null> {
+        const findCoupon=await CouponModel.findById({_id:id})
+        if(findCoupon?.is_blocked){
+            await CouponModel.findByIdAndUpdate({_id:id},{
+                $set:{
+                    is_blocked:false
+                }
+            })
+        }else{
+            await CouponModel.findByIdAndUpdate({_id:id},{
+                $set:{
+                    is_blocked:true
+                }
+            })
+        }
+       
+        console.log("updated");
+        
+        return findCoupon
+    }
+
+    
+    async editCoupon(id: string, data: any): Promise<any | null> {
+        console.log(id,data,"in the repo");
+        
+        const edit=await CouponModel.findByIdAndUpdate({_id:id},{
+           $set:{
+            name:data.name,
+            min:data.min,
+            max:data.max,
+            expdate:data.expdate
+           } 
+        })
+        return edit
+    }
 }

@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { FaRegHeart, FaBed, FaShower, FaBicycle } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import {
+  FaRegHeart,
+  FaHeart,
+  FaBed,
+  FaShower,
+  FaBicycle,
+} from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { popertyDetails } from "../../features/User/auth/authAction";
+import {
+  fetchwish,
+  popertyDetails,
+  wishlist,
+} from "../../features/User/auth/authAction";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { selectUser } from "../../features/User/auth/authSelectors";
+import { Toaster, toast } from "sonner";
 
 const PropertyDetailsPage = () => {
   const location = useLocation();
@@ -18,15 +30,19 @@ const PropertyDetailsPage = () => {
   const [showConfirmButton, setShowConfirmButton] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [wishlists, setWishlist] = useState(false);
+  const userData = useSelector(selectUser);
 
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
+
+  const [durationInMonths, setDurationInMonths] = useState(0); // State for duration
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await dispatch(popertyDetails(propertyId));
-        const data = response.data;
+        const data = response.payload.data;
         setProData(data);
         if (data.image && data.image.length > 0) {
           setMainImage(data.image[0]);
@@ -39,39 +55,40 @@ const PropertyDetailsPage = () => {
     fetchData();
   }, [dispatch, propertyId]);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedDuration, setSelectedDuration] = useState("1 Month");
-  const [durationInMonths, setDurationInMonths] = useState(1);
+  useEffect(() => {
+    const fetchWishlistStatus = async () => {
+      try {
+        if (userData && proData) {
+          const res = await dispatch(fetchwish(proData._id, userData._id));
+          setWishlist(res.message);
+        }
+      } catch (error) {
+        console.error("Error fetching wishlist status", error);
+      }
+    };
+    fetchWishlistStatus();
+  }, [userData, proData]);
 
-  const durations = [
-    { label: "1 Month", value: 1 },
-    { label: "2 Months", value: 2 },
-    { label: "6 Months", value: 6 },
-    { label: "12 Months", value: 12 },
-  ];
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
+  const onwish = async (id) => {
+    if (userData) {
+      try {
+        const res = await dispatch(wishlist(id, userData._id));
+        if (res?.message !== "remove") {
+          setWishlist(true);
+        } else {
+          setWishlist(false);
+        }
+      } catch (error) {
+        console.error("Error updating wishlist", error);
+      }
+    } else {
+      toast.error("Please log in to continue", {
+        hideProgressBar: true,
+        className: "custom-toast-error",
+        autoClose: 2000,
+      });
+    }
   };
-
-  const handleSelect = (duration) => {
-    setSelectedDuration(duration.label);
-    setDurationInMonths(duration.value);
-    setIsOpen(false);
-  };
-
-  const handleCheckInDateChange = (date) => {
-    setCheckInDate(date);
-    // Set check-out date to be at least 1 month later
-    const checkOut = new Date(date);
-    checkOut.setMonth(checkOut.getMonth() + 1); // Next month
-    setCheckOutDate(checkOut);
-    setShowConfirmButton(true); // Show confirm button when both dates are selected
-  };
-  // const handleCheckOutDateChange = (date) => {
-  //   setCheckOutDate(date);
-  //   setShowConfirmButton(true); // Show confirm button when both dates are selected
-  // };
 
   const handleDateChange = (update) => {
     const [start, end] = update;
@@ -79,8 +96,14 @@ const PropertyDetailsPage = () => {
       setDateRange([start, null]);
     } else if (start && end) {
       setDateRange([start, end]);
+
+      // Calculate duration in months
+      const months = end.getMonth() - start.getMonth() + 
+                     12 * (end.getFullYear() - start.getFullYear());
+      setDurationInMonths(months);
     } else {
       setDateRange([null, null]);
+      setDurationInMonths(0); // Reset duration when dates are cleared
     }
   };
 
@@ -91,13 +114,28 @@ const PropertyDetailsPage = () => {
   };
 
   const handleConfirmDates = () => {
-    if (startDate && endDate) {
-      navigate("/reservation", {
-        state: {
-          proData,
-          checkInDate: startDate,
-          checkOutDate: endDate,
-        },
+    if(userData){
+      if (startDate && endDate) {
+        navigate("/reservation", {
+          state: {
+            proData,
+            pricePerMonth:totalPrice,
+            durationInMonths:durationInMonths,
+            checkInDate: startDate,
+            checkOutDate: endDate,
+          },
+        });
+    }else{
+
+
+      
+    }
+   
+    }else{
+      toast.error("Please log in to continue", {
+        hideProgressBar: true,
+        className: "custom-toast-error",
+        autoClose: 2000,
       });
     }
   };
@@ -139,6 +177,7 @@ const PropertyDetailsPage = () => {
 
   return (
     <div className="container mx-auto p-6">
+      <Toaster />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         <div className="col-span-2">
           <img
@@ -211,76 +250,84 @@ const PropertyDetailsPage = () => {
               Safety and Hygiene
             </h2>
             <div className="grid grid-cols-2 gap-4 mt-2">
-              {proData.safety.map((item, index) => (
+              {proData.safety.map((safety, index) => (
                 <div key={index} className="flex items-center space-x-2">
-                  <span>{item}</span>
+                  <span>{safety}</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="p-6 bg-white shadow-lg rounded-lg">
-          {offerPrice ? (
-            <>
-              <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold">
-                  ₹{totalPrice.toLocaleString()}
-                </span>
-                <FaRegHeart className="text-2xl text-gray-500 cursor-pointer" />
-              </div>
-              <p className="text-gray-600 line-through">
-                ₹{(regularPrice * durationInMonths).toLocaleString()}
-              </p>
-              <p className="text-green-400 font-semibold">
-                {discountPercentage}% Off
-              </p>
-            </>
-          ) : (
-            <>
-              <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold">
-                  ₹{totalPrice.toLocaleString()}
-                </span>
-                <FaRegHeart className="text-2xl text-gray-500 cursor-pointer" />
-              </div>
-              <p className="text-gray-600">No Offer Price Available</p>
-            </>
-          )}
+        <div className="lg:col-span-1 lg:sticky lg:top-24">
+          <div className="border border-gray-300 rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-800">
+              {offerPrice ? (
+                <>
+                  ₹{offerPrice.toLocaleString()}{" "}
+                  <span className="text-sm text-gray-600 line-through">
+                    ₹{regularPrice.toLocaleString()}
+                  </span>{" "}
+                  <span className="text-sm text-red-600">
+                    {discountPercentage}% off
+                  </span>
+                </>
+              ) : (
+                `₹${regularPrice.toLocaleString()}`
+              )}
+              <span className="text-sm text-gray-600"> per month</span>
+            </h2>
 
-          {/* Check-in Date Picker */}
-          <div className="mt-6">
-            <label className="block text-gray-700 mb-2">
-              Select Stay Dates:
-            </label>
-            <DatePicker
-              selectsRange={true}
-              startDate={startDate}
-              endDate={endDate}
-              onChange={handleDateChange}
-              monthsShown={2}
-              minDate={new Date()}
-              dateFormat="MM/dd/yyyy"
-              customInput={<CustomInput />}
-              isClearable={true}
-              filterDate={filterEndDate}
-            />
-          </div>
+            <div className="mt-4">
+              <h2 className="text-md font-semibold text-gray-800">
+                Select Check-in and Check-out Dates
+              </h2>
+              <DatePicker
+                selectsRange
+                startDate={startDate}
+                endDate={endDate}
+                onChange={handleDateChange}
+                minDate={new Date()}
+                filterDate={filterEndDate}
+                customInput={<CustomInput />}
+                dateFormat="dd/MM/yyyy"
+              />
+            </div>
 
-          {/* Confirm and Cancel Buttons */}
-          <div className="mt-6 flex justify-between">
+            {/* Display the calculated duration */}
+            {durationInMonths > 0 && (
+              <div className="mt-4">
+                <h2 className="text-md font-semibold text-gray-800">
+                  Duration: {durationInMonths} months
+                </h2>
+                <h3 className="text-md text-gray-800 mt-2">
+                  Total Price: ₹{totalPrice.toLocaleString()}
+                </h3>
+              </div>
+            )}
+
+            {startDate && endDate && (
+              <button
+                className="w-full mt-4 bg-btncolor text-white py-2 rounded-lg"
+                onClick={handleConfirmDates}
+              >
+                Reserve Now
+              </button>
+            )}
+
             <button
-              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
-              onClick={() => setDateRange([null, null])}
+              className="w-full mt-2 border border-btncolor text-btncolor py-2 rounded-lg"
+              onClick={() => onwish(proData._id)}
             >
-              Cancel
-            </button>
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded-md"
-              onClick={handleConfirmDates}
-              disabled={!startDate || !endDate}
-            >
-              Reserve Now
+              {wishlists ? (
+                <>
+                  <FaHeart className="inline-block mr-2" /> Remove from Wishlist
+                </>
+              ) : (
+                <>
+                  <FaRegHeart className="inline-block mr-2" /> Add to Wishlist
+                </>
+              )}
             </button>
           </div>
         </div>

@@ -20,6 +20,7 @@ export interface Reservation{
     total_price:string,
     coupon_id:ObjectId,
     guest_count:number,
+    payment_Id:ObjectId,
     booking_status:BookingStatus,
 }
 
@@ -39,6 +40,7 @@ const ReservationSchema:Schema<ReservationDocument>=new Schema({
     month:{type:String,required:false},
     total_price:{type:String,required:true},
     coupon_id:{type:String,required:false},
+    payment_Id:{type:mongoose.Types.ObjectId, ref:'Payment',required:false},
     guest_count:{type:Number,required:false,default:1},
     booking_status:{ type: String,enum:BookingStatus, default: BookingStatus.Pending}
 },{timestamps:true})

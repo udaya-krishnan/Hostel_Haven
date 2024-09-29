@@ -7,7 +7,6 @@ const register=async(name,email,password)=>{
     let userType="user"
     const response=await axios.post(API_URL+REGISTER_URL,{name,email,password,userType},{withCredentials:true});
     console.log(response.data);
-    
     return response.data
 }
 
@@ -51,7 +50,7 @@ const verifyEmail=async(email)=>{
 }
 
 const forgotpass=async(data)=>{
-    const response=await axios.post(API_URL+FORGOT_PASS,{data},{withCredentials:true})
+    const response=await axios.patch(API_URL+FORGOT_PASS,{data},{withCredentials:true})
     console.log(response.data,"service")
     return response.data
 }

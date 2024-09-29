@@ -2,6 +2,8 @@ import AuthService from "../../../services/AuthService";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import AccountService from "../../../services/UserAccountService";
 import propertyService from "../../../services/PropertyService";
+import PaymentService from "../../../services/PaymentService";
+import UserResService from "../../../services/UserReservationService";
 
 export const register=(name,email,password)=>async()=>{
     const data=await AuthService.register(name,email,password)
@@ -44,6 +46,7 @@ export const login =createAsyncThunk(
           toast.error('Your Account Blocked', { hideProgressBar: true, className: 'custom-toast-error', autoClose: 2000 })
           return rejectWithValue('block')
         }else{
+          console.log(response.data,'logged data');
           return response.data
         }
     }
@@ -82,113 +85,186 @@ export const resendOtp = createAsyncThunk(
     return res
   }
 
-  export const editprofile=createAsyncThunk(
-    'auth/editprofile',
-    async({values},{rejectWithValue})=>{
-      console.log('values from  action',values);
-      
-      const response =await AccountService.editProfile(values)
+  // Edit Profile
+export const editProfile = createAsyncThunk(
+  'auth/editprofile',
+  async ({ values }, { rejectWithValue }) => {
+    try {
+      console.log('values from action', values);
+
+      const response = await AccountService.editProfile(values);
       console.log(response);
-      
-      return response
-    }
-  )
 
-
-  export const uploadphoto=createAsyncThunk(
-    'auth/uploadphoto',
-    async({file,email},{rejectWithValue})=>{
-      console.log(file,email,"from action");
-      
-      const response =await AccountService.uploadPhoto(file,email)
-      return response
-    }
-  )
-
-
-  export const changePassword=(password,email)=>async()=>{
-    try {
-
-      const res=await AccountService.changePassword(password,email)
-      return res
-      
+      return response;
     } catch (error) {
-      console.log(error.message);
-      
+      console.error("Error in editProfile:", error.message);
+      return rejectWithValue(error.response ? error.response.data : error.message); // Reject and pass the error back
     }
   }
+);
 
-  export const fetchHostel=()=>async()=>{
+// Upload Photo
+export const uploadPhoto = createAsyncThunk(
+  'auth/uploadphoto',
+  async ({ file, email }, { rejectWithValue }) => {
     try {
-      const res= await propertyService.fetchhostel()
-      return res
+      console.log(file, email, "from action");
+
+      const response = await AccountService.uploadPhoto(file, email);
+      return response;
     } catch (error) {
-      console.log(error.message);
-      
+      console.error("Error in uploadPhoto:", error.message);
+      return rejectWithValue(error.response ? error.response.data : error.message); // Reject and pass the error back
     }
   }
+);
 
-  export const fetchRoom=()=>async()=>{
+
+export const changePassword = createAsyncThunk(
+  'auth/changePassword',
+  async ({ password, email }, { rejectWithValue }) => {
     try {
-      const res=await propertyService.fetchRoom()
-      return res
+      const response = await AccountService.changePassword(password, email);
+      return response;
     } catch (error) {
-      console.log(error.message);
-      
+      console.error("Error in changePassword:", error.message);
+      return rejectWithValue(error.response ? error.response.data : error.message); // Reject and pass the error back
     }
   }
+);
+
+  export const fetchHostel = createAsyncThunk(
+    "auth/fetchHostel",
+    async ({search}, thunkAPI) => {
+      try {
+        const res = await propertyService.fetchhostel(search);
+        return res;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  );
   
-  export const popertyDetails=(id)=>async()=>{
-    try {
-      const res=await propertyService.propertyDetails(id)
-      return res
-    } catch (error) {
-      console.log(error.message);
-      
-    }
-  }
 
-  export const wishlist=(id,proId)=>async()=>{
-    try {
-      console.log('wishlist ',id,proId);
-      
-      const res=await propertyService.addwishlist(id,proId)
-      return res
-    } catch (error) {
-      console.log(error.message);
-      
+  export const fetchRoom = createAsyncThunk(
+    "auth/fetchRoom",
+    async ({search}, thunkAPI) => {
+      try {
+        const res = await propertyService.fetchRoom(search);
+        return res;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
     }
-  }
-
-  export const findwish=(userId)=>async()=>{
-    try {
-      const res=await propertyService.findwish(userId)
-      console.log(res,"form action");
-      
-      return res
-    } catch (error) {
-      console.log(error.message);
-      
+  );
+  
+  
+  export const popertyDetails = createAsyncThunk(
+    "auth/popertyDetails",
+    async (id, thunkAPI) => {
+      try {
+        const res = await propertyService.propertyDetails(id);
+        return res;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
     }
-  }
+  );
 
-
-  export const fetchWishlist=(id)=>async()=>{
-    try {
-      const res=await propertyService.fetchwishlist(id)
-      return res
-    } catch (error) {
-      console.log(error);
-      
+  export const wishlist = createAsyncThunk(
+    "auth/wishlist",
+    async ({ id, proId }, thunkAPI) => {
+      try {
+        const res = await propertyService.addwishlist(id, proId);
+        return res;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
     }
-  }
+  );
 
-  export const removewish=(id,userId)=>async()=>{
-    try {
-      const res=await propertyService.removeWish(id,userId)
-      return res
-    } catch (error) {
-      console.log(error.message);
-      
+  export const findwish = createAsyncThunk(
+    "auth/findwish",
+    async (userId, thunkAPI) => {
+      try {
+        const res = await propertyService.findwish(userId);
+        return res;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
     }
-  }
+  );
+
+
+  export const fetchWishlist = createAsyncThunk(
+    "auth/fetchWishlist",
+    async (id, thunkAPI) => {
+      try {
+        const res = await propertyService.fetchwishlist(id);
+        return res;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  );
+
+  export const removewish = createAsyncThunk(
+    "auth/removewish",
+    async ({ id, userId }, thunkAPI) => {
+      try {
+        const res = await propertyService.removeWish(id, userId);
+        return res;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  );
+
+  export const fetchwish = createAsyncThunk(
+    "auth/fetchwish",
+    async ({ id, userId }, thunkAPI) => {
+      try {
+        const res = await propertyService.fetchWish(id, userId);
+        return res;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  );
+
+  export const fethreservation = createAsyncThunk(
+    "auth/fethreservation",
+    async (id, thunkAPI) => {
+      try {
+        const res = await UserResService.fechReservation(id);
+        return res;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  );
+
+  export const bookingDetails = createAsyncThunk(
+    "auth/bookingDetails",
+    async (id, thunkAPI) => {
+      try {
+        const res = await UserResService.bookingdetails(id);
+        return res;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  );
+
+  export const continuePayment = createAsyncThunk(
+    "auth/continuePayment",
+    async (amount, thunkAPI) => {
+      try {
+        const res = await UserResService.continuepayment(amount);
+        return res;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  );
+

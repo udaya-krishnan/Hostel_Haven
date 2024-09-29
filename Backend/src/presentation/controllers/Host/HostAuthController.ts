@@ -31,6 +31,7 @@ export const verifyhost=async(req:Request,res:Response)=>{
                 name:hostexists.name,
                 email:email,
                 password:password,
+                userType:'host',
                 otp:otp
             };
             const token=await createToken(data,res)
@@ -48,18 +49,18 @@ export const verifyhost=async(req:Request,res:Response)=>{
 export const verifyOtp=async(req:Request,res:Response)=>{
     try {
         console.log("verify otp controller")
-        const token =req.cookies.jwt
+        const token =req.cookies.accessToken
         const decoded=await verifyToken(token)
         console.log(decoded,"decodec");
         
         if(decoded.otp===req.body.otp){
             const data=await loginService.rolechange(decoded.email)
             const {email,password}=decoded
-            const tokenCreate=await createToken({email:email,password:password},res)
+            const tokenCreate=await createToken({email:email,password:password,userType:'host'},res)
             
                 console.log('token created');
                 
-            res.status(200).json({host:data,token:tokenCreate,message:"verifyed host"})
+            res.status(200).json({host:data,message:"verifyed host"})
         }else{
             res.status(200).json({message:"incorrect otp"})
         }
@@ -74,7 +75,7 @@ export const resendHost=async(req:Request,res:Response)=>{
 
         console.log('resend otp controller');
         
-        const token=req.cookies.jwt
+        const token=req.cookies.accessToken
         console.log('resend otp');
         
         // console.log(token)
@@ -88,6 +89,7 @@ export const resendHost=async(req:Request,res:Response)=>{
             name:decoded.name,
             email:decoded.password,
             otp:otp,
+            userType:'host',
             password:decoded.password
         }
         console.log("data",data);

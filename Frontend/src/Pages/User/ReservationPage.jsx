@@ -5,12 +5,12 @@ import Reservation from '../../Components/User/Reservation';
 
 const ReservationPage = () => {
   const location = useLocation();
-  const { proData, pricePerMonth, durationInMonths } = location.state; // Access passed data
+  const { proData, pricePerMonth, durationInMonths ,checkInDate,checkOutDate } = location.state; // Access passed data
 
   return (
     <>
       <Header />
-      <Reservation proData={proData} durationInMonths={durationInMonths}  pricePerMonth={pricePerMonth} />
+      <Reservation proData={proData} durationInMonths={durationInMonths}  pricePerMonth={pricePerMonth} checkInDate={checkInDate} checkOutDate={checkOutDate} />
     </>
   );
 };

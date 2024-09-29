@@ -11,6 +11,8 @@ import AdminAuth from '../../Components/Admin/middleware/AdminAuth';
 import Safetymenagement from '../../Pages/Admin/Safetymenagement';
 import AdminHostProperty from '../../Pages/Admin/AdminHostProperty';
 import AdminPropertyDetails from '../../Pages/Admin/AdminPropertyDetails';
+import AdminCoupon from '../../Pages/Admin/AdminCoupon';
+import AdminBanner from '../../Pages/Admin/AdminBanner';
 
 function AdmnRoutes() {
   return (
@@ -26,6 +28,8 @@ function AdmnRoutes() {
         <Route path={'/safety'} element={<AdminAuth><Safetymenagement/></AdminAuth>}/>
         <Route path={'/hostproperty'} element={<AdminAuth><AdminHostProperty/></AdminAuth>}/>
         <Route path={'/propertydetails'} element={<AdminAuth><AdminPropertyDetails/></AdminAuth>}/>
+        <Route path={'/coupon'} element={<AdminAuth><AdminCoupon/></AdminAuth>}/>
+        <Route path={'/banner'} element={<AdminAuth><AdminBanner/></AdminAuth>}/>
       </Routes>
     </>
   )

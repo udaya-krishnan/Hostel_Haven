@@ -9,7 +9,8 @@ const propertyerivice=new PropertyService(userRepository)
 
 export const fetchHostel=async(req:Request,res:Response)=>{
     try {
-        const hostels=await propertyerivice.fetchhostel()
+        const search=req.body.search
+        const hostels=await propertyerivice.fetchhostel(search)
         res.status(200).json({hostels:hostels})
     } catch (error:any) {
         console.log(error.message);
@@ -19,7 +20,8 @@ export const fetchHostel=async(req:Request,res:Response)=>{
 
 export const fetchRoom=async(req:Request,res:Response)=>{
     try {
-        const rooms=await propertyerivice.fetchroom()
+        const search=req.body.search
+        const rooms=await propertyerivice.fetchroom(search)
         res.status(200).json({rooms:rooms})
     } catch (error:any) {
         console.log(error.message);
@@ -79,6 +81,9 @@ export const findWish=async(req:Request,res:Response)=>{
 
 export const fetchwishlist=async(req:Request,res:Response)=>{
     try {
+
+        console.log('wish controller');
+        
         const id=req.body.id
 
         const  wishlist=await propertyerivice.fetchwishlist(id)
@@ -105,6 +110,24 @@ export const removewish=async (req:Request,res:Response)=>{
             res.status(200).json({wishlist:wishlist})
         }
 
+    } catch (error:any) {
+        console.log(error.message);
+        
+    }
+}
+
+
+export const fetchwish=async(req:Request,res:Response)=>{
+    try {
+        const {id,userId}=req.body
+        const find=await propertyerivice.fetchwish(id,userId)
+        console.log(find);
+        
+        if(find){
+            res.status(200).json({message:true})
+        }else{
+            res.status(200).json({message:false})
+        }
     } catch (error:any) {
         console.log(error.message);
         

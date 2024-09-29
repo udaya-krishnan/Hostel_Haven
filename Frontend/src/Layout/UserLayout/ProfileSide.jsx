@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { uploadphoto } from "../../features/User/auth/authAction";
+import { uploadPhoto } from "../../features/User/auth/authAction";
 import {toast,Toaster} from 'sonner'
 
 function ProfileSide({ change, value, userData }) {
@@ -23,7 +23,7 @@ function ProfileSide({ change, value, userData }) {
 
       toast.promise(
         new Promise((resolve, reject) => {
-          dispatch(uploadphoto({ file, email: userData.email }))
+          dispatch(uploadPhoto({ file, email: userData.email }))
             .then(() => {
               resolve();
               console.log("Selected file:", file);
@@ -85,14 +85,14 @@ function ProfileSide({ change, value, userData }) {
         <div className="mb-4">
           <h2 className="font-bold text-btncolor">About</h2>
           <p className="text-sm text-gray-600">
-            {userData.about}
+            {userData?.about}
           </p>
         </div>
         <div className="mb-4">
-          <h3 className="font-bold">{userData.name}</h3>
+          <h3 className="font-bold">{userData?.name}</h3>
         
           <p className="text-sm text-green-500">✓ Email Confirmed</p>
-          {userData.mobile&&  <p className="text-sm text-green-500">✓ Mobile Confirmed</p>}
+          {userData?.mobile&&  <p className="text-sm text-green-500">✓ Mobile Confirmed</p>}
         </div>
         <button
           className="bg-gray-300 text-btncolor py-2 px-4 rounded-md w-full"

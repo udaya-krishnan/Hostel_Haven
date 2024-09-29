@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { HostLogout } from "../../features/Host/auth/authSlice";
-import { useDispatch ,useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectHost } from "../../features/Host/auth/authSelectors";
 
 function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const hostData=useSelector(selectHost)
+  const hostData = useSelector(selectHost);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -20,7 +20,7 @@ function Header() {
   };
 
   return (
-    <header className="bg-[#DABFAA] py-4 px-6 flex justify-between items-center">
+    <header className="bg-[#DABFAA] py-4 px-6 flex justify-between items-center fixed top-0 w-full z-50 shadow-md  ">
       <div className="flex items-center">
         <h1 className="text-2xl font-bold text-gray-800">Hostel Haven</h1>
       </div>
@@ -29,10 +29,7 @@ function Header() {
         <Link to="/host/home" className="text-gray-800 hover:text-gray-600">
           Home
         </Link>
-        <Link
-          to="/host/property"
-          className="text-gray-800 hover:text-gray-600"
-        >
+        <Link to="/host/property" className="text-gray-800 hover:text-gray-600">
           Properties
         </Link>
         <Link to="/host/about-us" className="text-gray-800 hover:text-gray-600">
@@ -44,6 +41,8 @@ function Header() {
         >
           Contact Us
         </Link>
+
+        {/* Profile Dropdown */}
         <div className="relative">
           <div onClick={toggleDropdown} className="cursor-pointer">
             <img
@@ -84,7 +83,7 @@ function Header() {
               </Link>
               <div
                 onClick={logout}
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
               >
                 Logout
               </div>

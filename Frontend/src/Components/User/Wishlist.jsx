@@ -14,9 +14,9 @@ const Wishlist = () => {
 
         const fetchWish=async()=>{
            const res=await dispatch(fetchWishlist(userData._id))
-           console.log(res.wishlist,"whssskdjsdjf");
+           console.log(res.payload.wishlist,"whssskdjsdjf");
            
-            setWishlists(res.wishlist)
+            setWishlists(res.payload.wishlist)
         }
 
         fetchWish()
@@ -25,8 +25,8 @@ const Wishlist = () => {
 
 
    async function removeWish(id){
-    const res=await dispatch(removewish(id,userData._id))
-    setWishlists(res.wishlist)
+    const res=await dispatch(removewish({id:id,userId:userData._id}))
+    setWishlists(res.payload.wishlist)
     }
 
     if(wishlist.length===0){
@@ -48,7 +48,7 @@ const Wishlist = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {wishlist.map((wishlist) => (
           <div key={wishlist.propertyId._id} className="relative group"
-          onClick={()=>navigate(`/propertydetails?propertyid=${wishlist.propertyId._id}`)}
+         
           >
             <img
               src={wishlist.propertyId.image[0]}
@@ -59,7 +59,8 @@ const Wishlist = () => {
             onClick={()=>removeWish(wishlist._id)}>
               &times;
             </button>
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 rounded-b-lg">
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 rounded-b-lg"
+             onClick={()=>navigate(`/propertydetails?propertyid=${wishlist.propertyId._id}`)}>
               <h3 className="text-white text-xl font-semibold">{wishlist.propertyId.name}</h3>
               <p className="text-white">{wishlist.propertyId.location}</p>
             </div>

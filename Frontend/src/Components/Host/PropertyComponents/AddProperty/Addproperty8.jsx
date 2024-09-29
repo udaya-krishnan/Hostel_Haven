@@ -31,7 +31,7 @@ function Addproperty8({ formData, propertyPolicies, handleBack }) {
   };
 
   return (
-    <div className="flex flex-row justify-between  mx-20 my-10 p-8 bg-white">
+    <div className="flex flex-row justify-between  mx-20 my-10 mt-24 p-8 bg-white">
         <div className='flex-col'>
 
         <h1 className="text-3xl font-bold text-gray-800 mb-6">

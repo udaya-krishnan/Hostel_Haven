@@ -73,21 +73,8 @@ function ProfileHost() {
   };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   return (
-    <main className="flex-grow bg-gray-100 min-h-screen p-10">
+    <main className="flex-grow bg-gray-100 min-h-screen p-10 mt-20 ">
     <Toaster />
     <div className="bg-white shadow-md rounded-lg p-8 flex flex-col lg:flex-row h-full">
       <HostProfile change={setPass} value={changepass} hostData={hostData} />

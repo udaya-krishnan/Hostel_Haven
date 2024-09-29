@@ -4,6 +4,7 @@ import { actionUser, fetchingUserData, userDetails } from "../../controllers/Adm
 import { approveProperty, fetchingHostData, fetchProperty, hostDetails, propertyDetails, rejecteProperty } from "../../controllers/Admin/AdminHostController";
 import { actionAmenities, addAmenitie, fetchamenities, updateAmenities } from "../../controllers/Admin/AdminAmenitiesController";
 import { actionSafety, addSafety, fetchSafety, updateSafety } from "../../controllers/Admin/AdminSafetyController";
+import { actionCoupon, addcoupon, editCoupon, fetchCoupon } from "../../controllers/Admin/AdminCouponController";
 const adminRoute=Router()
 
 
@@ -25,5 +26,9 @@ adminRoute.post('/login',adminLogin)
           .post('/propertydetails',propertyDetails)
           .post('/approve',approveProperty)
           .post('/reject',rejecteProperty)
+          .post('/addcoupon',addcoupon)
+          .get('/fetchcoupon',fetchCoupon)
+          .post('/actioncoupon',actionCoupon)
+          .post('/editcoupon',editCoupon)
 
 export default adminRoute

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "./Sidebar";
 import {
-  selectToken,
   selectUser,
 } from "../../features/User/auth/authSelectors";
 import { Logout } from "../../features/User/auth/authSlice";
@@ -12,16 +11,18 @@ function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const token = useSelector(selectToken);
   const userData = useSelector(selectUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (token) {
+    if (userData) {
+      console.log('is logged');
+      console.log(userData);
+      
       setIsLogged(true);
     }
-  }, [token]);
+  }, [userData]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -99,10 +100,10 @@ function Header() {
                       My Profile
                     </a>
                     <a
-                      href="/messages"
+                      href="/reservationlist"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
-                      Messages
+                      Reservation
                     </a>
                     <a
                       href="/notifications"

@@ -13,6 +13,9 @@ import Hostels from "../../Pages/User/Hostels";
 import Details from "../../Pages/User/Details";
 import ReservationPage from "../../Pages/User/ReservationPage";
 import WishlistPage from "../../Pages/User/WishlistPage";
+import ReservationList from "../../Pages/User/ReservationList";
+import ReservationDetails from "../../Pages/User/ReservationDetails";
+import IsLogged from "../../Components/User/middlewares/isLogged";
 
 function UserRoute() {
   return (
@@ -24,11 +27,13 @@ function UserRoute() {
         <Route path={'/emailverify'} element={<UserAuth><UserEmail/></UserAuth>}/>
         <Route path={'/forgot'} element={<UserForgotPass/>} />
         <Route path={'/'} element={<IsBlocked><UserHome/></IsBlocked>}/>
-        <Route path={'/profile'} element={<Profile/>}/>
+        <Route path={'/profile'} element={<IsLogged><Profile/></IsLogged>}/>
         <Route path={'/hostelroom'} element={<Hostels/>}/>
         <Route path={'/propertydetails'} element={<Details/>}/>
-        <Route path={'/reservation'} element={<ReservationPage/>}/>
-        <Route path={'/wishlist'} element={<WishlistPage/>}/>
+        <Route path={'/reservation'} element={<IsLogged><ReservationPage/></IsLogged>}/>
+        <Route path={'/wishlist'} element={<IsLogged><WishlistPage/></IsLogged>}/>
+        <Route path={'/reservationlist'} element={<IsLogged><ReservationList/></IsLogged>}/>
+        <Route path={'/reservationdetails'} element={<IsLogged><ReservationDetails/></IsLogged>}/>
       </Routes>
     </>
   );

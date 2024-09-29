@@ -4,12 +4,12 @@ const API_URL='http://localhost:3000';
 
 
 const fetchamenities=async()=>{
-    const response =await axios.get(API_URL+FETCH_AMENITIES)
+    const response =await axios.get(API_URL+FETCH_AMENITIES,{withCredentials:true})
     return response.data
 }
 
 const fetchsafety=async()=>{
-    const response=await axios.get(API_URL+FETCH_SAFETY)
+    const response=await axios.get(API_URL+FETCH_SAFETY,{withCredentials:true})
     return response.data
 }
 
@@ -18,13 +18,13 @@ const addproperty=async(formData)=>{
         headers:{
             'Content-Type':'multipart/form-data'
         }
-    })
+    },{withCredentials:true})
 
     return response.data
 }
 
 const fetchProperty=async(id)=>{
-    const response =await axios.post(API_URL+FETCH_PROPERTY,{id})
+    const response =await axios.post(API_URL+FETCH_PROPERTY,{id},{withCredentials:true})
     console.log(response,"service");
     
     return response.data
@@ -36,25 +36,25 @@ const updateproperty=async(formData)=>{
         headers:{
             'Content-Type':'multipart/form-data'
         }
-    })
+    },{withCredentials:true})
 
     return response.data
 }
 
 const available=async(id,hostId)=>{
-    const response=await axios.post(API_URL+AVAILABLE,{id,hostId})
+    const response=await axios.post(API_URL+AVAILABLE,{id,hostId},{withCredentials:true})
     return response.data
 }
 
 
 const reservation=async(hostId)=>{
-    const response=await axios.post(API_URL+FETCH_RESERVATION,{hostId})
+    const response=await axios.post(API_URL+FETCH_RESERVATION,{hostId},{withCredentials:true})
     return response.data
 }
 
 
 const actionOnReservation=async(action,id)=>{
-    const response=await axios.post(API_URL+ACTION_RESERVATION,{action,id})
+    const response=await axios.post(API_URL+ACTION_RESERVATION,{action,id},{withCredentials:true})
     return response.data
 }
 

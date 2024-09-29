@@ -107,3 +107,24 @@ export const rejectProperty=(id)=>async()=>{
     return response
 }
 
+export const addCoupon=(data)=>async()=>{
+    const response=await AdminService.addcoupon(data)
+    return response
+}
+
+export const fetchCoupons=()=>async()=>{
+    const response=await AdminService.fetchcoupons()
+    return response
+}
+
+export const actionCoupon=(id)=>async()=>{
+    const response=await AdminService.actioncoupon(id)
+    return response
+}
+
+
+
+export const editCoupon=(id,data)=>async()=>{
+    const response=await AdminService.editcoupon(id,data)
+    return response
+}

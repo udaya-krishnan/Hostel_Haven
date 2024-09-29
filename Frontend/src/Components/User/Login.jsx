@@ -8,7 +8,7 @@ import { loginschema } from "../../utils/validation";
 import { useDispatch, useSelector } from "react-redux";
 import { login, googleRegister } from "../../features/User/auth/authAction";
 import "react-toastify/dist/ReactToastify.css";
-import { selectToken } from "../../features/User/auth/authSelectors";
+import {  selectUser } from "../../features/User/auth/authSelectors";
 import { auth, provider } from "../../config/firebase/firebase";
 import { signInWithPopup } from "firebase/auth";
 
@@ -16,7 +16,7 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const token = useSelector(selectToken);
+  const user = useSelector(selectUser);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -34,10 +34,10 @@ function Login() {
   }
 
   useEffect(() => {
-    if (token !== null) {
+    if (user !== null) {
       navigate("/");
     }
-  }, [token]);
+  }, [user]);
 
 
   const handleSubmit = async (values) => {

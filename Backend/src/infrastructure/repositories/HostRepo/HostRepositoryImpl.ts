@@ -154,7 +154,8 @@ export class HostRepositoryImpl implements HostRepository {
       })
         .populate('user_id', 'name')  // Populating user details
         .populate('property_id', 'name location image')
-        .populate('guest_info','firstName lastName email mobile')  // Populating property details
+        .populate('guest_info','firstName lastName email mobile') 
+        .populate('payment_Id') 
   
       console.log("Reservations:", reservations);
   
@@ -170,7 +171,17 @@ export class HostRepositoryImpl implements HostRepository {
       $set:{
         booking_status:action
       }
+
+      
     })
+
+    if(action==='Approved'){
+      const property=await PropertyModel.findByIdAndUpdate({_id:updateAction?.payment_Id},{
+        $inc:{
+          'facilities.bedroom':-1
+        }
+      })
+    }
 
     return updateAction
   }

@@ -10,8 +10,6 @@ export class AdminUserService implements AdminUserCase{
     }
 
     async actionUser(id: string): Promise<any | null> {
-        // console.log(id,"id in service ");
-        
         const action =await this.adminRepository.actionUser(id)
         return action 
     }

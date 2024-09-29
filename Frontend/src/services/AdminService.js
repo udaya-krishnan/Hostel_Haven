@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ACTION_USER, ADMIN_LOGIN, FETCH_USER ,FETCH_HOST, USER_DETAILS, HOST_DETAILS, ADD_AMENITIES, FETCH_AMENITIES, ACTION_AMENITIES, UPDATE_AMENITIES, ADD_SAFETY, FETCH_SAFETY, ACTION_SAFETY, UPDATE_SAFETY, FECTH_HOST_PROPERTY, PROPERTY_DETAILS, APPROVE_PROPERTY, REJECT_PROPERTY} from "../features/Admin/auth/authType";
+import { ACTION_USER, ADMIN_LOGIN, FETCH_USER ,FETCH_HOST, USER_DETAILS, HOST_DETAILS, ADD_AMENITIES, FETCH_AMENITIES, ACTION_AMENITIES, UPDATE_AMENITIES, ADD_SAFETY, FETCH_SAFETY, ACTION_SAFETY, UPDATE_SAFETY, FECTH_HOST_PROPERTY, PROPERTY_DETAILS, APPROVE_PROPERTY, REJECT_PROPERTY, ADDCOUPON, FETCHCOUPON, ACTION_COUPON, EDIT_COUPON} from "../features/Admin/auth/authType";
 
 const API_URL='http://localhost:3000';
 
@@ -105,6 +105,25 @@ const rejectproperty=async(id)=>{
     return response.data
 }
 
+const addcoupon=async(data)=>{
+    const response=await axios.post(API_URL+ADDCOUPON,{data})
+    return response.data
+}
+
+const fetchcoupons=async()=>{
+    const response=await axios.get(API_URL+FETCHCOUPON)
+    return response.data
+}
+
+const actioncoupon=async(id)=>{
+    const response=await axios.post(API_URL+ACTION_COUPON,{id})
+    return response.data
+}
+const editcoupon=async(id,data)=>{
+    const response=await axios.post(API_URL+EDIT_COUPON,{id,data})
+    return response.data
+}
+
 const AdminService={
     adminlogin,
     FetchingUser,
@@ -123,7 +142,11 @@ const AdminService={
     fetchHostProperty,
     propertyDetails,
     approveproperty,
-    rejectproperty
+    rejectproperty,
+    addcoupon,
+    fetchcoupons,
+    actioncoupon,
+    editcoupon
     
 }
 

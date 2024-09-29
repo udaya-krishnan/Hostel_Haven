@@ -8,9 +8,7 @@ import GuestModel from "../../database/models/GuestModel";
 import ReservationModel from "../../database/models/ReserveModel";
 import PaymentModel from "../../database/models/PaymentModel";
 import WishlistModel from "../../database/models/WishlistModel";
-import mongoose,{ ObjectId } from "mongoose";
-
-
+import mongoose, { ObjectId } from "mongoose";
 
 export class UserRepositoryImpl implements UserRepository {
   async findUser(email: string): Promise<any | null> {
@@ -21,6 +19,8 @@ export class UserRepositoryImpl implements UserRepository {
     try {
       console.log("userdatails", user);
       const createUser: UserDocument = await UserModel.create(user);
+      console.log("created user data ", createUser);
+
       return createUser.toObject() as User;
     } catch (error) {
       console.error("Error creating user:", error);
@@ -70,17 +70,30 @@ export class UserRepositoryImpl implements UserRepository {
     );
   }
 
-  async fetchhostel(): Promise<any | null> {
-    return await PropertyModel.find({
+  async fetchhostel(search: string): Promise<any | null> {
+    // Define a filter object that will be used for the query
+    let filter: any = {
       property_type: "hostel",
-      propertyVerified:'approved'
-    });
+      propertyVerified: "approved",
+    };
+  
+    // If the search value is not empty, add a regex condition for name or location
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },  // Case-insensitive search for name
+        { location: { $regex: search, $options: "i" } },  // Case-insensitive search for location
+      ];
+    }
+  
+    // Fetch the properties based on the filter
+    return await PropertyModel.find(filter);
   }
+  
 
-  async fetchroom(): Promise<any | null> {
+  async fetchroom(search:string): Promise<any | null> {
     return await PropertyModel.find({
       property_type: "room",
-      propertyVerified:'approved'
+      propertyVerified: "approved",
     });
   }
 
@@ -89,106 +102,197 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async addgusetinfo(data: GusetInfo): Promise<any | null> {
-    if(data._id!==""){
-        const findGuest = await GuestModel.findById({_id:data._id});
-    console.log('it is working');
-    
-    if (findGuest) {
-     
-      return await GuestModel.findByIdAndUpdate(
-        data._id,
-        {
-          $set: {
-            firstName: data.firstName,
-            lastName:data.lastName,
-            email: data.email,
-            mobile: data.mobile,
-          },
-        },
-        { new: true } 
-      );
-    }
+    if (data._id !== "") {
+      const findGuest = await GuestModel.findById({ _id: data._id });
+      console.log("it is working");
 
-    }else {
-    
+      if (findGuest) {
+        return await GuestModel.findByIdAndUpdate(
+          data._id,
+          {
+            $set: {
+              firstName: data.firstName,
+              lastName: data.lastName,
+              email: data.email,
+              mobile: data.mobile,
+            },
+          },
+          { new: true }
+        );
+      }
+    } else {
       const newGuest = await GuestModel.create({
         firstName: data.firstName,
-        lastName:data.lastName,
+        lastName: data.lastName,
         email: data.email,
         mobile: data.mobile,
       });
 
-      return newGuest; 
+      return newGuest;
     }
   }
 
-  async reservation(totalPrice: string, guserId: string, userId: string, proId: string, durationInMonths: string): Promise<any | null> {
-    const createReservation=await ReservationModel.create({
-      total_price:totalPrice,
-      user_id:userId,
-      guest_info:guserId,
-      property_id:proId,
-      month:durationInMonths
-    })
+  async reservation(
+    totalPrice: string,
+    guserId: string,
+    userId: string,
+    proId: string,
+    durationInMonths: string,
+    checkInDate: string,
+    checkOutDate: string
+  ): Promise<any | null> {
+    const createReservation = await ReservationModel.create({
+      total_price: totalPrice,
+      user_id: userId,
+      guest_info: guserId,
+      property_id: proId,
+      month: durationInMonths,
+      check_in_date: checkInDate,
+      check_out_date: checkOutDate,
+    });
 
-    return createReservation._id
+    return createReservation._id;
   }
 
-  async payment(reservationId: string, userId: string, payment_method: string, amount: string,paymentStatus:string): Promise<any | null> {
-    const createPayment=await PaymentModel.create({
-      reservation_id:reservationId,
-      user_id:userId,
-      payment_method:payment_method,
-      payment_status:paymentStatus,
-      amount:amount
-    })
-    return createPayment._id
+  async payment(
+    reservationId: string,
+    userId: string,
+    payment_method: string,
+    amount: string,
+    paymentStatus: string
+  ): Promise<any | null> {
+    const createPayment = await PaymentModel.create({
+      reservation_id: reservationId,
+      user_id: userId,
+      payment_method: payment_method,
+      payment_status: paymentStatus,
+      amount: amount,
+    });
+    console.log(createPayment._id, "payment id");
+
+    const updatereservation = await ReservationModel.findByIdAndUpdate(
+      { _id: reservationId },
+      {
+        $set: {
+          payment_Id: createPayment._id,
+        },
+      }
+    );
+    return createPayment._id;
   }
 
   async wishlist(userId: string, proId: string): Promise<any | null> {
-
-    const findUserWish=await WishlistModel.findOne({userId:userId,propertyId:proId})
+    const findUserWish = await WishlistModel.findOne({
+      userId: userId,
+      propertyId: proId,
+    });
     console.log(findUserWish);
-    
-    if(findUserWish){
-      console.log('remove');
-      
-      const deletewish=await WishlistModel.deleteOne({userId:userId,propertyId:proId})
-      return {message:"remove"}
-    }else{
-      console.log('added');
-      
-      const wishlist=await WishlistModel.create({
-        userId:userId,
-        propertyId:proId
-      })
-      return {message:"added"}
+
+    if (findUserWish) {
+      console.log("remove");
+
+      const deletewish = await WishlistModel.deleteOne({
+        userId: userId,
+        propertyId: proId,
+      });
+      return { message: "remove" };
+    } else {
+      console.log("added");
+
+      const wishlist = await WishlistModel.create({
+        userId: userId,
+        propertyId: proId,
+      });
+      return { message: "added" };
     }
-   
   }
 
   async findWishlist(userId: string): Promise<string[] | null> {
     const findwish = await WishlistModel.find({ userId }).select("propertyId");
-    
+
     if (findwish.length > 0) {
-        // Convert each ObjectId to a string using toString()
-        const propertyIds = findwish.map(wish => (wish.propertyId as mongoose.Types.ObjectId).toString());
-        return propertyIds;
+      // Convert each ObjectId to a string using toString()
+      const propertyIds = findwish.map((wish) =>
+        (wish.propertyId as mongoose.Types.ObjectId).toString()
+      );
+      return propertyIds;
     } else {
-        return null; // Return null if no wishlist items found
+      return null; // Return null if no wishlist items found
     }
-}
+  }
 
-async fetchwishlist(id: string): Promise<any | null> {
-  const wishlist = await WishlistModel.find({ userId:id })
-      .populate('propertyId') // This populates the property details
+  async fetchwishlist(id: string): Promise<any | null> {
+    const wishlist = await WishlistModel.find({ userId: id })
+      .populate("propertyId")
       .exec();
-  return wishlist
-}
+    return wishlist;
+  }
 
-async removewish(id: string, ): Promise<any | null> {
-  const remove=await WishlistModel.findByIdAndDelete({_id:id})
-  return remove
-}
+  async removewish(id: string): Promise<any | null> {
+    const remove = await WishlistModel.findByIdAndDelete({ _id: id });
+    return remove;
+  }
 
+  async fetchwish(id: string, userId: string): Promise<any | null> {
+    console.log(id, userId);
+
+    const data = await WishlistModel.findOne({
+      userId: id,
+      propertyId: userId,
+    });
+    console.log(data, "form repo");
+
+    return data;
+  }
+
+  async paymentfailed(
+    amount: string,
+    reservationId: string,
+    userId: string
+  ): Promise<any | null> {
+    const createPayment = await PaymentModel.create({
+      amount: amount,
+      reservation_id: reservationId,
+      user_id: userId,
+      payment_method: "Razorpay",
+      payment_status: "Failed",
+    });
+
+    const update = await ReservationModel.findByIdAndUpdate(
+      { _id: reservationId },
+      {
+        $set: {
+          payment_Id: createPayment._id,
+        },
+      }
+    );
+
+    return createPayment._id;
+  }
+
+  async fetchreservation(id: string): Promise<any | null> {
+    const data = await ReservationModel.find({ user_id: id })
+      .populate("property_id")
+      .populate("payment_Id")
+      .populate("guest_info");
+    return data;
+  }
+
+  async bookingdetails(id: string): Promise<any | null> {
+    const data = await ReservationModel.findOne({ _id: id })
+      .populate("property_id")
+      .populate("payment_Id")
+      .populate("guest_info");
+    return data;
+  }
+
+  async retrypayment(id: string): Promise<any | null> {
+    const update=await PaymentModel.findByIdAndUpdate({_id:id},{
+      $set:{
+        payment_status:"success"
+      }
+    })
+
+    return update
+  }
 }
