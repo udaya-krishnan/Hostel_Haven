@@ -2,9 +2,10 @@ import { Router } from "express";
 import { googleRegister, loginUser, otpVerify, register, resendUser, verifyemail,forgotPassword } from "../../controllers/User/AuthController";
 import { changepassword, updateProfile, uploadImag } from "../../controllers/User/ProfileController";
 import { upload } from "../../../config/multer";
-import { fetchHostel, fetchRoom, fetchwishlist, findWish, propertyDetails, removewish, wishlist } from "../../controllers/User/PropertyController";
-import { razorpayOrder, verifyRazorpay } from "../../controllers/User/PaymentRazorpay";
+import { fetchHostel, fetchRoom, fetchwish, fetchwishlist, findWish, propertyDetails, removewish, wishlist } from "../../controllers/User/PropertyController";
+import { bookingDetails, continuePayment, fetchReservation, paymentFailed, razorpayOrder, RetryVerify, verifyRazorpay } from "../../controllers/User/PaymentRazorpay";
 import { addGusetInfo } from "../../controllers/User/GusetController";
+import { UserMid } from "../../../middleware/User/userMiddleware";
 
 
 const userRouter=Router()
@@ -15,19 +16,26 @@ userRouter.post('/register',register)
           .get('/resend',resendUser)
           .post('/google',googleRegister)
           .post('/verifyemail',verifyemail)
-          .post('/forgot',forgotPassword)
-          .post('/editprofile',updateProfile)
-          .post('/upload',upload.single("file"),uploadImag)
-          .post('/changepassword',changepassword)
-          .get('/fetchhostel',fetchHostel)
-          .get('/fetchroom',fetchRoom)
+          .patch('/forgot',forgotPassword)
+          .put('/editprofile',UserMid,updateProfile)
+          .patch('/upload',UserMid,upload.single("file"),uploadImag)
+          .patch('/changepassword',UserMid,changepassword)
+          .post('/fetchhostel',fetchHostel)
+          .post('/fetchroom',fetchRoom)
           .post('/propertydetails',propertyDetails)
-          .post('/razorpay',razorpayOrder)
-          .post('/razorpayverify',verifyRazorpay)
-          .post('/gusetinfo',addGusetInfo)
-          .post('/wishlist',wishlist)
-          .post('/findwish',findWish)
-          .post('/fetchwish',fetchwishlist)
-          .post('/removewish',removewish)
+          .post('/razorpay',UserMid,razorpayOrder)
+          .post('/razorpayverify',UserMid,verifyRazorpay)
+          .post('/gusetinfo',UserMid,addGusetInfo)
+          .post('/wishlist',UserMid,wishlist)
+          .post('/findwish',UserMid,findWish)
+          .post('/fetchwish',UserMid,fetchwishlist)
+          .delete('/removewish',UserMid,removewish)
+          .post('/wish',UserMid,fetchwish)
+          .post('/paymentfailed',UserMid,paymentFailed)
+          .post('/fetchreservation',UserMid,fetchReservation)
+          .post('/bookingdetails',UserMid,bookingDetails)
+          .post('/continuepayment',UserMid,continuePayment)
+          .post('/retryverify',UserMid,RetryVerify)
+        
 
 export default userRouter

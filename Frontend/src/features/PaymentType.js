@@ -1,3 +1,5 @@
 export const RAZORPAY='/razorpay'
 export const RAZOPAY_VERIFY='/razorpayverify'
 export const GUSET_INFO='/gusetinfo'
+export const PAYMENT_FAILED='/paymentfailed'
+export const RETRY_VERIFY='/retryverify'

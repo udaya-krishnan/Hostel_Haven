@@ -4,15 +4,17 @@ import { accountEditSchema ,passwordSchema} from "../../utils/validation";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../../features/User/auth/authSelectors";
-import { changePassword, editprofile } from "../../features/User/auth/authAction";
+import { changePassword, editProfile } from "../../features/User/auth/authAction";
 import { Toaster, toast } from "sonner";
 
 function UserProfile() {
   const [edit, setEdit] = useState(false);
   const [changepass, setPass] = useState(false);
   const userData = useSelector(selectUser);
+  console.log(userData);
+  
   const dispatch = useDispatch();
-  const date = new Date(userData.createdAt);
+  const date = new Date(userData?.createdAt);
 
   const options = { year: "numeric", month: "long", day: "numeric" };
   const formattedDate = date.toLocaleDateString("en-US", options);
@@ -22,7 +24,7 @@ function UserProfile() {
 
     toast.promise( 
       new Promise((resolve, reject) => {
-        dispatch(editprofile({ values }))
+        dispatch(editProfile({ values }))
           .then(() => {
             resolve();
             setEdit(false);
@@ -73,7 +75,7 @@ function UserProfile() {
         <ProfileSide change={setPass} value={changepass} userData={userData} />
 
         <div className="w-full lg:w-2/3 lg:pl-10 mt-6 lg:mt-0">
-          <h1 className="text-2xl font-bold mb-2">Hello, {userData.name}</h1>
+          <h1 className="text-2xl font-bold mb-2">Hello, {userData?.name}</h1>
 
           {changepass ? (
             <Formik

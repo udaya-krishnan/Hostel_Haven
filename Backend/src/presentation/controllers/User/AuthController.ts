@@ -11,10 +11,6 @@ import { addAbortListener } from "events";
 dotenv.config()
 
 
-
-
-
-
 const userRepository = new UserRepositoryImpl();
 const registerService = new RegisterService(userRepository);
 const loginService =new LoginService(userRepository)
@@ -57,10 +53,10 @@ export const register = async (req: Request, res: Response) => {
 export const otpVerify = async (req: Request , res: Response) => {
   try {
     console.log("hai there");
-    const token = req.cookies.jwt
+    const token = req.cookies.accessToken
     // console.log(token);
     const decodedData = await verifyToken(token)
-    console.log(decodedData);
+    console.log("decodeddd ddddatarr",decodedData);
     
     if (!decodedData) {
       return res.status(400).json({ message: "Session expired or no data found in session." });
@@ -68,20 +64,18 @@ export const otpVerify = async (req: Request , res: Response) => {
     if(decodedData.message==="register"){
      
       const { name, email, password, userType, otp } = decodedData;
-  
-      // console.log("Session Data:", sessionData);
 
-      console.log(req.body.otp,"ooooooooooooooooootttttttttttpppppppppppppppp");
-      
-  
       if (otp === req.body.otp) {
         console.log('inseid the if condintion');
         
         let image='anony.webp'
         const userData=await registerService.execute({ name, email, password, userType ,image});
         console.log(userData,"userdata djdsfjdsdfsdfsfsfssfsfsfdfdddddddddddddddddd");
-        
-        const token =await createToken(email,res)
+        let obj={
+          email:email,
+          userType:'user'
+        }
+        const token =await createToken(obj,res)
         console.log(userData,"user data dfkjfkdhsdkfhsdfhsdjkh");
         
         return res.status(200).json({ message: "OTP verified and registration successful",userData:userData,token:token });
@@ -151,7 +145,7 @@ export const resendUser=async(req:Request,res:Response)=>{
     console.log('resend otp controller from the user');
     
     
-    const token =req.cookies.jwt
+    const token =req.cookies.accessToken
     console.log(token);
     
     const decoded=await verifyToken(token)
@@ -244,8 +238,7 @@ export const verifyemail=async(req:Request,res:Response)=>{
 export const forgotPassword=async(req:Request,res:Response)=>{
   try {
     const data=req.body.data
-    const token=req.cookies.jwt
-
+    const token=req.cookies.accessToken
     const decoded=await verifyToken(token)
 
    await registerService.forgotpass(decoded.email,data.newPassword)

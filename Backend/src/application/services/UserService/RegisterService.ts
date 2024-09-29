@@ -8,11 +8,11 @@ export class RegisterService implements RegisterUseCase{
     
     constructor (private userRepository:UserRepository){}
 
-    async execute(user: User): Promise<string> {
+    async execute(user: User): Promise<any|null> {
         user.password=await bcrypt.hash(user.password,10);
         console.log(user)
         const newUser= await this.userRepository.createUser(user)
-        return newUser.email
+        return newUser
     }
 
     async find(email:string):Promise<any | null>{

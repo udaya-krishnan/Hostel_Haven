@@ -5,7 +5,10 @@ import ReservationList from '../../Components/Host/ReservationList'
 function Reservstion() {
   return (
     <>
-    <Header/>
+   
+    <Header />
+    
+    
     <ReservationList/>
     </>
   )

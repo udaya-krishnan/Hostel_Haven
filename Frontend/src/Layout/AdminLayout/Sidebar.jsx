@@ -85,6 +85,32 @@ const Sidebar = () => {
               <span className="ml-2">Safety</span>
             </a>
           </li>
+          <li className="mb-4">
+            <a
+              href="/admin/banner"
+              onClick={() => handleItemClick("Banner")}
+              className={`flex items-center p-2 rounded ${
+                activeItem === "Banner"
+                  ? "bg-gray-200 text-black"
+                  : "text-gray-700 hover:text-black"
+              }`}
+            >
+              <span className="ml-2">Banner</span>
+            </a>
+          </li>
+          <li className="mb-4">
+            <a
+              href="/admin/coupon"
+              onClick={() => handleItemClick("Coupon")}
+              className={`flex items-center p-2 rounded ${
+                activeItem === "Coupon"
+                  ? "bg-gray-200 text-black"
+                  : "text-gray-700 hover:text-black"
+              }`}
+            >
+              <span className="ml-2">Coupon</span>
+            </a>
+          </li>
           {/* Add more list items as needed */}
         </ul>
       </div>

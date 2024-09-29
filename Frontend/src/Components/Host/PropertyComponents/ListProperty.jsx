@@ -339,7 +339,7 @@ function ListProperty() {
     <>
       {(currentStep === 0 && updateStep===0)&& (
         <>
-          <div className="flex flex-col items-center justify-center mt-12">
+          <div className="flex flex-col items-center justify-center mt-24">
             <div className="flex justify-between w-10/12 mb-8">
               <h1 className="text-2xl text-btncolor font-extrabold underline">
                 Listed Properties

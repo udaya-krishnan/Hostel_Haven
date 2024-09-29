@@ -10,10 +10,14 @@ function WishlistsIcon({ proId, wish }) {
   const userData = useSelector(selectUser);
   const dispatch = useDispatch();
   const [isLiked, setIsLiked] = useState(false); // Whether the item is liked
+  console.log(wish,'wsihliist');
+  
 
   // Check if the current property is already in the wishlist
   useEffect(() => {
     if (wish && wish.includes(proId)) {
+      console.log("wished");
+      
       setIsLiked(true);
     } else {
       setIsLiked(false);
@@ -23,11 +27,15 @@ function WishlistsIcon({ proId, wish }) {
   const handleWishlist = async () => {
     if (userData) {
       try {
-        const res = await dispatch(wishlist(userData._id, proId));
+          console.log(proId,"hai proID");
+          
+        console.log(userData,proId,"from wishlist");
+        
+        const res = await dispatch(wishlist({id:userData._id, proId}));
         console.log(res, "Wishlist add/remove response");
         
         // Toggle the like state based on the response
-        if (res?.message !== "remove") {
+        if (res?.payload?.message !== "remove") {
           setIsLiked(true);
         } else {
           setIsLiked(false);

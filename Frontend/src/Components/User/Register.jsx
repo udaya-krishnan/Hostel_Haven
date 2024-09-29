@@ -41,8 +41,7 @@ function Register() {
         const result = await dispatch(
           register(values.name, values.email, values.password)
         );
-
-        // Assuming `result` has a `message` field for errors
+        
         if (result.message === "email exists") {
           formik.setErrors({ email: "Email already exists" });
         } else {

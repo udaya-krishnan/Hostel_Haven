@@ -3,23 +3,14 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* Custom scrollbar styles */
+/* Hide the scrollbar */
 ::-webkit-scrollbar {
-  width: 12px; /* width of the entire scrollbar */
+  display: none; /* For Chrome, Safari, and Opera */
 }
 
-::-webkit-scrollbar-track {
-  background: #3C3633; /* color of the track */
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #888; /* color of the scroll thumb */
-  border-radius: 6px; /* roundness of the scroll thumb */
-  border: 3px solid #3C3633; /* creates padding around scroll thumb */
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555; /* color of the scroll thumb when hovered */
+body {
+  -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+  scrollbar-width: none;  /* For Firefox */
 }
 
 /* Add Poppins as the default font for the body */

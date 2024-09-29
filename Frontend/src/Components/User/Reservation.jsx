@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
 import online from "../../../public/icons/online.png";
 import { useDispatch, useSelector } from "react-redux";
-import { AddGusetInfo, Razorpay } from "../../features/PaymentAction";
-import {  RazorpayConfig } from "../../config/Razorpay/Razorpay";
+import { AddGusetInfo, paymentFailed, Razorpay } from "../../features/PaymentAction";
+import { RazorpayConfig } from "../../config/Razorpay/Razorpay";
 import { selectUser } from "../../features/User/auth/authSelectors";
-import {useNavigate} from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
-const Reservation = ({ proData, pricePerMonth, durationInMonths }) => {
+const Reservation = ({
+  proData,
+  pricePerMonth,
+  durationInMonths,
+  checkInDate,
+  checkOutDate,
+}) => {
   const [formData, setFormData] = useState({
-    _id:"",
+    _id: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -22,15 +28,16 @@ const Reservation = ({ proData, pricePerMonth, durationInMonths }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); 
+  const [isEditing, setIsEditing] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-  const dispatch=useDispatch()
-  const userData=useSelector(selectUser)
-  const navigate=useNavigate()
+  const dispatch = useDispatch();
+  const userData = useSelector(selectUser);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
-    setTotalPrice(selectedDuration * pricePerMonth);
-  }, [selectedDuration, pricePerMonth]);
+    setTotalPrice(pricePerMonth);
+  }, [pricePerMonth]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,13 +47,20 @@ const Reservation = ({ proData, pricePerMonth, durationInMonths }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    
-    const res=await dispatch(AddGusetInfo(formData))
-    console.log(res.data);
-    
-    setFormData(res.data)
+    if(userData){
+      const res = await dispatch(AddGusetInfo(formData));
+    console.log(res,"response");
+
+    setFormData(res.data);
     setShowPaymentForm(true);
-    setIsEditing(false); 
+    setIsEditing(false);
+    }else{
+      toast.error("Please log in to continue", {
+        hideProgressBar: true,
+        className: "custom-toast-error",
+        autoClose: 2000,
+      });
+    }
   };
 
   const handleDropdownToggle = () => {
@@ -60,27 +74,67 @@ const Reservation = ({ proData, pricePerMonth, durationInMonths }) => {
   };
 
   const handleEdit = () => {
-    setShowPaymentForm(false); 
-    setIsEditing(true); 
+    setShowPaymentForm(false);
+    setIsEditing(true);
   };
   const handlePaymentSelection = (method) => {
     setSelectedPaymentMethod(method);
   };
 
-
-  const handlePayNow = async() => {
-    if (selectedPaymentMethod==="Razorpay") {  
+  const handlePayNow = async () => {
+    if (selectedPaymentMethod === "Razorpay") {
       console.log(`Selected Payment Method: ${selectedPaymentMethod}`);
-      console.log(userData,"userData");
-      
-      const response=await dispatch(Razorpay(totalPrice,formData._id,userData._id,proData._id,durationInMonths))
-      console.log(response,"asdjksj");
-      
-      const{amount,currency,id}=response.order
+      console.log(userData, "userData");
 
-      const rzp1 = new window.Razorpay(RazorpayConfig(amount,currency,id,response.id,userData._id,selectedPaymentMethod,dispatch,totalPrice,navigate,toast));
+      const response = await dispatch(
+        Razorpay(
+          totalPrice,
+          formData._id,
+          userData._id,
+          proData._id,
+          durationInMonths,
+          checkInDate,
+          checkOutDate
+        )
+      );
+      console.log(response, "asdjksj");
+
+      const { amount, currency, id } = response.order;
+
+      const rzp1 = new window.Razorpay(
+        RazorpayConfig(
+          amount,
+          currency,
+          id,
+          response.id,
+          userData._id,
+          selectedPaymentMethod,
+          dispatch,
+          totalPrice,
+          navigate,
+          toast
+        )
+      );
+
+      rzp1.on("payment.failed",async(resp)=>{
+        console.log(response.id,"reseponse id");
+        rzp1.close();
+        
+       const res=await dispatch(paymentFailed(amount,response.id,userData._id))
+       if(res){
+
+        
+        toast.error('Reservation Failed', {
+          hideProgressBar: true,
+          className: 'custom-toast-success',
+          autoClose: 2000
+        })
+        setTimeout(()=>{
+          navigate('/hostelroom')
+        },2000)
+       }
+      })
       rzp1.open();
-    
     } else {
       console.log("No payment method selected");
       alert("Please select a payment method before proceeding.");
@@ -136,11 +190,11 @@ const Reservation = ({ proData, pricePerMonth, durationInMonths }) => {
       </div>
 
       <button
-      className="w-full bg-btncolor text-white py-2 rounded hover:bg-btncolor"
-      onClick={handlePayNow} // Trigger the handlePayNow function when clicked
-    >
-      Pay Now &gt;
-    </button>
+        className="w-full bg-btncolor text-white py-2 rounded hover:bg-btncolor"
+        onClick={handlePayNow} // Trigger the handlePayNow function when clicked
+      >
+        Pay Now &gt;
+      </button>
       <div className="mt-4 text-center">
         <img src={online} alt="Payment methods" className="inline-block w-48" />
         <p className="text-xs text-gray-600 mt-1">By Pay.com and secured</p>
@@ -162,23 +216,30 @@ const Reservation = ({ proData, pricePerMonth, durationInMonths }) => {
         <p>{proData.name}</p>
         <p>{proData.location}</p>
         <p>
-          {proData.facilities.bedroom} Bedrooms |{" "}
-          {proData.facilities.bathroom} Bathrooms |{" "}
-          {proData.facilities.parking} Parking
+          {proData.facilities.bedroom} Bedrooms | {proData.facilities.bathroom}{" "}
+          Bathrooms | {proData.facilities.parking} Parking
         </p>
 
+        {/* Display check-in and check-out dates */}
+        <div className="mt-4">
+          <h4 className="font-bold">Booking Dates</h4>
+          <p>Check-in: {new Date(checkInDate).toLocaleDateString()}</p>
+          <p>Check-out: {new Date(checkOutDate).toLocaleDateString()}</p>
+        </div>
+
+        {/* Duration and price details */}
         <div className="mt-4">
           <h4 className="font-bold">Total length of stay</h4>
           <p>
             {selectedDuration} {selectedDuration > 1 ? "Months" : "Month"}
           </p>
 
-          <button
+          {/* <button
             className="mt-2 text-blue-500 hover:underline"
             onClick={handleDropdownToggle}
           >
             Change your selection
-          </button>
+          </button> */}
 
           {isDropdownOpen && (
             <select
@@ -288,10 +349,9 @@ const Reservation = ({ proData, pricePerMonth, durationInMonths }) => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
           <PaymentForm />
           <BookingDetails />
-          <ToastContainer position="top-right"/>
+          <ToastContainer position="top-right" />
         </div>
       )}
     </div>

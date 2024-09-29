@@ -6,13 +6,13 @@ export class PropertyService implements PropertyUseCase{
     constructor(private userRepository:UserRepository){}
 
 
-    async fetchhostel(): Promise<any | null> {
-        const hostel=await this.userRepository.fetchhostel()
+    async fetchhostel(search:string): Promise<any | null> {
+        const hostel=await this.userRepository.fetchhostel(search)
         return hostel
     }
 
-    async fetchroom(): Promise<any | null> {
-        const room=await this.userRepository.fetchroom()
+    async fetchroom(search:string): Promise<any | null> {
+        const room=await this.userRepository.fetchroom(search)
         return room
     }
 
@@ -38,6 +38,11 @@ export class PropertyService implements PropertyUseCase{
 
     async removewish(id: string): Promise<any | null> {
         const data =await this.userRepository.removewish(id)
+        return data
+    }
+
+    async fetchwish(id: string, userId: string): Promise<any | null> {
+        const data=await this.userRepository.fetchwish(id,userId)
         return data
     }
 }
