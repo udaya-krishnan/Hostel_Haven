@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectHost } from "../../../features/Host/auth/authSelectors";
-import { fetchproperty, available } from "../../../features/Host/auth/authAction";
+import { fetchProperty, available } from "../../../features/Host/auth/authAction";
 
 // Enum for property verification status
 const PropertyVerified = {
@@ -17,9 +17,9 @@ function CardProperty({ setFormData, updateNext }) {
 
   useEffect(() => {
     const fetchPro = async () => {
-      const response = await dispatch(fetchproperty(hostData._id));
+      const response = await dispatch(fetchProperty(hostData._id));
       console.log("res", response);
-      setProperty(response.property);
+      setProperty(response.payload.property);
     };
 
     fetchPro();
@@ -56,7 +56,7 @@ function CardProperty({ setFormData, updateNext }) {
   }
 
   async function toggleAvailability(id, isAvailable) {
-    const res = await dispatch(available(id, hostData._id));
+    const res = await dispatch(available({id:id, hostId:hostData._id}));
     // Update the local state with the new availability status
     const updatedProperties = properties.map((property) =>
       property._id === id

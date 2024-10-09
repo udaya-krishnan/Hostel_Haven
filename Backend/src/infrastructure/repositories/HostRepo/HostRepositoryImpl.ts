@@ -5,12 +5,15 @@ import AmenitesModel from "../../database/models/AmenitesModel";
 import SafetyModel from "../../database/models/SafetyModel";
 import PropertyModel from "../../database/models/PropertyModel";
 import ReservationModel from "../../database/models/ReserveModel";
-import { ObjectId } from "mongodb";
-
+import { ObjectId, Transaction } from "mongodb";
+import PaymentModel from "../../database/models/PaymentModel";
+import WalletModel from "../../database/models/WalletModel";
+import TransactionModel from "../../database/models/TransactionModel";
+  
 export class HostRepositoryImpl implements HostRepository {
   async findHost(email: string): Promise<any | null> {
     return UserModel.findOne({ email: email });
-  }
+  } 
 
   async ruleChange(email: string): Promise<any | null> {
     return UserModel.findOneAndUpdate(
@@ -85,28 +88,54 @@ export class HostRepositoryImpl implements HostRepository {
   }
 
   async updateproperty(data: any, id: string): Promise<any | null> {
-    return await PropertyModel.findByIdAndUpdate(
-      { _id: id },
-      {
-        $set: {
-          name: data.name,
-          description: data.description,
-          property_type: data.property_type,
-          location: data.location,
-          latitude: data.latitude,
-          longitude: data.longitude,
-          regularPrice: data.regularPrice,
-          offerPrice: data.offerPrice || "",
-          image: data.image,
-          amenities: data.amenities,
-          safety: data.safety,
-          policies: data.policies,
-          facilities: data.facilities,
-          accommodation: data.accommodation,
-          forwhom: data.forwhom,
-        },
-      }
-    );
+
+    if(data.image.length===5){
+      return await PropertyModel.findByIdAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            name: data.name,
+            description: data.description,
+            property_type: data.property_type,
+            location: data.location,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            regularPrice: data.regularPrice,
+            offerPrice: data.offerPrice || "",
+            image: data.image,
+            amenities: data.amenities,
+            safety: data.safety,
+            policies: data.policies,
+            facilities: data.facilities,
+            accommodation: data.accommodation,
+            forwhom: data.forwhom,
+          },
+        }
+      );
+    }else{
+      return await PropertyModel.findByIdAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            name: data.name,
+            description: data.description,
+            property_type: data.property_type,
+            location: data.location,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            regularPrice: data.regularPrice,
+            offerPrice: data.offerPrice || "",
+            amenities: data.amenities,
+            safety: data.safety,
+            policies: data.policies,
+            facilities: data.facilities,
+            accommodation: data.accommodation,
+            forwhom: data.forwhom,
+          },
+        }
+      );
+    }
+    
   }
 
   async available(id: string): Promise<any | null> {
@@ -169,7 +198,7 @@ export class HostRepositoryImpl implements HostRepository {
   async actionreservation(action: any, id: any): Promise<any | null> {
     const updateAction=await ReservationModel.findByIdAndUpdate({_id:id},{
       $set:{
-        booking_status:action
+        booking_status:action                                                 
       }
 
       
@@ -185,6 +214,57 @@ export class HostRepositoryImpl implements HostRepository {
 
     return updateAction
   }
+
+  async fetchpayment(id: string): Promise<any | null> {
+   
+
+    const findwallet=await WalletModel.findOne({user_Id:id})
+
+    if(findwallet){
+      const allTransactions=await TransactionModel.find({wallet_Id:findwallet._id})
+
+      return [findwallet,allTransactions]
+    }else{
+      return ["No Wallet",'No Transactions']
+    }
+
+
+  }
+
+  async addAmount(hostId: string, amount: number): Promise<any | null> {
+ 
+    const findWallet = await WalletModel.findOne({ user_Id: hostId });
+    
+    let walletId: string;
+  
+    if (findWallet) {
+   
+      walletId = findWallet._id;
+      await WalletModel.findByIdAndUpdate(walletId, { $inc: { balance: amount } });
+    } else {
+     
+      const createWallet = await WalletModel.create({
+        user_Id: hostId,
+        balance: amount
+      });
+      walletId = createWallet._id;
+    }
+  
+
+    const createTransaction = TransactionModel.create({
+      amount,
+      wallet_Id: walletId,
+      transaction_type: "Credited"
+    });
+  
+   
+    await Promise.all([createTransaction]);
+  
+    return  walletId
+  }
+
+
+  
   
   
 }

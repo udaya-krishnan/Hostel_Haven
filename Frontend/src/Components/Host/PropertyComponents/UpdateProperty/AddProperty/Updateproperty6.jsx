@@ -11,7 +11,7 @@ function Updateproperty6({ updateBack, formData, updateAmenities }) {
   useEffect(() => {
     const fetchData = async () => {
       const data = await dispatch(fetchamenities());
-      setAmenities(data.allamenities); // Assume data.allamenities returns an array of amenities
+      setAmenities(data.payload.allamenities); // Assume data.allamenities returns an array of amenities
     };
     fetchData();
   }, [dispatch]);

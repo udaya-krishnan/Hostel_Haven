@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ACTION_USER, ADMIN_LOGIN, FETCH_USER ,FETCH_HOST, USER_DETAILS, HOST_DETAILS, ADD_AMENITIES, FETCH_AMENITIES, ACTION_AMENITIES, UPDATE_AMENITIES, ADD_SAFETY, FETCH_SAFETY, ACTION_SAFETY, UPDATE_SAFETY, FECTH_HOST_PROPERTY, PROPERTY_DETAILS, APPROVE_PROPERTY, REJECT_PROPERTY, ADDCOUPON, FETCHCOUPON, ACTION_COUPON, EDIT_COUPON} from "../features/Admin/auth/authType";
+import { ACTION_USER, ADMIN_LOGIN, FETCH_USER ,FETCH_HOST, USER_DETAILS, HOST_DETAILS, ADD_AMENITIES, FETCH_AMENITIES, ACTION_AMENITIES, UPDATE_AMENITIES, ADD_SAFETY, FETCH_SAFETY, ACTION_SAFETY, UPDATE_SAFETY, FECTH_HOST_PROPERTY, PROPERTY_DETAILS, APPROVE_PROPERTY, REJECT_PROPERTY, ADDCOUPON, FETCHCOUPON, ACTION_COUPON, EDIT_COUPON, FETCH_BANNER, EDIT_BANNER} from "../features/Admin/auth/authType";
 
 const API_URL='http://localhost:3000';
 
@@ -20,7 +20,6 @@ const FetchingHost=async()=>{
     
     return response.data
 }
-
 
 const ActionUser=async(id)=>{   
     const response =await axios.post(API_URL+ACTION_USER,{id})
@@ -124,6 +123,24 @@ const editcoupon=async(id,data)=>{
     return response.data
 }
 
+const fetchbanner=async()=>{
+    const response=await axios.get(API_URL+FETCH_BANNER)
+    return response.data
+}
+
+const editbanner=async(formData)=>{
+
+    console.log(formData,"form data is action");
+    
+    const response=await axios.put(API_URL+EDIT_BANNER,formData,{
+        headers:{
+            'Content-Type':'multipart/form-data'
+        }
+    })
+
+    return response.data
+}
+
 const AdminService={
     adminlogin,
     FetchingUser,
@@ -146,7 +163,9 @@ const AdminService={
     addcoupon,
     fetchcoupons,
     actioncoupon,
-    editcoupon
+    editcoupon,
+    fetchbanner,
+    editbanner
     
 }
 

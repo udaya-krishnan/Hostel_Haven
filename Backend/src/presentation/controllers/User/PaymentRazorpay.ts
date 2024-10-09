@@ -16,13 +16,11 @@ export const razorpayOrder=async(req:Request,res:Response)=>{
         const {amount,guestId,proId,userId,durationInMonths,checkInDate,checkOutDate}=req.body
         console.log(amount,guestId,proId,userId,durationInMonths,"amount");
 
-
         const options = {
             amount: amount * 100, 
             currency: 'INR',
             receipt: 'order_rcptid_11',
           };
-
           const id=await userService.reservation(amount,guestId,userId,proId,durationInMonths,checkInDate,checkOutDate)
           const order=await razorpay.orders.create(options)
 

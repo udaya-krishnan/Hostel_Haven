@@ -22,4 +22,6 @@ export interface AdminRepository{
     fetchcoupon():Promise<any|null>
     actioncoupon(id:string):Promise<any|null>
     editCoupon(id:string,data:any):Promise<any|null>
+    fetchBanner():Promise<any |null>
+    editBanner(id:string,data:any):Promise<any|null>
 }

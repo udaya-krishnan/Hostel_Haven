@@ -17,8 +17,6 @@ export interface Payment{
     payment_date:Date
 }
 
-
-
 export interface PaymentDocument extends Payment,Document{
     _id:string
 }

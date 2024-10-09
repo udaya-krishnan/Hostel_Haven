@@ -5,6 +5,7 @@ import { upload } from "../../../config/multer";
 import { addproperty, availableProperty, fetchamenities, fetchProperty, fetchReservation, fetchsafety, updateProperty } from "../../controllers/Host/HostPropertyController";
 import { actionReservation } from "../../controllers/Host/HostReservationController";
 import { HostMid } from "../../../middleware/Host/hostMiddleware";
+import { addAmount, fetchPayment, verifyAmount } from "../../controllers/Host/HostPaymentController";
 // import { fet } from "../../controllers/Admin/AdminSafetyController";
 
 
@@ -27,6 +28,9 @@ hostRouter.post('/login',verifyhost)
           .post('/available',HostMid,availableProperty)
           .post('/fetchreservation',HostMid,fetchReservation)
           .post('/actionreservation',HostMid,actionReservation)
+          .post('/fetchpayment',fetchPayment)
+          .post('/addamount',addAmount)
+          .post('/verifyamount',verifyAmount)
 
 
 export default hostRouter

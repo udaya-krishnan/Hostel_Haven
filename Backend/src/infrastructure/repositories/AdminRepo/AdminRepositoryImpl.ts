@@ -7,6 +7,7 @@ import { SafetyDocument } from "../../database/models/SafetyModel";
 import PropertyModel from "../../database/models/PropertyModel";
 import CouponModel from "../../database/models/CouponModel";
 import { CouponData } from "../../../domain/entities/Coupon";
+import BannerModel from "../../database/models/BannerModel";
 
 export class AdminRepositoryImpl implements AdminRepository{
 
@@ -232,5 +233,18 @@ export class AdminRepositoryImpl implements AdminRepository{
            } 
         })
         return edit
+    }
+
+    async fetchBanner(): Promise<any | null> {
+        return await BannerModel.find({})
+    }
+
+    async editBanner(id: string, data: any): Promise<any | null> {
+        const update=await BannerModel.findByIdAndUpdate({_id:id},{
+            image:data?.image,
+            content:data?.content
+        })
+
+        return update
     }
 }

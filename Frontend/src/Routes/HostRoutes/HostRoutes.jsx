@@ -7,6 +7,7 @@ import HostHome from '../../Pages/Host/HostHome'
 import HostProfile from '../../Pages/Host/Account/HostProfile'
 import PropertList from '../../Pages/Host/Property/PropertList'
 import Reservstion from '../../Pages/Host/Reservstion'
+import HostWallet from '../../Pages/Host/Account/HostWallet'
 
 function HostRoutes() {
   return (
@@ -19,6 +20,7 @@ function HostRoutes() {
         <Route path={'/profile'} element={<HostProfile/>}/>
         <Route path={'/property'} element={<PropertList/>}/>
         <Route path={'/reservation'} element={<Reservstion/>}/>
+        <Route path={'/wallet'} element={<HostWallet/>}/>
     </Routes>
     </>
   )

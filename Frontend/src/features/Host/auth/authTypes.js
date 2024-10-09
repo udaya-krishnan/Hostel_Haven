@@ -13,3 +13,7 @@ export const UPDATE_PROPERTY='/host/updateproperty'
 export const AVAILABLE='/host/available'
 export const FETCH_RESERVATION='/host/fetchreservation'
 export const ACTION_RESERVATION='/host/actionreservation'
+
+export const FETCHPAYMENT='/host/fetchpayment'
+export const ADDAMOUNT='/host/addamount'
+export const VERIFYAMOUNT='/host/verifyamount'

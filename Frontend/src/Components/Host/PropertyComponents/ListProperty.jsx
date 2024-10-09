@@ -11,7 +11,7 @@ import Addproperty8 from "./AddProperty/Addproperty8";
 import Addproperty9 from "./AddProperty/Addproperty9";
 import { useDispatch, useSelector } from "react-redux";
 import { toast, Toaster } from "sonner";
-import { addproperty, updateProperty } from "../../../features/Host/auth/authAction";
+import { addProperty, updateProperty } from "../../../features/Host/auth/authAction";
 import CardProperty from "./CardProperty";
 import Updateproperty1 from "./UpdateProperty/AddProperty/Updateproperty1";
 import UpdateProperty2 from "./UpdateProperty/AddProperty/UpdateProperty2";
@@ -312,7 +312,7 @@ function ListProperty() {
     try {
       toast.promise(
         new Promise((resolve, reject) => {
-          dispatch(addproperty(formDataToSend))
+          dispatch(addProperty(formDataToSend))
             .then(() => {
               resolve();
               setCurrentStep(0);

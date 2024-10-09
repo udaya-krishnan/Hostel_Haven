@@ -3,12 +3,14 @@ import { UserDocument } from "../../database/models/UserModel";
 import { GusetInfo, User } from "../../../domain/entities/User";
 import UserModel from "../../database/models/UserModel";
 import { EditUser } from "../../../domain/entities/EditUser";
-import PropertyModel from "../../database/models/PropertyModel";
+import PropertyModel, { Property } from "../../database/models/PropertyModel";
 import GuestModel from "../../database/models/GuestModel";
 import ReservationModel from "../../database/models/ReserveModel";
 import PaymentModel from "../../database/models/PaymentModel";
 import WishlistModel from "../../database/models/WishlistModel";
 import mongoose, { ObjectId } from "mongoose";
+import WalletModel from "../../database/models/WalletModel";
+import TransactionModel from "../../database/models/TransactionModel";
 
 export class UserRepositoryImpl implements UserRepository {
   async findUser(email: string): Promise<any | null> {
@@ -76,21 +78,20 @@ export class UserRepositoryImpl implements UserRepository {
       property_type: "hostel",
       propertyVerified: "approved",
     };
-  
+
     // If the search value is not empty, add a regex condition for name or location
     if (search) {
       filter.$or = [
-        { name: { $regex: search, $options: "i" } },  // Case-insensitive search for name
-        { location: { $regex: search, $options: "i" } },  // Case-insensitive search for location
+        { name: { $regex: search, $options: "i" } }, // Case-insensitive search for name
+        { location: { $regex: search, $options: "i" } }, // Case-insensitive search for location
       ];
     }
-  
+
     // Fetch the properties based on the filter
     return await PropertyModel.find(filter);
   }
-  
 
-  async fetchroom(search:string): Promise<any | null> {
+  async fetchroom(search: string): Promise<any | null> {
     return await PropertyModel.find({
       property_type: "room",
       propertyVerified: "approved",
@@ -161,25 +162,61 @@ export class UserRepositoryImpl implements UserRepository {
     amount: string,
     paymentStatus: string
   ): Promise<any | null> {
-    const createPayment = await PaymentModel.create({
-      reservation_id: reservationId,
-      user_id: userId,
-      payment_method: payment_method,
-      payment_status: paymentStatus,
-      amount: amount,
-    });
-    console.log(createPayment._id, "payment id");
-
-    const updatereservation = await ReservationModel.findByIdAndUpdate(
-      { _id: reservationId },
-      {
-        $set: {
-          payment_Id: createPayment._id,
-        },
-      }
+    const intAmount = parseInt(amount);
+  
+    // Run initial independent queries in parallel
+    const [createPayment, findWallet, findReservation] = await Promise.all([
+      PaymentModel.create({
+        reservation_id: reservationId,
+        user_id: userId,
+        payment_method: payment_method,
+        payment_status: paymentStatus,
+        amount: amount,
+      }),
+      WalletModel.findOne({ user_Id: userId }),
+      ReservationModel.findById({ _id: reservationId })
+        .populate<{ property_id: Property }>("property_id")
+        .exec(),
+    ]);
+  
+    const userWallet = await WalletModel.findOneAndUpdate(
+      { user_Id: userId },
+      { $setOnInsert: { balance: 0 } },  // Only set balance to 0 if creating a new wallet
+      { new: true, upsert: true }
     );
+    
+    await Promise.all([
+      TransactionModel.create({
+        wallet_Id: userWallet._id,
+        amount: intAmount,
+        transaction_type: "Debited",
+      }),
+      ReservationModel.findByIdAndUpdate(
+        { _id: reservationId },
+        { $set: { payment_Id: createPayment._id } }
+      ),
+    ]);
+  
+    // Use upsert to create or update the host wallet in one operation
+    const hostWallet = await WalletModel.findOneAndUpdate(
+      { user_Id: findReservation?.property_id?.host_id },
+      { $inc: { balance: intAmount } },  // Increment balance directly
+      { new: true, upsert: true }
+    );
+  
+    // Create transaction for host wallet
+    await TransactionModel.create({
+      wallet_Id: hostWallet._id,
+      amount: intAmount,
+      transaction_type: "Credited",
+    });
+  
+    console.log(createPayment._id, "payment id");
+  
     return createPayment._id;
   }
+  
+  
 
   async wishlist(userId: string, proId: string): Promise<any | null> {
     const findUserWish = await WishlistModel.findOne({
@@ -287,12 +324,15 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async retrypayment(id: string): Promise<any | null> {
-    const update=await PaymentModel.findByIdAndUpdate({_id:id},{
-      $set:{
-        payment_status:"success"
+    const update = await PaymentModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          payment_status: "success",
+        },
       }
-    })
+    );
 
-    return update
+    return update;
   }
 }

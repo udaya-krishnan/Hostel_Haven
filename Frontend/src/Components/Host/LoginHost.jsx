@@ -2,12 +2,13 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { loginHostSchema } from "../../utils/validation"; // Adjust the path to your schema
+import { loginHostSchema } from "../../utils/validation"; 
 import background from "../../../public/banner/businessman.jpeg";
 import { useDispatch } from "react-redux";
 import { hostLogin } from "../../features/Host/auth/authAction";
 
 function LoginHost() {
+  
   const dispatch = useDispatch();
   const navigate=useNavigate()
 
@@ -34,8 +35,8 @@ function LoginHost() {
         pauseOnFocusLoss 
         draggable 
         pauseOnHover 
-        className="text-sm font-medium" // Custom class for styling
-        style={{ width: "350px", top: "20px", right: "20px" }} // Inline styles
+        className="text-sm font-medium" 
+        style={{ width: "350px", top: "20px", right: "20px" }} 
       />
       <div
         className="h-screen flex justify-center bg-cover bg-center"

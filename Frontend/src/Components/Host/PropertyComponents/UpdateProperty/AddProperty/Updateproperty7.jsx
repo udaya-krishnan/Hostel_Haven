@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import React from 'react'
 import {useDispatch} from 'react-redux'
-import {fetchsafety}from '../../../../../features/Host/auth/authAction'
+import {fetchSafety}from '../../../../../features/Host/auth/authAction'
 import { Toaster,toast } from "sonner";
 
 
@@ -12,9 +12,9 @@ function Updateproperty7({ updateBack,formData ,updateSafety}) {
 
       useEffect(()=>{
         const fetchData=async()=>{
-            const data=await dispatch(fetchsafety())
-            console.log(data.allsafety)
-            setSafaty(data.allsafety)
+            const data=await dispatch(fetchSafety())
+            console.log(data.payload.allsafety)
+            setSafaty(data.payload.allsafety)
         }
         fetchData()
       },[])

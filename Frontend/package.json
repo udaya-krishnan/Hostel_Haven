@@ -16,9 +16,11 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mapbox/search-js-react": "^1.0.0-beta.22",
     "@mui/material": "^6.1.1",
+    "@mui/x-charts": "^7.19.0",
     "@mui/x-date-pickers-pro": "^7.18.0",
     "@reduxjs/toolkit": "^2.2.7",
     "axios": "^1.7.4",
+    "chart.js": "^4.4.4",
     "date-fns": "^2.29.3",
     "dotenv": "^16.4.5",
     "firebase": "^10.13.0",
@@ -26,6 +28,7 @@
     "lodash.debounce": "^4.0.8",
     "mapbox-gl": "^3.6.0",
     "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^7.3.0",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
@@ -38,7 +41,7 @@
     "redux-thunk": "^3.1.0",
     "socket.io-client": "^4.7.5",
     "sonner": "^1.5.0",
-    "sweetalert2": "^11.14.1",
+    "sweetalert2": "^11.14.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {
@@ -53,6 +56,7 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
     "postcss": "^8.4.41",
+    "sass-embedded": "^1.79.4",
     "tailwindcss": "^3.4.10",
     "vite": "^5.4.0"
   }

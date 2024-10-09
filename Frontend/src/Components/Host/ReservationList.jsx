@@ -5,7 +5,7 @@ import Swal from "sweetalert2"; // Import SweetAlert2
 import "react-toastify/dist/ReactToastify.css"; // Import the toastify styles
 import {
   actionReservation,
-  fetchreservation,
+  fetchReservation,
 } from "../../features/Host/auth/authAction";
 import { selectHost } from "../../features/Host/auth/authSelectors";
 
@@ -21,8 +21,8 @@ function ReservationList() {
 
   useEffect(() => {
     const fetchres = async () => {
-      const res = await dispatch(fetchreservation(hostData._id));
-      setReservation(res.reservation);
+      const res = await dispatch(fetchReservation(hostData._id));
+      setReservation(res.payload.reservation);
       console.log(res.reservation, "Reservations fetched");
     };
     fetchres();
@@ -44,13 +44,10 @@ function ReservationList() {
         title: 'swal-title-custom', 
       },
     });
-    
-    
-
     if (confirmation.isConfirmed) {
-      const res = await dispatch(actionReservation(actionType, id));
+      const res = await dispatch(actionReservation({action:actionType, id:id}));
 
-      if (res.message === "reservation action changed") {
+      if (res.payload.message === "reservation action changed") {
         toast.success(`Reservation has been ${actionType.toLowerCase()}!`, {
           position: "top-right",
         });

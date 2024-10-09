@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { verifyHostOtp,hostresendOtp } from "../../features/Host/auth/authAction";
-import {  selectHostToken } from "../../features/Host/auth/authSelectors";
+
 import { HostLogout } from "../../features/Host/auth/authSlice";
 
 function OtpHost() {

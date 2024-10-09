@@ -128,3 +128,15 @@ export const editCoupon=(id,data)=>async()=>{
     const response=await AdminService.editcoupon(id,data)
     return response
 }
+
+export const fetchBanner=()=>async()=>{
+    const response=await AdminService.fetchbanner()
+    return response
+}
+
+export const editBanner=(formdata)=>async()=>{
+    console.log(formdata,"form data in servce");
+    
+    const response=await AdminService.editbanner(formdata)
+    return response
+}

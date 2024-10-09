@@ -69,69 +69,154 @@ export const editprofile=createAsyncThunk(
 
 
 export const hostuploadphoto=createAsyncThunk(
-    'auth/uploadphoto',
+    'hostauth/uploadphoto',
     async({file,email},{rejectWithValue})=>{
-      console.log(file,email,"from action");
+      try {
+        console.log(file,email,"from action");
       
-      const response =await HostAccountService.hostuploadPhoto(file,email)
-      return response
+        const response =await HostAccountService.hostuploadPhoto(file,email)
+        return response
+      } catch (error) {
+        return rejectWithValue()
+      }
+
     }
   )
 
 
 
-  export const hostchangePassword=(password,email)=>async()=>{
-    try {
-
-      const res=await HostAccountService.hostchangePassword(password,email)
-      return res
-      
-    } catch (error) {
-      console.log(error.message);
-      
+  export const hostchangePassword=createAsyncThunk(
+    'hostauth/hostchangePassword',
+    async({password,email},{rejectWithValue})=>{
+      try {
+        const res=await HostAccountService.hostchangePassword(password,email)
+        return res
+      } catch (error) {
+        return rejectWithValue()
+        
+      }
     }
-  }
+  )
+  
+  
 
   
-  export const fetchamenities=()=>async()=>{
-    try {
-
-      const res=await AddPropertyService.fetchamenities()
-      return res
-      
-    } catch (error) {
-      console.log(error);
-      
+  export const fetchamenities=createAsyncThunk(
+    'hostauth/fetchamenities',
+    async(__,{rejectWithValue})=>{
+      try {
+        const res=await AddPropertyService.fetchamenities()
+        return res
+      } catch (error) {
+       return rejectWithValue()
+      }
     }
-  }
-
-
-  export const fetchsafety=()=>async()=>{
-    try {
-      const res=await AddPropertyService.fetchsafety()
-      return res
-    } catch (error) {
-      console.log(error);
-      
+  )
+  export const fetchSafety = createAsyncThunk(
+    'hostauth/fetchSafety',
+    async (_, { rejectWithValue }) => {
+      try {
+        const res = await AddPropertyService.fetchsafety();
+        return res;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
     }
-  }
+  );
+  
+  // Add Property
+  export const addProperty = createAsyncThunk(
+    'hostauth/addProperty',
+    async (formData, { rejectWithValue }) => {
+      try {
+        const response = await AddPropertyService.addproperty(formData);
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  );
+  
+  // Fetch Property
+  export const fetchProperty = createAsyncThunk(
+    'hostauth/fetchProperty',
+    async (id, { rejectWithValue }) => {
+      try {
+        const response = await AddPropertyService.fetchProperty(id);
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  );
+  
+  // Update Property
+  export const updateProperty = createAsyncThunk(
+    'hostauth/updateProperty',
+    async (formData, { rejectWithValue }) => {
+      try {
+        const response = await AddPropertyService.updateproperty(formData);
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  );
+  
+  // Check Availability
+  export const available = createAsyncThunk(
+    'hostauth/available',
+    async ({ id, hostId }, { rejectWithValue }) => {
+      try {
+        const response = await AddPropertyService.available(id, hostId);
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  );
+  
+  // Fetch Reservations
+  export const fetchReservation = createAsyncThunk(
+    'hostauth/fetchReservation',
+    async (hostId, { rejectWithValue }) => {
+      try {
+        const response = await AddPropertyService.reservation(hostId);
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  );
+  
+  // Action on Reservation
+  export const actionReservation = createAsyncThunk(
+    'hostauth/actionReservation',
+    async ({ action, id }, { rejectWithValue }) => {
+      try {
+        const response = await AddPropertyService.actionOnReservation(action, id);
+        return response;
+      } catch (error) {
+        return rejectWithValue(error.message);
+      }
+    }
+  )
 
-  export const addproperty=(formData)=>async()=>{
+
+  export const fetchPayment=(id)=>async()=>{
     try {
-
-      const response=await AddPropertyService.addproperty(formData)
+      const response=await HostAccountService.fetchpayment(id)
       return response
-      
     } catch (error) {
-     console.log(error.message);
+      console.log(error.message);
       
     }
   }
 
-  export const fetchproperty=(id)=>async()=>{
-    try {
 
-      const response=await AddPropertyService.fetchProperty(id)
+  export const addingAmount=(amount)=>async()=>{
+    try {
+      const response=await HostAccountService.addAmount(amount)
       return response
       
     } catch (error) {
@@ -140,43 +225,9 @@ export const hostuploadphoto=createAsyncThunk(
     }
   }
 
-
-
-  export const updateProperty=(formData)=>async()=>{
+  export const verifyamount=(order,hostId,amount)=>async()=>{
     try {
-      const response=await AddPropertyService.updateproperty(formData)
-      return response
-    } catch (error) {
-     console.log(error.message);
-      
-    }
-  }
-
-
-  export const available=(id,hostId)=>async()=>{
-    try {
-      const response =await AddPropertyService.available(id,hostId)
-      return response
-    } catch (error) {
-      console.log(error.message);
-      
-    }
-  }
-
-  export const fetchreservation =(hostId)=>async()=>{
-    try {
-      const response=await AddPropertyService.reservation(hostId)
-      return response
-    } catch (error) {
-      console.log(error);
-      
-    }
-  }
-
-
-  export const actionReservation=(action,id)=>async()=>{
-    try {
-      const response=await AddPropertyService.actionOnReservation(action,id)
+      const response =await HostAccountService.verifyAmount(order,hostId,amount)
       return response
     } catch (error) {
       console.log(error.message);

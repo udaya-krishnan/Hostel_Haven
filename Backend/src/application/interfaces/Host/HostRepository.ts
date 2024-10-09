@@ -14,4 +14,6 @@ export interface HostRepository{
     available(id:string):Promise<any|null>
     fetchreservation(id:string):Promise<any|null>
     actionreservation(action:string,id:string):Promise<any|null>
+    fetchpayment(id:string):Promise<any|null>
+    addAmount(hostId:string,amount:number):Promise<any|null>
 }

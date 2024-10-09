@@ -5,6 +5,8 @@ import { approveProperty, fetchingHostData, fetchProperty, hostDetails, property
 import { actionAmenities, addAmenitie, fetchamenities, updateAmenities } from "../../controllers/Admin/AdminAmenitiesController";
 import { actionSafety, addSafety, fetchSafety, updateSafety } from "../../controllers/Admin/AdminSafetyController";
 import { actionCoupon, addcoupon, editCoupon, fetchCoupon } from "../../controllers/Admin/AdminCouponController";
+import { editBanner, fetchBanner } from "../../controllers/Admin/AdminBannerController";
+import { upload } from "../../../config/multer";
 const adminRoute=Router()
 
 
@@ -30,5 +32,7 @@ adminRoute.post('/login',adminLogin)
           .get('/fetchcoupon',fetchCoupon)
           .post('/actioncoupon',actionCoupon)
           .post('/editcoupon',editCoupon)
+          .get('/fetchbanner',fetchBanner)
+          .put('/editbanner',upload.single('image'),editBanner)
 
 export default adminRoute
