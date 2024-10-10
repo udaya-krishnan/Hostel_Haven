@@ -4,6 +4,7 @@ import AccountService from "../../../services/UserAccountService";
 import propertyService from "../../../services/PropertyService";
 import PaymentService from "../../../services/PaymentService";
 import UserResService from "../../../services/UserReservationService";
+import ChatService from "../../../services/ChatService";
 
 export const register=(name,email,password)=>async()=>{
     const data=await AuthService.register(name,email,password)
@@ -267,4 +268,46 @@ export const changePassword = createAsyncThunk(
       }
     }
   );
+
+
+  export const  connectHost=createAsyncThunk(
+    'auth/connectHost',
+    async({userId,hostId,data},thunkAPI)=>{
+      try {
+        const res=await ChatService.connectHost(userId,hostId,data)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+  export const  fetchHost=createAsyncThunk(
+    'auth/fetchHost',
+    async(hostId,thunkAPI)=>{
+      try {
+        console.log(hostId);
+        
+        const res=await ChatService.fetchHost(hostId)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+
+  export const  fetchConnection=createAsyncThunk(
+    'auth/fetchConnection',
+    async(userId,thunkAPI)=>{
+      try {
+        console.log(userId);
+        
+        const res=await ChatService.fetchConnection(userId)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
 

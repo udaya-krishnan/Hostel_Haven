@@ -16,6 +16,7 @@ import WishlistPage from "../../Pages/User/WishlistPage";
 import ReservationList from "../../Pages/User/ReservationList";
 import ReservationDetails from "../../Pages/User/ReservationDetails";
 import IsLogged from "../../Components/User/middlewares/isLogged";
+import Chat from "../../Pages/User/Chat";
 
 function UserRoute() {
   return (
@@ -34,6 +35,7 @@ function UserRoute() {
         <Route path={'/wishlist'} element={<IsLogged><WishlistPage/></IsLogged>}/>
         <Route path={'/reservationlist'} element={<IsLogged><ReservationList/></IsLogged>}/>
         <Route path={'/reservationdetails'} element={<IsLogged><ReservationDetails/></IsLogged>}/>
+        <Route path={'/chat'} element={<IsLogged><Chat/></IsLogged>}/>
       </Routes>
     </>
   );

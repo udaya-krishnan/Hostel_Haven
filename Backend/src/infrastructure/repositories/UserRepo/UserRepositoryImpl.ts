@@ -11,6 +11,9 @@ import WishlistModel from "../../database/models/WishlistModel";
 import mongoose, { ObjectId } from "mongoose";
 import WalletModel from "../../database/models/WalletModel";
 import TransactionModel from "../../database/models/TransactionModel";
+import ChatModel, { SenderRole } from "../../database/models/ChatModel";
+import { Data } from "../../../domain/entities/Chat";
+import { fetchHostel } from "../../../presentation/controllers/User/PropertyController";
 
 export class UserRepositoryImpl implements UserRepository {
   async findUser(email: string): Promise<any | null> {
@@ -334,5 +337,69 @@ export class UserRepositoryImpl implements UserRepository {
     );
 
     return update;
+  }
+
+  async connecthost(userId: string, hostId: string, data: Data): Promise<any | null> {
+    try {
+      const findConnection = await ChatModel.findOne({ user_id: userId, host_id: hostId });
+  
+      if (findConnection) {
+        await ChatModel.findOneAndUpdate(
+          { user_id: userId, host_id: hostId },
+          {
+            $push: {
+              messages: {
+                sender_id: userId, 
+                sender_role: SenderRole.USER, // Assuming the sender is the user
+                recipient_id: hostId, // Host is the recipient
+                message: data.message,
+                timestamp: new Date(data.time), // Using the time provided in the data
+              },
+            },
+          },
+          { new: true } // This returns the updated document
+        );
+  
+        return "Message added to existing chat";
+      } else {
+        // If no chat connection exists, create a new chat and add the first message
+        const createConnection = await ChatModel.create({
+          user_id: userId,
+          host_id: hostId,
+          messages: [
+            {
+              sender_id: userId, // Assuming the user is sending the message
+              sender_role: SenderRole.USER, // Assuming the sender is the user
+              recipient_id: hostId, // Host is the recipient
+              message: data.message,
+              timestamp: data.time, // Using the time provided in the data
+            },
+          ],
+        });
+  
+        return "New chat created and message added";
+      }
+    } catch (error) {
+      console.error("Error in connecthost:", error);
+      return null;
+    }
+  }
+  
+  async fetchHost(hostId: string): Promise<any | null> {
+    try {
+      const fetch=await UserModel.findById({_id:hostId})
+      return fetch
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async fetchConnection(userId: string): Promise<any | null> {
+    try {
+      const fetch=await ChatModel.find({user_id:userId}).populate('host_id')
+      return fetch
+    } catch (error) {
+      throw error
+    }
   }
 }

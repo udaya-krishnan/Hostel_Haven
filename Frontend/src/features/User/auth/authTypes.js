@@ -19,3 +19,8 @@ export const FETCH_WISH='/wish'
 export const FETCH_RESERVATION='/fetchreservation'
 export const BOOKING_DETAILS='/bookingdetails'
 export const CONTINUE_PAYMENT='/continuepayment'
+
+
+export const CONNECT_HOST='/connecthost'
+export const FETCH_HOST='/fetchhost'
+export const FETCH_CONNECT='/fetchconnection'

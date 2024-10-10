@@ -1,5 +1,6 @@
 import { GusetInfo, User } from "../../../domain/entities/User";
 import { EditUser } from "../../../domain/entities/EditUser";
+import { Data } from "../../../domain/entities/Chat";
 
 export interface UserRepository {
     createUser(user:User):Promise<User>;
@@ -24,4 +25,7 @@ export interface UserRepository {
     fetchreservation(id:string):Promise<any|null>
     bookingdetails(id:string):Promise<any|null>
     retrypayment(id:string):Promise<any|null>
+    connecthost(userId:string,hostId:string,data:Data):Promise<any|null>
+    fetchHost(hostId:string):Promise<any|null>
+    fetchConnection(userId:string):Promise<any|null>
 }

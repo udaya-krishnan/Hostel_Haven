@@ -6,6 +6,7 @@ import { fetchHostel, fetchRoom, fetchwish, fetchwishlist, findWish, propertyDet
 import { bookingDetails, continuePayment, fetchReservation, paymentFailed, razorpayOrder, RetryVerify, verifyRazorpay } from "../../controllers/User/PaymentRazorpay";
 import { addGusetInfo } from "../../controllers/User/GusetController";
 import { UserMid } from "../../../middleware/User/userMiddleware";
+import { connectHost, fetchConnection, fetchHost } from "../../controllers/User/ChatController";
 
 
 const userRouter=Router()
@@ -36,6 +37,9 @@ userRouter.post('/register',register)
           .post('/bookingdetails',UserMid,bookingDetails)
           .post('/continuepayment',UserMid,continuePayment)
           .post('/retryverify',UserMid,RetryVerify)
+          .post('/connecthost',UserMid,connectHost)
+          .get('/fetchhost',UserMid,fetchHost)
+          .get('/fetchconnection',UserMid,fetchConnection)
         
 
 export default userRouter

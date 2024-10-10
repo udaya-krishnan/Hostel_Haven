@@ -9,6 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
+  connectHost,
   fetchwish,
   popertyDetails,
   wishlist,
@@ -90,6 +91,29 @@ const PropertyDetailsPage = () => {
     }
   };
 
+
+  const handleContactHost=async()=>{
+    if(userData){
+
+      navigate('/chat',{state:{hostId:proData.host_id}})
+      // const response=await dispatch(connectHost({userId:userData._id,proId:proData._id}))
+      // console.log(response);
+      
+
+      // if(response){
+      //   navigate('/chat')
+      // }
+      
+
+    }else{
+      toast.error("Please log in to continue", {
+        hideProgressBar: true,
+        className: "custom-toast-error",
+        autoClose: 2000,
+      });
+    }
+  }
+
   const handleDateChange = (update) => {
     const [start, end] = update;
     if (start && !end) {
@@ -98,8 +122,10 @@ const PropertyDetailsPage = () => {
       setDateRange([start, end]);
 
       // Calculate duration in months
-      const months = end.getMonth() - start.getMonth() + 
-                     12 * (end.getFullYear() - start.getFullYear());
+      const months =
+        end.getMonth() -
+        start.getMonth() +
+        12 * (end.getFullYear() - start.getFullYear());
       setDurationInMonths(months);
     } else {
       setDateRange([null, null]);
@@ -114,24 +140,20 @@ const PropertyDetailsPage = () => {
   };
 
   const handleConfirmDates = () => {
-    if(userData){
+    if (userData) {
       if (startDate && endDate) {
         navigate("/reservation", {
           state: {
             proData,
-            pricePerMonth:totalPrice,
-            durationInMonths:durationInMonths,
+            pricePerMonth: totalPrice,
+            durationInMonths: durationInMonths,
             checkInDate: startDate,
             checkOutDate: endDate,
           },
         });
-    }else{
-
-
-      
-    }
-   
-    }else{
+      } else {
+      }
+    } else {
       toast.error("Please log in to continue", {
         hideProgressBar: true,
         className: "custom-toast-error",
@@ -259,7 +281,7 @@ const PropertyDetailsPage = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-1 lg:sticky lg:top-24">
+        <div className="lg:col-span-1 lg:sticky lg:top-24 relative">
           <div className="border border-gray-300 rounded-lg p-6">
             <h2 className="text-xl font-semibold text-gray-800">
               {offerPrice ? (
@@ -294,7 +316,6 @@ const PropertyDetailsPage = () => {
               />
             </div>
 
-            {/* Display the calculated duration */}
             {durationInMonths > 0 && (
               <div className="mt-4">
                 <h2 className="text-md font-semibold text-gray-800">
@@ -328,6 +349,24 @@ const PropertyDetailsPage = () => {
                   <FaRegHeart className="inline-block mr-2" /> Add to Wishlist
                 </>
               )}
+            </button>
+
+            {/* Contact Host Button */}
+            <button
+              className="w-full mt-4 bg-white text-gray-800 py-2 px-4 rounded-lg border border-gray-400 shadow flex items-center justify-center"
+              onClick={handleContactHost}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="w-5 h-5 mr-2"
+              >
+                <path
+                  fill="#3c3633"
+                  d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l96 0 0 80c0 6.1 3.4 11.6 8.8 14.3s11.9 2.1 16.8-1.5L309.3 416 448 416c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0z"
+                />
+              </svg>
+              Contact Host
             </button>
           </div>
         </div>
