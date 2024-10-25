@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BOOKING_DETAILS, CONTINUE_PAYMENT, FETCH_RESERVATION } from "../features/User/auth/authTypes";
+import { BOOKING_DETAILS, CANCEL_RES, CONTINUE_PAYMENT, FETCH_RESERVATION, RATING } from "../features/User/auth/authTypes";
 
 const API_URL='http://localhost:3000';
 
@@ -19,10 +19,22 @@ const continuepayment=async(amount)=>{
         return res.data
 }
 
+const ratingProperty=async(userId,proId,rate,review)=>{
+        const res=await axios.post(API_URL+RATING,{userId,proId,rate,review},{withCredentials:true})
+        return res.data
+}
+
+const cancelReservation=async(resId)=>{
+        const res=await axios.patch(API_URL+CANCEL_RES,{resId},{withCredentials:true})
+        return res
+}
+
 const UserResService={
         fechReservation,
         bookingdetails,
-        continuepayment
+        continuepayment,
+        ratingProperty,
+        cancelReservation
 }
 
 export default UserResService

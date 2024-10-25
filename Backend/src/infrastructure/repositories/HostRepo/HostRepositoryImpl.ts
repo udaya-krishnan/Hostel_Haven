@@ -9,6 +9,10 @@ import { ObjectId, Transaction } from "mongodb";
 import PaymentModel from "../../database/models/PaymentModel";
 import WalletModel from "../../database/models/WalletModel";
 import TransactionModel from "../../database/models/TransactionModel";
+import ChatModel, { SenderRole } from "../../database/models/ChatModel";
+import { Data } from "../../../domain/entities/Chat";
+import RatingModel from "../../database/models/RatingModel";
+import NotificationModel from "../../database/models/NotificationModel";
   
 export class HostRepositoryImpl implements HostRepository {
   async findHost(email: string): Promise<any | null> {
@@ -263,8 +267,63 @@ export class HostRepositoryImpl implements HostRepository {
     return  walletId
   }
 
+  async fetchHostConnection(hostId: string): Promise<any | null> {
+    try {
+      const fetch=await ChatModel.find({host_id:hostId}).populate('user_id')
+      return fetch
+    } catch (error) {
+      throw error
+    }
+  }
 
+  async connectuser(userId: string, hostId: string, data: Data): Promise<any | null> {
+
+    await ChatModel.findOneAndUpdate(
+      { user_id: userId, host_id: hostId },
+      {
+        $push: {
+          messages: {
+            sender_id: hostId, 
+            sender_role: SenderRole.HOST, // Assuming the sender is the user
+            recipient_id: userId, // Host is the recipient
+            message: data.message,
+            timestamp: new Date(data.time), // Using the time provided in the data
+          },
+        },
+      },
+      { new: true } // This returns the updated document
+    );
+
+    return "Message added to existing chat";
+  }
+
+
+  async fetchhostmessage(hostId: string, userId: string): Promise<any | null> {
+    try {
+      const fetch = await ChatModel.findOne(
+        { user_id: userId, host_id: hostId },
+        { _id: 0, messages: 1 } 
+      );
+
+      console.log(fetch,'message fastech');
+      
+      return fetch
+      
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async fetchRating(proId: string): Promise<any | null> {
+    const fetch=await RatingModel.find({property_id:proId}).populate('user_id')
+    return fetch
+  }
+
+  async fetchNotifications(): Promise<any | null> {
+    const fetch = await NotificationModel.find({ recipient: { $ne: "users" },is_read:false });
+    return fetch
   
-  
+  }
+
   
 }

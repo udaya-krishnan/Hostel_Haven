@@ -7,6 +7,7 @@ export class LoginService implements LoginUseCase{
     constructor(private userRepository:UserRepository){}
 
     async execute(email:string,password:string): Promise<any | null> {
+       try {
         const data=await this.userRepository.findUser(email)
         if(data){
             if(await bcrypt.compare(password, data.password)){
@@ -22,6 +23,9 @@ export class LoginService implements LoginUseCase{
         }else{
            return "Email was wrong"
         }
+       } catch (error) {
+        throw error
+       }
         
     }
 }

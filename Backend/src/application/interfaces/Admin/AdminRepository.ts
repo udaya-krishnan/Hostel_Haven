@@ -1,4 +1,5 @@
 import { CouponData } from "../../../domain/entities/Coupon"
+import { NotificationData } from "../../../domain/entities/Notification"
 
 export interface AdminRepository{
     fetchingUsers():Promise<any|null>
@@ -24,4 +25,8 @@ export interface AdminRepository{
     editCoupon(id:string,data:any):Promise<any|null>
     fetchBanner():Promise<any |null>
     editBanner(id:string,data:any):Promise<any|null>
+    fetchwalletHistory():Promise<any|null>
+    fetch():Promise<any|null>
+    fetchRating():Promise<any|null>
+    sendNotification(data:NotificationData):Promise<any|null>
 }

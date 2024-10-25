@@ -13,6 +13,9 @@ import AdminHostProperty from '../../Pages/Admin/AdminHostProperty';
 import AdminPropertyDetails from '../../Pages/Admin/AdminPropertyDetails';
 import AdminCoupon from '../../Pages/Admin/AdminCoupon';
 import AdminBanner from '../../Pages/Admin/AdminBanner';
+import AdminWallet from '../../Pages/Admin/AdminWallet';
+import AdminReview from '../../Pages/Admin/AdminReview';
+import AdminNotification from '../../Pages/Admin/AdminNotification';
 
 function AdmnRoutes() {
   return (
@@ -30,6 +33,9 @@ function AdmnRoutes() {
         <Route path={'/propertydetails'} element={<AdminAuth><AdminPropertyDetails/></AdminAuth>}/>
         <Route path={'/coupon'} element={<AdminAuth><AdminCoupon/></AdminAuth>}/>
         <Route path={'/banner'} element={<AdminAuth><AdminBanner/></AdminAuth>}/>
+        <Route path={'/wallet'} element={<AdminAuth><AdminWallet/></AdminAuth>}/>
+        <Route path={'/review'} element={<AdminAuth><AdminReview/></AdminAuth>}/>
+        <Route path={'/notification'} element={<AdminAuth><AdminNotification/></AdminAuth>}/>
       </Routes>
     </>
   )

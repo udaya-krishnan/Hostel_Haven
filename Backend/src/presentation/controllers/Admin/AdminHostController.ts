@@ -12,7 +12,7 @@ export const fetchingHostData=async(req:Request,res:Response)=>{
         res.status(200).json({message:"user data fetched",hostData:hostData})
     } catch (error:any) {
         console.log(error.message)
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -29,7 +29,7 @@ export const hostDetails=async(req:Request,res:Response)=>{
 
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -42,7 +42,7 @@ export const fetchProperty=async(req:Request,res:Response)=>{
         res.status(200).json({property:property})
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -56,7 +56,7 @@ export const propertyDetails=async(req:Request,res:Response)=>{
         res.status(200).json({property:property})
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -69,7 +69,7 @@ export const approveProperty=async(req:Request,res:Response)=>{
         
     } catch (error:any) {
        console.log(error.message);
-        
+       return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -83,6 +83,20 @@ export const rejecteProperty=async(req:Request,res:Response)=>{
         
     } catch (error:any) {
        console.log(error.message);
+       return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+export const fetchRating=async(req:Request,res:Response)=>{
+    try {
+
+        const response=await adminRepository.fetchRating()
+
+        res.status(200).json({response:response})
         
+    } catch (error:any) {
+       console.log(error.message);
+       return res.status(500).json({ message: "Internal server error" });
     }
 }

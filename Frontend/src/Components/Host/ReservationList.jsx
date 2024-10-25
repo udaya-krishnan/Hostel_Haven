@@ -35,7 +35,6 @@ function ReservationList() {
       showCancelButton: true,
       confirmButtonColor: "#3C3633",
       cancelButtonColor: "#E0CCBE",
-      
       confirmButtonText: `Yes, ${actionType.toLowerCase()} it!`,
       customClass: {
         popup: 'swal-popup-custom',
@@ -45,7 +44,7 @@ function ReservationList() {
       },
     });
     if (confirmation.isConfirmed) {
-      const res = await dispatch(actionReservation({action:actionType, id:id}));
+      const res = await dispatch(actionReservation({ action: actionType, id: id }));
 
       if (res.payload.message === "reservation action changed") {
         toast.success(`Reservation has been ${actionType.toLowerCase()}!`, {
@@ -69,15 +68,15 @@ function ReservationList() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8 lg:p-12">
       {/* Fixed Heading */}
       <div className="fixed top-16 left-0 right-0 bg-white z-40 p-4 shadow-md">
-        <h1 className="text-3xl font-bold mb-6">Reservations</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-6">Reservations</h1>
 
         {/* Tabs */}
-        <div className="flex space-x-6 border-b">
+        <div className="flex space-x-2 md:space-x-6 border-b">
           <button
-            className={`py-2 px-4 ${
+            className={`py-2 px-4 text-sm md:text-base ${
               activeTab === "pending"
                 ? "border-b-2 border-black font-semibold"
                 : ""
@@ -87,7 +86,7 @@ function ReservationList() {
             Pending
           </button>
           <button
-            className={`py-2 px-4 ${
+            className={`py-2 px-4 text-sm md:text-base ${
               activeTab === "Approved"
                 ? "border-b-2 border-black font-semibold"
                 : ""
@@ -97,7 +96,7 @@ function ReservationList() {
             Approved
           </button>
           <button
-            className={`py-2 px-4 ${
+            className={`py-2 px-4 text-sm md:text-base ${
               activeTab === "Rejected"
                 ? "border-b-2 border-black font-semibold"
                 : ""
@@ -123,9 +122,9 @@ function ReservationList() {
           .map((reservation) => (
             <div
               key={reservation._id}
-              className="flex items-center justify-between p-4 bg-white shadow rounded-lg mb-4"
+              className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-white shadow rounded-lg mb-4"
             >
-              <div className="flex items-center">
+              <div className="flex items-center mb-4 md:mb-0">
                 <img
                   src={reservation.property_id?.image?.[0]}
                   alt={reservation.title}
@@ -181,13 +180,13 @@ function ReservationList() {
                 reservation.booking_status === "pending" ? (
                   <>
                     <button
-                      className="px-4 py-2 bg-btncolor text-white rounded-lg"
+                      className="px-3 py-2 bg-btncolor text-white rounded-lg text-sm"
                       onClick={() => action("Approved", reservation._id)}
                     >
                       Approve
                     </button>
                     <button
-                      className="px-4 py-2 border border-gray-400 text-gray-500 rounded-lg"
+                      className="px-3 py-2 border border-gray-400 text-gray-500 rounded-lg text-sm"
                       onClick={() => action("Rejected", reservation._id)}
                     >
                       Reject
@@ -195,7 +194,7 @@ function ReservationList() {
                   </>
                 ) : (
                   <span
-                    className={`px-4 py-2 text-white rounded-lg ${
+                    className={`px-4 py-2 text-white rounded-lg text-sm ${
                       reservation.booking_status === "Approved"
                         ? "bg-btncolor"
                         : "bg-red-500"

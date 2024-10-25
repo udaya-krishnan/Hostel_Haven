@@ -13,15 +13,25 @@ function ForgotPassword() {
   const navigate=useNavigate()
 
   const handleSubmit = async(values) => {
-    console.log("Form values:", values);
+    try {
+      console.log("Form values:", values);
     const res=await dispatch(forgotPass(values))
 
-    if(res.message=="password updated"){
+    if(res.message=="Password updated successfully"){
       toast.success('Password updated', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 })
       setTimeout(()=>{
         navigate('/login')
       },2000)
     }
+    } catch (error) {
+      if(error.response.status===401){
+        toast.error("Session expired Please Again Verify Email")
+        navigate('/login')
+      }else{
+        toast.error("Something went wrong on our end. Please try again later.")
+      }
+    }
+    
 
    
   };

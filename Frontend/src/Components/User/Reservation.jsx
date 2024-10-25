@@ -150,28 +150,19 @@ const Reservation = ({
           <p className="text-sm text-gray-600">{formData.email}</p>
           <p className="text-sm text-gray-600">{formData.mobile}</p>
         </div>
-        <button
-          onClick={handleEdit}
-          className="text-blue-600 hover:text-blue-800"
-        >
+        <button onClick={handleEdit} className="text-blue-600 hover:text-blue-800">
           ✏️ Edit
         </button>
       </div>
-
-      <h3 className="text-lg font-semibold mb-2">
-        Choose payment method to pay
-      </h3>
+      <h3 className="text-lg font-semibold mb-2">Choose payment method to pay</h3>
       <div className="mb-4 bg-gray-100 p-2 rounded flex items-center">
         <span className="text-green-600 mr-2">✔️</span>
         <span className="text-sm">100% safe and secure payments</span>
       </div>
-
       <div className="grid grid-cols-2 gap-4 mb-4">
         <button
           className={`py-2 rounded focus:outline-none ${
-            selectedPaymentMethod === "Razorpay"
-              ? "bg-btncolor text-white"
-              : "bg-gray-200"
+            selectedPaymentMethod === "Razorpay" ? "bg-btncolor text-white" : "bg-gray-200"
           }`}
           onClick={() => handlePaymentSelection("Razorpay")}
         >
@@ -179,19 +170,16 @@ const Reservation = ({
         </button>
         <button
           className={`py-2 rounded focus:outline-none ${
-            selectedPaymentMethod === "PayPal"
-              ? "bg-btncolor text-white"
-              : "bg-gray-200"
+            selectedPaymentMethod === "PayPal" ? "bg-btncolor text-white" : "bg-gray-200"
           }`}
           onClick={() => handlePaymentSelection("PayPal")}
         >
           PayPal
         </button>
       </div>
-
       <button
         className="w-full bg-btncolor text-white py-2 rounded hover:bg-btncolor"
-        onClick={handlePayNow} // Trigger the handlePayNow function when clicked
+        onClick={handlePayNow}
       >
         Pay Now &gt;
       </button>
@@ -216,31 +204,16 @@ const Reservation = ({
         <p>{proData.name}</p>
         <p>{proData.location}</p>
         <p>
-          {proData.facilities.bedroom} Bedrooms | {proData.facilities.bathroom}{" "}
-          Bathrooms | {proData.facilities.parking} Parking
+          {proData.facilities.bedroom} Bedrooms | {proData.facilities.bathroom} Bathrooms | {proData.facilities.parking} Parking
         </p>
-
-        {/* Display check-in and check-out dates */}
         <div className="mt-4">
           <h4 className="font-bold">Booking Dates</h4>
           <p>Check-in: {new Date(checkInDate).toLocaleDateString()}</p>
           <p>Check-out: {new Date(checkOutDate).toLocaleDateString()}</p>
         </div>
-
-        {/* Duration and price details */}
         <div className="mt-4">
           <h4 className="font-bold">Total length of stay</h4>
-          <p>
-            {selectedDuration} {selectedDuration > 1 ? "Months" : "Month"}
-          </p>
-
-          {/* <button
-            className="mt-2 text-blue-500 hover:underline"
-            onClick={handleDropdownToggle}
-          >
-            Change your selection
-          </button> */}
-
+          <p>{selectedDuration} {selectedDuration > 1 ? "Months" : "Month"}</p>
           {isDropdownOpen && (
             <select
               value={selectedDuration}
@@ -256,8 +229,6 @@ const Reservation = ({
           )}
         </div>
       </div>
-
-      {/* Price Summary */}
       <div className="mt-6">
         <h3 className="text-lg font-bold">Your Price Summary</h3>
         <div className="text-sm mt-2">
@@ -268,15 +239,15 @@ const Reservation = ({
     </div>
   );
 
+
   return (
     <div className="container mx-auto p-6">
       {!showPaymentForm || isEditing ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Form for User Details */}
           <div className="col-span-2 bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-lg font-bold mb-4">Enter Your Details</h2>
             <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     First Name *
@@ -304,7 +275,6 @@ const Reservation = ({
                   />
                 </div>
               </div>
-
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Email Address *
@@ -318,7 +288,6 @@ const Reservation = ({
                   required
                 />
               </div>
-
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Mobile number *
@@ -332,7 +301,6 @@ const Reservation = ({
                   required
                 />
               </div>
-
               <div className="mt-6">
                 <button
                   type="submit"
@@ -343,8 +311,6 @@ const Reservation = ({
               </div>
             </form>
           </div>
-
-          {/* Booking Details */}
           <BookingDetails />
         </div>
       ) : (

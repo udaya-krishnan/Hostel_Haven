@@ -19,7 +19,7 @@ export const addcoupon=async(req:Request,res:Response)=>{
         res.status(200).json({allcoupon:allcoupon,message:"coupon created"})
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -29,7 +29,7 @@ export const fetchCoupon=async(req:Request,res:Response)=>{
         res.status(200).json({allcoupons:allcoupons})
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -46,7 +46,7 @@ export const actionCoupon=async(req:Request,res:Response)=>{
         }
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -66,6 +66,6 @@ export const editCoupon=async(req:Request,res:Response)=>{
         
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }

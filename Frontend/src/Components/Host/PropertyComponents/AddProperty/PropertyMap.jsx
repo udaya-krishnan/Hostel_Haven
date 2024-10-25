@@ -38,11 +38,7 @@ function PropertyMap({ onLocationSelect }) {
     const [longitude, latitude] = event.lngLat.toArray();
     setClickedLocation({ latitude, longitude });
     setSelectedPlace(null);
-
-    // Fetch the place name using reverse geocoding
     const placeName = await fetchPlaceName(longitude, latitude);
-
-    // Update the parent component with the location details
     onLocationSelect({
       latitude,
       longitude,
@@ -52,11 +48,8 @@ function PropertyMap({ onLocationSelect }) {
 
   const handleSearchResult = (result) => {
     const [longitude, latitude] = result.center;
-
     setClickedLocation({ latitude, longitude });
     setSelectedPlace(result);
-
-    // Pass the location data to the parent component
     onLocationSelect({
       latitude,
       longitude,
@@ -65,14 +58,14 @@ function PropertyMap({ onLocationSelect }) {
   };
 
   return (
-    <div className="w-full h-auto bg-gray-100">
-      <div className="p-4 bg-white shadow-md">
-        <SearchBox
+    <div className="w-full h-auto bg-gray-100 rounded-lg overflow-hidden shadow">
+      <div className="p-4 bg-white shadow-md rounded-t-lg">
+        {/* <SearchBox
           accessToken={mapboxToken}
           onResult={handleSearchResult}
           placeholder="Search for a location..."
           className="w-full p-2 border border-gray-300 rounded"
-        />
+        /> */}
       </div>
 
       <Map
@@ -95,27 +88,29 @@ function PropertyMap({ onLocationSelect }) {
         )}
         {selectedPlace && (
           <Marker
-            latitude={selectedPlace.latitude}
-            longitude={selectedPlace.longitude}
+            latitude={selectedPlace.geometry.coordinates[1]}
+            longitude={selectedPlace.geometry.coordinates[0]}
             color="blue"
           />
         )}
       </Map>
 
+      {/* Display clicked location details */}
       {clickedLocation && (
-        <div className="p-4 bg-white shadow-lg">
+        <div className="p-4 bg-white shadow-lg rounded-b-lg">
           <h3 className="text-lg font-bold">Clicked Location Details</h3>
           <p>Latitude: {clickedLocation.latitude}</p>
           <p>Longitude: {clickedLocation.longitude}</p>
         </div>
       )}
 
+      {/* Display selected place details */}
       {selectedPlace && (
-        <div className="p-4 bg-white shadow-lg">
+        <div className="p-4 bg-white shadow-lg rounded-b-lg">
           <h3 className="text-lg font-bold">Search Result</h3>
-          <p>Name: {selectedPlace.name}</p>
-          <p>Latitude: {selectedPlace.latitude}</p>
-          <p>Longitude: {selectedPlace.longitude}</p>
+          <p>Name: {selectedPlace.place_name}</p>
+          <p>Latitude: {selectedPlace.geometry.coordinates[1]}</p>
+          <p>Longitude: {selectedPlace.geometry.coordinates[0]}</p>
         </div>
       )}
     </div>

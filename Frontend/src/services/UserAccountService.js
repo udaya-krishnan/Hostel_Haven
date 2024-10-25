@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { CHANGE_PASS, EDIT_PROFILE, PROFILE_UPLOAD } from '../features/User/auth/authTypes';
+import { CHANGE_PASS, EDIT_PROFILE, FETCH_NOTIFICATIONS, PROFILE_UPLOAD } from '../features/User/auth/authTypes';
 
 const API_URL='http://localhost:3000';
 
@@ -49,13 +49,28 @@ const editProfile = async (values) => {
   };
 
 
+    
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get(API_URL + FETCH_NOTIFICATIONS, { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      console.error("Error in changePassword:", error.message);
+      throw error;  
+    }
+  };
+
+
+
+
 
   
 
 const AccountService={
     editProfile,
     uploadPhoto,
-    changePassword
+    changePassword,
+    fetchNotifications
 }
 
 export default AccountService

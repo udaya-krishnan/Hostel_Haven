@@ -2,10 +2,11 @@ import { Router } from "express";
 import { verifyhost, verifyOtp ,resendHost} from "../../controllers/Host/HostAuthController";
 import { changepassword, hostupdateProfile ,uploadImag} from "../../controllers/Host/HostProfileController";
 import { upload } from "../../../config/multer";
-import { addproperty, availableProperty, fetchamenities, fetchProperty, fetchReservation, fetchsafety, updateProperty } from "../../controllers/Host/HostPropertyController";
+import { addproperty, availableProperty, fetchamenities, fetchProperty, fetchRating, fetchReservation, fetchsafety, updateProperty } from "../../controllers/Host/HostPropertyController";
 import { actionReservation } from "../../controllers/Host/HostReservationController";
 import { HostMid } from "../../../middleware/Host/hostMiddleware";
 import { addAmount, fetchPayment, verifyAmount } from "../../controllers/Host/HostPaymentController";
+import { connectUser, fetchHostConnection, fetchHostMessage, fetchNotifications } from "../../controllers/Host/HostChatController";
 // import { fet } from "../../controllers/Admin/AdminSafetyController";
 
 
@@ -31,6 +32,11 @@ hostRouter.post('/login',verifyhost)
           .post('/fetchpayment',fetchPayment)
           .post('/addamount',addAmount)
           .post('/verifyamount',verifyAmount)
+          .get('/fetchconnection',fetchHostConnection)
+          .post('/connectuser',connectUser)
+          .get('/fetchmessage',fetchHostMessage)
+          .get('/fetchrating',fetchRating)
+          .get('/fetchnotifications',fetchNotifications)
 
 
 export default hostRouter

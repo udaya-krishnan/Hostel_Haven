@@ -15,7 +15,7 @@ export const addSafety=async(req:Request,res:Response)=>{
         res.status(200).json({allData:allSafety})
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -25,6 +25,7 @@ export const fetchSafety=async (req:Request,res:Response)=>{
         res.status(200).json({data:data})
     } catch (error:any) {
         console.log(error.message)
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -35,6 +36,7 @@ export const actionSafety=async(req:Request,res:Response)=>{
         res.status(200).json({id:action})
     } catch (error:any) {
         console.log(error.message);
+        return res.status(500).json({ message: "Internal server error" });
         
     }
 }
@@ -46,6 +48,7 @@ export const updateSafety=async(req:Request,res:Response)=>{
         res.status(200).json({message:"update safety"})
     } catch (error:any) {
         console.log(error.message);
+        return res.status(500).json({ message: "Internal server error" });
         
     }
 }

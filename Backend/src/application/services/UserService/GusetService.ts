@@ -7,7 +7,13 @@ export class GusetService implements  Guset{
     constructor(private userRepository:UserRepository){}
 
     async addinfo(data: GusetInfo): Promise<any | null> {
-        const newData=await this.userRepository.addgusetinfo(data)
-        return newData
+        try {
+            const newData=await this.userRepository.addgusetinfo(data)
+            return newData
+            
+        } catch (error) {
+            throw error
+        }
+       
     }
 }

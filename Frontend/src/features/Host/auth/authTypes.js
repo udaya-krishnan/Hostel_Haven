@@ -17,3 +17,10 @@ export const ACTION_RESERVATION='/host/actionreservation'
 export const FETCHPAYMENT='/host/fetchpayment'
 export const ADDAMOUNT='/host/addamount'
 export const VERIFYAMOUNT='/host/verifyamount'
+
+export const FETCH_HOSTCONNECTION='/host/fetchconnection'
+export const CONNECT_USER='/host/connectuser'
+export const FETCH_HOST_MESSAGE='/host/fetchmessage'
+export const FETCH_RATING='/host/fetchrating'
+
+export const FETCH_NOTIFICATIONS='/host/fetchnotifications'

@@ -9,7 +9,7 @@ function IsBlocked({children}) {
 
     
     useEffect(()=>{
-        if(user!==null){
+        if(user){
             if(user.is_blocked===true){
                 navigate('/login')
             }

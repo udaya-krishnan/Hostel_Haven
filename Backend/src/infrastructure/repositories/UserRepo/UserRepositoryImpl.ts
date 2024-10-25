@@ -14,6 +14,11 @@ import TransactionModel from "../../database/models/TransactionModel";
 import ChatModel, { SenderRole } from "../../database/models/ChatModel";
 import { Data } from "../../../domain/entities/Chat";
 import { fetchHostel } from "../../../presentation/controllers/User/PropertyController";
+import {config} from 'dotenv'
+import RatingModel from "../../database/models/RatingModel";
+import NotificationModel from "../../database/models/NotificationModel";
+
+config()
 
 export class UserRepositoryImpl implements UserRepository {
   async findUser(email: string): Promise<any | null> {
@@ -91,14 +96,23 @@ export class UserRepositoryImpl implements UserRepository {
     }
 
     // Fetch the properties based on the filter
-    return await PropertyModel.find(filter);
+    return await PropertyModel.find(filter).limit(8)
   }
 
   async fetchroom(search: string): Promise<any | null> {
-    return await PropertyModel.find({
+    let filter: any = {
       property_type: "room",
       propertyVerified: "approved",
-    });
+    };
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } }, // Case-insensitive search for name
+        { location: { $regex: search, $options: "i" } }, // Case-insensitive search for location
+      ];
+    }
+
+    return await PropertyModel.find(filter).limit(8)
   }
 
   async properttdetails(id: string): Promise<any | null> {
@@ -157,7 +171,6 @@ export class UserRepositoryImpl implements UserRepository {
 
     return createReservation._id;
   }
-
   async payment(
     reservationId: string,
     userId: string,
@@ -165,7 +178,12 @@ export class UserRepositoryImpl implements UserRepository {
     amount: string,
     paymentStatus: string
   ): Promise<any | null> {
+    
     const intAmount = parseInt(amount);
+  
+    // Calculate the split for admin and host
+    const adminAmount = Math.round(intAmount * 0.10); // 10% to admin
+    const hostAmount = intAmount - adminAmount;       // 90% to host
   
     // Run initial independent queries in parallel
     const [createPayment, findWallet, findReservation] = await Promise.all([
@@ -174,7 +192,7 @@ export class UserRepositoryImpl implements UserRepository {
         user_id: userId,
         payment_method: payment_method,
         payment_status: paymentStatus,
-        amount: amount,
+        amount: intAmount,
       }),
       WalletModel.findOne({ user_Id: userId }),
       ReservationModel.findById({ _id: reservationId })
@@ -182,12 +200,14 @@ export class UserRepositoryImpl implements UserRepository {
         .exec(),
     ]);
   
+    // Ensure the user has a wallet
     const userWallet = await WalletModel.findOneAndUpdate(
       { user_Id: userId },
       { $setOnInsert: { balance: 0 } },  // Only set balance to 0 if creating a new wallet
       { new: true, upsert: true }
     );
     
+    // Debit user wallet and link payment to reservation
     await Promise.all([
       TransactionModel.create({
         wallet_Id: userWallet._id,
@@ -200,17 +220,34 @@ export class UserRepositoryImpl implements UserRepository {
       ),
     ]);
   
-    // Use upsert to create or update the host wallet in one operation
+    // Upsert (create or update) the host wallet and increment balance by 90% of the amount
     const hostWallet = await WalletModel.findOneAndUpdate(
       { user_Id: findReservation?.property_id?.host_id },
-      { $inc: { balance: intAmount } },  // Increment balance directly
+      { $inc: { balance: hostAmount } },  // Increment balance by 90%
       { new: true, upsert: true }
     );
   
-    // Create transaction for host wallet
+    // Create transaction for host wallet (90% credited)
     await TransactionModel.create({
       wallet_Id: hostWallet._id,
-      amount: intAmount,
+      amount: hostAmount,
+      transaction_type: "Credited",
+    });
+  
+    // Upsert (create or update) the admin wallet
+    const adminWallet = await WalletModel.findByIdAndUpdate(
+      { _id: process.env.ADMIN_WALLET_ID },  // Assume the admin's email is stored in .env
+      { $inc: { balance: adminAmount } },  // Increment balance by 10%
+      { new: true, upsert: true }
+    );
+
+    console.log(adminWallet,"admin wallet in the wallet session");
+    
+  
+    // Create transaction for admin wallet (10% credited)
+    await TransactionModel.create({
+      wallet_Id: adminWallet._id,
+      amount: adminAmount,
       transaction_type: "Credited",
     });
   
@@ -222,28 +259,32 @@ export class UserRepositoryImpl implements UserRepository {
   
 
   async wishlist(userId: string, proId: string): Promise<any | null> {
-    const findUserWish = await WishlistModel.findOne({
-      userId: userId,
-      propertyId: proId,
-    });
-    console.log(findUserWish);
-
-    if (findUserWish) {
-      console.log("remove");
-
-      const deletewish = await WishlistModel.deleteOne({
+    try {
+      const findUserWish = await WishlistModel.findOne({
         userId: userId,
         propertyId: proId,
       });
-      return { message: "remove" };
-    } else {
-      console.log("added");
-
-      const wishlist = await WishlistModel.create({
-        userId: userId,
-        propertyId: proId,
-      });
-      return { message: "added" };
+      console.log(findUserWish);
+  
+      if (findUserWish) {
+        console.log("remove");
+  
+        const deletewish = await WishlistModel.deleteOne({
+          userId: userId,
+          propertyId: proId,
+        });
+        return { message: "remove" };
+      } else {
+        console.log("added");
+  
+        const wishlist = await WishlistModel.create({
+          userId: userId,
+          propertyId: proId,
+        });
+        return { message: "added" };
+      }
+    } catch (error) {
+      
     }
   }
 
@@ -262,27 +303,39 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async fetchwishlist(id: string): Promise<any | null> {
+   try {
     const wishlist = await WishlistModel.find({ userId: id })
-      .populate("propertyId")
-      .exec();
-    return wishlist;
+    .populate("propertyId")
+    .exec();
+  return wishlist;
+   } catch (error) {
+    
+   }
   }
 
   async removewish(id: string): Promise<any | null> {
+   try {
     const remove = await WishlistModel.findByIdAndDelete({ _id: id });
     return remove;
+   } catch (error) {
+    
+   }
   }
 
   async fetchwish(id: string, userId: string): Promise<any | null> {
     console.log(id, userId);
+try {
+  
+  const data = await WishlistModel.findOne({
+    userId: id,
+    propertyId: userId,
+  });
+  console.log(data, "form repo");
 
-    const data = await WishlistModel.findOne({
-      userId: id,
-      propertyId: userId,
-    });
-    console.log(data, "form repo");
-
-    return data;
+  return data;
+} catch (error) {
+  
+}
   }
 
   async paymentfailed(
@@ -290,43 +343,56 @@ export class UserRepositoryImpl implements UserRepository {
     reservationId: string,
     userId: string
   ): Promise<any | null> {
-    const createPayment = await PaymentModel.create({
-      amount: amount,
-      reservation_id: reservationId,
-      user_id: userId,
-      payment_method: "Razorpay",
-      payment_status: "Failed",
-    });
-
-    const update = await ReservationModel.findByIdAndUpdate(
-      { _id: reservationId },
-      {
-        $set: {
-          payment_Id: createPayment._id,
-        },
-      }
-    );
-
-    return createPayment._id;
+    try {
+      const createPayment = await PaymentModel.create({
+        amount: amount,
+        reservation_id: reservationId,
+        user_id: userId,
+        payment_method: "Razorpay",
+        payment_status: "Failed",
+      });
+  
+      const update = await ReservationModel.findByIdAndUpdate(
+        { _id: reservationId },
+        {
+          $set: {
+            payment_Id: createPayment._id,
+          },
+        }
+      );
+      return createPayment._id;
+    } catch (error) {
+      
+    }
+   
   }
 
   async fetchreservation(id: string): Promise<any | null> {
+   try {
     const data = await ReservationModel.find({ user_id: id })
-      .populate("property_id")
-      .populate("payment_Id")
-      .populate("guest_info");
-    return data;
+    .populate("property_id")
+    .populate("payment_Id")
+    .populate("guest_info");
+  return data;
+   } catch (error) {
+    
+   }
   }
 
   async bookingdetails(id: string): Promise<any | null> {
-    const data = await ReservationModel.findOne({ _id: id })
+    try {
+      const data = await ReservationModel.findOne({ _id: id })
       .populate("property_id")
       .populate("payment_Id")
       .populate("guest_info");
     return data;
+    } catch (error) {
+      
+    }
   }
 
   async retrypayment(id: string): Promise<any | null> {
+   try {
     const update = await PaymentModel.findByIdAndUpdate(
       { _id: id },
       {
@@ -337,6 +403,9 @@ export class UserRepositoryImpl implements UserRepository {
     );
 
     return update;
+   } catch (error) {
+    
+   }
   }
 
   async connecthost(userId: string, hostId: string, data: Data): Promise<any | null> {
@@ -381,14 +450,23 @@ export class UserRepositoryImpl implements UserRepository {
       }
     } catch (error) {
       console.error("Error in connecthost:", error);
-      return null;
+      throw error;
     }
   }
   
-  async fetchHost(hostId: string): Promise<any | null> {
+  async fetchHost(hostId: string,userId:string): Promise<any | null> {
     try {
       const fetch=await UserModel.findById({_id:hostId})
-      return fetch
+
+      const message = await ChatModel.findOne(
+        { user_id: userId, host_id: hostId },
+        { _id: 0, messages: 1 } 
+      );
+
+      console.log(fetch,message ,"fetch message");
+      
+
+      return {fetch,message}
     } catch (error) {
       throw error
     }
@@ -397,9 +475,178 @@ export class UserRepositoryImpl implements UserRepository {
   async fetchConnection(userId: string): Promise<any | null> {
     try {
       const fetch=await ChatModel.find({user_id:userId}).populate('host_id')
+      console.log(fetch,'fetch');
+      
       return fetch
     } catch (error) {
       throw error
     }
   }
+
+   async fetchusermessage(hostId: string, userId: string): Promise<any | null> {
+    try {
+      const fetch = await ChatModel.findOne(
+        { user_id: userId, host_id: hostId },
+        { _id: 0, messages: 1 } 
+      );
+
+      console.log(fetch,'message fastech');
+      
+      return fetch
+      
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async fetchnearme(lat: number, lng: number): Promise<any | null> {
+    try {
+      const R = 6371; // Earth's radius in kilometers
+    const maxDistance = 50000; // Maximum distance in meters
+
+    const properties = await PropertyModel.aggregate([
+      {
+        $match: {
+          property_type: "hostel",
+          is_blocked: false
+        }
+      },
+      {
+        $addFields: {
+          distance: {
+            $multiply: [
+              R,
+              {
+                $acos: {
+                  $add: [
+                    { 
+                      $multiply: [
+                        { $sin: { $degreesToRadians: { $toDouble: "$latitude" } } }, 
+                        { $sin: { $degreesToRadians: lat } }
+                      ] 
+                    },
+                    {
+                      $multiply: [
+                        { $cos: { $degreesToRadians: { $toDouble: "$latitude" } } },
+                        { $cos: { $degreesToRadians: lat } },
+                        { $cos: { $subtract: [{ $degreesToRadians: lng }, { $degreesToRadians: { $toDouble: "$longitude" } }] } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        $match: {
+          distance: { $lte: maxDistance / 1000 } // Convert maxDistance to kilometers
+        }
+      },
+      {
+        $sort: { distance: 1 } // Sort by nearest distance
+      }
+    ]);
+
+    return properties;
+    } catch (error) {
+      
+    }
+}
+
+async rateProperty(userId: string, proId: string, rate: number, review: string): Promise<any | null> {
+  try {
+    const propertyObjectId = new mongoose.Types.ObjectId(proId); // Convert proId to ObjectId
+
+  const [createRating, fetchAvg] = await Promise.all([
+    RatingModel.create({
+      user_id: userId,
+      property_id: propertyObjectId,  // Use the ObjectId
+      rating_value: rate,
+      review: review
+    }),
+    RatingModel.aggregate([
+      {
+        $match: { property_id: propertyObjectId }  // Ensure property_id is an ObjectId
+      },
+      {
+        $group: {
+          _id: "$property_id",  // Group by property_id
+          averageRating: { $avg: "$rating_value" },  // Calculate the average of rating_value
+          totalReviews: { $sum: 1 }  // Count the number of reviews
+        }
+      }
+    ])
+  ]);
+
+  console.log(fetchAvg, "fetchAvg");
+
+  // Check if fetchAvg array has at least one result
+  if (fetchAvg.length > 0) {                                                
+    const avgRating = fetchAvg[0].averageRating;
+
+    // Update the property with the new average rating
+    await PropertyModel.findByIdAndUpdate(
+      { _id: proId },
+      { $set: { avgRating: avgRating } }
+    );
+  } else {
+    console.error("No ratings found for this property.");
+  }
+
+  return createRating?._id;
+  } catch (error) {
+    
+  }
+}
+
+
+
+async fetchReview(proId:string): Promise<any | null> {
+  try {
+    const fetch=await RatingModel.find({property_id:proId}).populate('user_id')
+  return fetch
+  } catch (error) {
+    
+  }
+  
+}
+
+async fetchNotifications(): Promise<any | null> {
+  try {
+    const fetch = await NotificationModel.find({ recipient: { $ne: "hosts" },is_read:false });
+    return fetch
+  } catch (error) {
+    
+  }
+ 
+
+}
+
+async deleteNotification(id: string): Promise<any | null> {
+  try {
+    const update=await NotificationModel.findById({_id:id},{
+      $set:{is_read:true}
+    })
+  } catch (error) {
+    
+  }
+  
+}
+
+async cancelResrevation(resId: string): Promise<any | null> {
+  try {
+    const update=await ReservationModel.findByIdAndUpdate({_id:resId},{
+      $set:{
+        booking_status:'canceled'
+      }
+    })
+    return update
+  
+  } catch (error) {
+    throw error
+  }
+  
+}
 }

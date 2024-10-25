@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ACTION_USER, ADMIN_LOGIN, FETCH_USER ,FETCH_HOST, USER_DETAILS, HOST_DETAILS, ADD_AMENITIES, FETCH_AMENITIES, ACTION_AMENITIES, UPDATE_AMENITIES, ADD_SAFETY, FETCH_SAFETY, ACTION_SAFETY, UPDATE_SAFETY, FECTH_HOST_PROPERTY, PROPERTY_DETAILS, APPROVE_PROPERTY, REJECT_PROPERTY, ADDCOUPON, FETCHCOUPON, ACTION_COUPON, EDIT_COUPON, FETCH_BANNER, EDIT_BANNER} from "../features/Admin/auth/authType";
+import { ACTION_USER, ADMIN_LOGIN, FETCH_USER ,FETCH_HOST, USER_DETAILS, HOST_DETAILS, ADD_AMENITIES, FETCH_AMENITIES, ACTION_AMENITIES, UPDATE_AMENITIES, ADD_SAFETY, FETCH_SAFETY, ACTION_SAFETY, UPDATE_SAFETY, FECTH_HOST_PROPERTY, PROPERTY_DETAILS, APPROVE_PROPERTY, REJECT_PROPERTY, ADDCOUPON, FETCHCOUPON, ACTION_COUPON, EDIT_COUPON, FETCH_BANNER, EDIT_BANNER, FETCH_WALLET, FETCH_ALL_DATA, FETCH_RATING, SEND_NOTIFICATION} from "../features/Admin/auth/authType";
 
 const API_URL='http://localhost:3000';
 
@@ -141,6 +141,31 @@ const editbanner=async(formData)=>{
     return response.data
 }
 
+
+
+const fetchWallet=async()=>{
+    const response=await axios.get(API_URL+FETCH_WALLET)
+    return response.data
+}
+
+const fetchAll=async()=>{
+    const response=await axios.get(API_URL+FETCH_ALL_DATA)
+    return response.data
+}
+
+
+
+const fetchRating=async()=>{
+    const response=await axios.get(API_URL+FETCH_RATING,{withCredentials:true})
+    return response.data
+}
+
+const sendnotification=async(data)=>{
+    console.log(data,'it from the service');
+    
+    const response=await axios.post(API_URL+SEND_NOTIFICATION,{data},{withCredentials:true})
+    return response.data
+}
 const AdminService={
     adminlogin,
     FetchingUser,
@@ -165,7 +190,11 @@ const AdminService={
     actioncoupon,
     editcoupon,
     fetchbanner,
-    editbanner
+    editbanner,
+    fetchWallet,
+    fetchAll,
+    fetchRating,
+    sendnotification
     
 }
 

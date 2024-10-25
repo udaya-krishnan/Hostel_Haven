@@ -41,7 +41,7 @@ export const verifyhost=async(req:Request,res:Response)=>{
         }
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -66,7 +66,7 @@ export const verifyOtp=async(req:Request,res:Response)=>{
         }
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -100,6 +100,6 @@ export const resendHost=async(req:Request,res:Response)=>{
         
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }

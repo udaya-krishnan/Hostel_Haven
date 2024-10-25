@@ -7,4 +7,7 @@ export interface PropertyUseCase{
     fetchwishlist(id:string):Promise<any|null>
     removewish(id:string):Promise<any|null>
     fetchwish(id:string,userId:string):Promise<any|null>
+    fetchnearme(lat:number,lng:number):Promise<any|null>
+    rateProperty(userId:string,proId:string,rate:number,review:string):Promise<any|null>
+    fetchReview(proId:string):Promise<any|null>
 }

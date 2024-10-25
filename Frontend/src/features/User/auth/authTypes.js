@@ -24,3 +24,12 @@ export const CONTINUE_PAYMENT='/continuepayment'
 export const CONNECT_HOST='/connecthost'
 export const FETCH_HOST='/fetchhost'
 export const FETCH_CONNECT='/fetchconnection'
+export const FETCH_USER_MESSAGE='/fetchmessage'
+
+export const NEARME='/nearme'
+
+export const RATING='/rate'
+
+export const FETCH_REVIEW='/fetchreview'
+export const FETCH_NOTIFICATIONS='/fetchnotifications'
+export const CANCEL_RES='/cancel'

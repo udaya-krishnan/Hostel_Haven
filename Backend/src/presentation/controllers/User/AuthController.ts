@@ -4,49 +4,186 @@ import { UserRepositoryImpl } from "../../../infrastructure/repositories/UserRep
 import { generateOtp } from "../../../utils/otp"; 
 import sendMail from "../../../utils/sendMail";
 import { createToken, verifyToken } from "../../../utils/jwt";
-import { UserEntities } from "../../../domain/entities/User";
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 import { LoginService } from "../../../application/services/UserService/LoginService";
-import { addAbortListener } from "events";
-dotenv.config()
 
+dotenv.config();
 
 const userRepository = new UserRepositoryImpl();
 const registerService = new RegisterService(userRepository);
-const loginService =new LoginService(userRepository)
+const loginService = new LoginService(userRepository);
 
 export const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, userType } = req.body;
-    console.log(name, email, password);
-    const userExists=await registerService.find(email)
-    if(userExists){
-        res.status(200).json({message:"email exists"})
-    }else{
-        const otp=generateOtp()
-        const data = {
-            name: name,
-            email: email,
-            password: password,
-            userType: userType,
-            otp: otp,
-            message:"register"
-          };
-
-          console.log('data from the register');
-          
-          console.log(data);
-         const token= await createToken(data,res)
-           await sendMail(email,otp,name)
-           console.log(otp);
-           
-        return res.status(200).json({message:"otp send success",token:token})
+    const userExists = await registerService.find(email);
+    
+    if (userExists) {
+      return res.status(409).json({ message: "Email already exists" });
     }
 
+    const otp = generateOtp();
+    console.log(otp);
+    
+    const data = { name, email, password, userType, otp, message: "register" };
+    const token = await createToken(data, res);
+    
+    await sendMail(email, otp, name);
+    
+    return res.status(201).json({ message: "OTP sent successfully", token });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
 };
+
+// export const otpVerify = async (req: Request, res: Response) => {
+//   try {
+//     const token = req.cookies.accessToken;
+//     const decodedData = await verifyToken(token);
+//     console.log(decodedData,"decoded data form");
+    
+//     if (!decodedData) {
+//       return res.status(401).json({ message: "Session expired or invalid token" });
+//     }
+
+//     const { name, email, password, userType, otp } = decodedData;
+    
+//     if (otp === req.body.otp) {
+//       console.log(otp,'same otp');
+      
+//       const image = 'anony.webp';
+//       const userData = await registerService.execute({ name, email, password, userType, image });
+//       const userToken = await createToken({ email, userType: 'user' }, res);
+      
+//       return res.status(200).json({ message: "OTP verified, registration successful", userData, token: userToken });
+//     }
+
+//     return res.status(400).json({ message: "Incorrect OTP" });
+//   } catch (error: any) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// };
+
+export const loginUser = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const data = await loginService.execute(email, password);
+
+    if (data === "Email was wrong") {
+      return res.status(401).json({ message: "Incorrect email" });
+    }
+
+    if (data === "Password was wrong") {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
+
+    if (data === "Account blocked") {
+      return res.status(403).json({ message: "Account blocked" });
+    }
+
+    const { name, userType, image, mobile, about, location, work, pinCode, _id } = data;
+    const token = await createToken({ name, email, userType, image, mobile, about, location, work, pinCode, _id }, res);
+    
+    return res.status(200).json({ data: { name, email, userType, image, mobile, about, location, work, pinCode, _id }, token });
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
+export const resendUser = async (req: Request, res: Response) => {
+  try {
+    const token = req.cookies.accessToken;
+    const decoded = await verifyToken(token);
+    
+    if (!decoded) {
+      return res.status(401).json({ message: "Session expired or invalid token" });
+    }
+
+    const otp = generateOtp();
+    console.log(otp,'resend otp');
+    
+    const { exp, ...dataWithoutExp } = decoded; // Remove the "exp" property
+    const data = { ...dataWithoutExp, otp }; // Add the OTP to the payload
+
+    await createToken(data, res); // Create a new token with the updated payload
+    await sendMail(decoded.email, otp, decoded.name);
+
+    return res.status(200).json({ message: "OTP resent successfully" });
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const googleRegister = async (req: Request, res: Response) => {
+  try {
+    const { email, displayName, photoURL } = req.body.data;
+    const userType = req.body.userType;
+    const user = { email, name: displayName, image: photoURL, userType };
+    
+    const userExists = await registerService.find(email);
+    const token = await createToken(user, res);
+    
+    if (userExists) {
+      return res.status(200).json({ user: userExists, token, message: "User already exists" });
+    }
+
+    const newUser = await registerService.GoogleRegister(user);
+    
+    return res.status(201).json({ user: newUser, token, message: "New user created" });
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    const userExists = await registerService.find(email);
+
+    if (userExists) {
+      const otp = generateOtp();
+      const data = { otp, email: userExists.email, name: userExists.name, password: userExists.password, userType: userExists.userType, message: "forgot" };
+      
+      await createToken(data, res);
+      await sendMail(email, otp, userExists.name);
+      console.log(otp);
+      
+      return res.status(200).json({ message: "OTP sent successfully" });
+    }
+
+    return res.status(404).json({ message: "User not found" });
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    const { newPassword } = req.body.data;
+    const token = req.cookies.accessToken;
+    const decoded = await verifyToken(token);
+    
+    if (!decoded) {
+      return res.status(401).json({ message: "Session expired or invalid token" });
+    }
+
+    await registerService.forgotpass(decoded.email, newPassword);
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+
+
+
+
+
+
 
 
 
@@ -56,33 +193,30 @@ export const otpVerify = async (req: Request , res: Response) => {
     const token = req.cookies.accessToken
     // console.log(token);
     const decodedData = await verifyToken(token)
-    console.log("decodeddd ddddatarr",decodedData);
+    console.log(decodedData);
     
     if (!decodedData) {
-      return res.status(400).json({ message: "Session expired or no data found in session." });
+      return res.status(400).json({ message: "Session expired or invalid token"  });
     }
     if(decodedData.message==="register"){
      
       const { name, email, password, userType, otp } = decodedData;
-
+  
+      // console.log("Session Data:", sessionData);
+      
+  
       if (otp === req.body.otp) {
-        console.log('inseid the if condintion');
         
         let image='anony.webp'
         const userData=await registerService.execute({ name, email, password, userType ,image});
-        console.log(userData,"userdata djdsfjdsdfsdfsfsfssfsfsfdfdddddddddddddddddd");
-        let obj={
-          email:email,
-          userType:'user'
-        }
-        const token =await createToken(obj,res)
-        console.log(userData,"user data dfkjfkdhsdkfhsdfhsdjkh");
         
-        return res.status(200).json({ message: "OTP verified and registration successful",userData:userData,token:token });
+        const token =await createToken(email,res)
+        
+        return res.status(200).json({ message: "OTP verified, registration successful",userData:userData,token:token });
       } else {
         console.log('incorrect otp');
         
-        return res.status(200).json({ message: "Incorrect OTP" });
+        return res.status(400).json({ message: "Incorrect OTP" });
       }
     }else if(decodedData.message==="forgot"){
       const {otp,email,password,userType,name}=decodedData;
@@ -91,7 +225,7 @@ export const otpVerify = async (req: Request , res: Response) => {
         
         return res.status(200).json({message:"Otp verified "})
       }else{
-        return res.status(200).json({message:"Incorrect OTP"})
+        return res.status(400).json({ message: "Incorrect OTP" });
       }
     }
     // console.log(decodedData);
@@ -100,154 +234,3 @@ export const otpVerify = async (req: Request , res: Response) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
-
-
-
-export const loginUser=async(req:Request,res:Response)=>{
-  try {
-
-    const {email,password}=req.body
-    console.log(email,password);
-    
-    const data=await loginService.execute(email,password)
-
-    if(data==="Email was wrong"){
-      res.status(200).json({message:"Email was wrong"})
-    }else if(data==="Password was wrong"){
-      res.status(200).json({message:"Password was wrong"})
-    }else if(data==="Account blocked"){
-      res.status(200).json({message:"Account Blocked"})
-    }else{
-      let {name,email,userType,image,mobile,about,location,work,pinCode,_id}=data
-      let user={name:name,email:email,userType:userType,image:image,mobile:mobile,about:about,location:location,work:work,pinCode:pinCode,_id:_id}
-     
-      
-      const token= await createToken(user,res)
-      console.log(token,"token");
-      
-
-      res.status(200).json({data:user,token:token})
-      
-    }
-    
-
-    
-  } catch (error:any) {
-    return res.status(500).json({ message: error.message });
-  }
-}
-
-
-export const resendUser=async(req:Request,res:Response)=>{
-  try {
-
-    console.log('resend otp controller from the user');
-    
-    
-    const token =req.cookies.accessToken
-    console.log(token);
-    
-    const decoded=await verifyToken(token)
-    console.log(decoded);
-    const otp=generateOtp()
-
-    const data = {
-      name: decoded.name,
-      email: decoded.email,
-      password: decoded.password,
-      userType: decoded.userType,
-      otp: otp,
-      message:decoded.message
-    };
-
-    await createToken(data,res)
-    await sendMail(decoded.email,otp,decoded.name)
-    console.log(otp);
-
-    console.log('resen send success');
-    
-    res.status(200).json({message:"resend otp sent success"})
-    
-  } catch (error:any) {
-    console.log(error.message);
-    
-  }
-}
-
-export const googleRegister=async(req:Request,res:Response)=>{
-  try {
-    // console.log(req.body.data)
-    const {email,displayName,photoURL}=req.body.data
-    const userType=req.body.userType
-    const user={email:email,name:displayName,image:photoURL,userType:userType}
-    const userExists=await registerService.find(email)
-   const token= await createToken(user,res)
-
-    if(userExists){
-      console.log(userExists,"user exists");
-      
-      res.status(200).json({user:userExists,token:token,message:"user exists"})
-    }else{
-      const newUser=await registerService.GoogleRegister(user)
-      console.log(newUser);
-      
-      res.status(200).json({user:newUser,token:token,message:"create new User"})
-    }
-
-  } catch (error:any) {
-    console.log(error.message);
-    
-  }
-}
-
-export const verifyemail=async(req:Request,res:Response)=>{
-  try {
-    const email=req.body.email
-    const userExits=await registerService.find(email)
-    if(userExits){
-      const otp=generateOtp()
-
-      const data={
-        otp:otp,
-        email:userExits.email,
-        name:userExits.name,
-        password:userExits.password,
-        userType:userExits.userType,
-        message:"forgot"
-      }
-      console.log(data);
-      
-      await createToken(data,res)
-      await sendMail(data.email,otp,data.name)
-      console.log(otp);
-
-
-      res.status(200).json({message:'otp send success'})
-
-    }else{
-      res.status(200).json({message:'usernotfound'})
-    }
-    
-  } catch (error:any) {
-    console.log(error.message);
-    
-  }
-}
-
-export const forgotPassword=async(req:Request,res:Response)=>{
-  try {
-    const data=req.body.data
-    const token=req.cookies.accessToken
-    const decoded=await verifyToken(token)
-
-   await registerService.forgotpass(decoded.email,data.newPassword)
-
-   res.status(200).json({message:"password updated"})
-
-    
-  } catch (error:any) {
-    console.log(error.message);
-    
-  }
-}

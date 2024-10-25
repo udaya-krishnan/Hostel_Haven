@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
 import { Logout } from '../../features/Admin/auth/authSlice';
 import NotificationIcon from "./NotificationIcon";
-import {io} from 'socket.io-client'
+import { io } from 'socket.io-client';
 
 const socket = io("http://localhost:3000");
 
@@ -12,21 +12,15 @@ const Header = () => {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-  
     socket.on('propertycreated', (data) => {
-
       console.log(data);
-      
       setNotifications((prev) => [...prev, data]);
     });
 
-    
     return () => {
       socket.off('propertycreated');
     };
   }, []);
-
- 
 
   function logout() {
     dispatch(Logout());
@@ -46,13 +40,13 @@ const Header = () => {
 
         {/* Dropdown Notification List */}
         {isDropdownOpen && (
-          <div className="absolute top-10 right-0 bg-white shadow-lg rounded-lg p-4 w-72">
+          <div className="absolute top-14 right-0 bg-white shadow-lg rounded-lg p-4 w-72 sm:w-96">
             <h4 className="font-semibold text-gray-700 mb-2">Notifications</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2 max-h-60 overflow-y-auto">
               {notifications.length ? (
-                notifications.map((notification) => (
+                notifications.map((notification, index) => (
                   <li
-                    key={notification.email}
+                    key={index}
                     className="p-2 border rounded-lg hover:bg-gray-100 transition duration-150"
                   >
                     {notification.subject}
@@ -66,7 +60,7 @@ const Header = () => {
         )}
 
         {/* Logout Button */}
-        <button className="bg-gray-200 p-2 rounded" onClick={logout}>
+        <button className="bg-gray-200 p-2 rounded text-sm sm:text-base" onClick={logout}>
           Logout
         </button>
       </div>

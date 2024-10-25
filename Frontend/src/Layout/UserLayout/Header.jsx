@@ -124,6 +124,13 @@ function Header() {
                      Messages
                     </a>
                     <a
+                      href="/wallet"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                     Wallet
+                    </a>
+                    
+                    <a
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={LogoutUser}
                     >
@@ -146,7 +153,7 @@ function Header() {
           </svg>
         </div>
       </header>
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} isLogged={isLogged}/>
     </>
   );
 }

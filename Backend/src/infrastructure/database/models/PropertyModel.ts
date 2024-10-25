@@ -33,6 +33,7 @@ export interface Property {
     policies:string[],
     propertyVerified: PropertyVerified,
     is_blocked: boolean,
+    avgRating:number
 }
 
 // Extend the Property interface for the Mongoose document
@@ -68,6 +69,7 @@ const PropertySchema: Schema<PropertyDocument> = new Schema({
     policies:[{type:String,required:true}],
     propertyVerified: { type: String,enum:PropertyVerified, default: PropertyVerified.Pending }, 
     is_blocked: { type: Boolean, default: false }, 
+    avgRating: { type: Number,require:false }, 
 }, {
     timestamps: true, 
 });

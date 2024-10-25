@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ADDAMOUNT, FETCHPAYMENT, HOST_CHANGE_PASS, HOST_EDIT_PROFILE, HOST_UPLOAD_PHOTO, VERIFYAMOUNT } from '../features/Host/auth/authTypes';
+import { ADDAMOUNT, FETCH_NOTIFICATIONS, FETCHPAYMENT, HOST_CHANGE_PASS, HOST_EDIT_PROFILE, HOST_UPLOAD_PHOTO, VERIFYAMOUNT } from '../features/Host/auth/authTypes';
 
 const API_URL='http://localhost:3000';
 
@@ -80,13 +80,27 @@ const verifyAmount=async(order,hostId,amount)=>{
 }
 
 
+  
+const fetchNotifications = async () => {
+    try {
+      const response = await axios.get(API_URL + FETCH_NOTIFICATIONS, { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      console.error("Error in changePassword:", error.message);
+      throw error;  
+    }
+  };
+
+
+
 const HostAccountService={
     hosteditProfile,
     hostuploadPhoto,
     hostchangePassword,
     fetchpayment,
     addAmount,
-    verifyAmount
+    verifyAmount,
+    fetchNotifications
 }
 
 

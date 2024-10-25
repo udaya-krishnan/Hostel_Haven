@@ -5,4 +5,5 @@ export interface PaymentUseCase{
     fetchreservation(id:string):Promise<any|null>
     bookingdetails(id:string):Promise<any|null>
     retryverify(id:string):Promise<any|null>
+    canceleReservation(resId:string):Promise<any|null>
 }

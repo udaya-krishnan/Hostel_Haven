@@ -6,18 +6,14 @@ import {  selectUser } from '../../../features/User/auth/authSelectors'
 function UserAuth({children}) {
     const navigate =useNavigate()
     const user=useSelector(selectUser)
-    console.log(user,'token');
+    console.log(user,'token is that token');
     
     useEffect(()=>{
-        if(user!==null){
+        if(user){
             console.log("loged");
             
             navigate('/')
-        }else{
-            console.log("else");
-            
         }
-
     },[user])
 
     return children

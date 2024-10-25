@@ -10,6 +10,7 @@ import { useFormik } from "formik";
 import { googleRegister, register } from "../../features/User/auth/authAction";
 import { auth, provider } from "../../config/firebase/firebase";
 import { signInWithPopup } from "firebase/auth";
+import { ToastContainer, toast } from 'react-toastify';
 
 function Register() {
   const [error, setError] = useState(null);
@@ -19,13 +20,18 @@ function Register() {
 
   function googleAuth() {
     signInWithPopup(auth, provider).then(async (data) => {
-      console.log("google data");
-      const res = await dispatch(googleRegister({ data: data.user }));
-      console.log(res, "google register");
-
-      if (res.meta.requestStatus === "fulfilled") {
-        navigate("/");
+      try {
+        console.log("google data");
+        const res = await dispatch(googleRegister({ data: data.user }));
+        console.log(res, "google register");
+  
+        if (res.meta.requestStatus === "fulfilled") {
+          navigate("/");
+        }
+      } catch (error) {
+        toast.error("Something went wrong on our end. Please try again later.")
       }
+     
     });
   }
 
@@ -41,14 +47,19 @@ function Register() {
         const result = await dispatch(
           register(values.name, values.email, values.password)
         );
-        
-        if (result.message === "email exists") {
-          formik.setErrors({ email: "Email already exists" });
-        } else {
+        console.log(result,"result");
+        if(result){
+
           navigate("/otp");
         }
+        
       } catch (error) {
         console.error("Error registering:", error);
+        if(error.response.status===409){
+          formik.setErrors({ email: "Email already exists" });
+        }else{
+          toast.error("Something went wrong on our end. Please try again later.")
+        }
       }
     },
   });
@@ -69,6 +80,7 @@ function Register() {
         className="min-h-screen flex items-center justify-center bg-cover bg-center"
         style={{ backgroundImage: `url(${background})` }}
       >
+        <ToastContainer/>
         <div className="flex flex-col md:flex-row bg-black bg-opacity-50 w-full p-6 md:p-20">
           <div className="text-left text-white md:w-1/2 mr-auto my-auto">
             <h1 className="hidden text-2xl md:text-4xl md:flex font-bold mb-4">

@@ -45,6 +45,9 @@ function HostDetailes() {
       fetchPlace();
     }
   }, [hostData.latitude, hostData.longitude]); 
+  const handleBack = () => {
+    navigate(-1); // Change this to the appropriate route
+  };
 
   return (
     <div className="flex">
@@ -53,6 +56,12 @@ function HostDetailes() {
         <Header />
         <div className="p-6 mt-20">
           <div className="bg-white ml-64 p-4 rounded-xl w-94 shadow mt-4">
+          <button
+              className="mb-4 bg-gray-600 text-white py-2 px-4 rounded-md"
+              onClick={handleBack}
+            >
+              Back
+            </button>
             <div className="flex items-center ">
               <img
                 src={

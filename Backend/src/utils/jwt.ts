@@ -11,7 +11,7 @@ const JWT_AUTHCSEC =process.env.JWT_AUTHSECRET!;
 export const createToken = async (data: any, res: Response) => {
     try {
 
-      const accessToken = jwt.sign(data, JWT_AUTHCSEC, { expiresIn: '3m' });
+      const accessToken = jwt.sign(data, JWT_AUTHCSEC, { expiresIn: '10m' });
       const refreshToken = jwt.sign(data, JWT_AUTHCSEC, { expiresIn: '15m' });
   
      
@@ -19,7 +19,7 @@ export const createToken = async (data: any, res: Response) => {
         httpOnly: true,     
         secure: process.env.NODE_ENV === "production", 
         sameSite: "strict",  
-        maxAge: 3 * 60 * 1000 
+        maxAge: 10 * 60 * 1000 
       });
   
       res.cookie("refreshToken", refreshToken, {

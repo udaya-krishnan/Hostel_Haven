@@ -140,3 +140,20 @@ export const RetryVerify=async(req:Request,res:Response)=>{
 }
 
 
+export const CancelReservation=async(req:Request,res:Response)=>{
+    try {
+        const{resId}=req.body
+
+            const data=await userService.canceleReservation(resId)
+            res.status(200).json({data:data})
+        
+    } catch (error:any) {
+        console.log(error.message);
+        
+    }
+}
+
+
+
+
+

@@ -12,6 +12,7 @@ export const addGusetInfo=async(req:Request,res:Response)=>{
         res.status(200).json({data:gusetinfo})
     } catch (error:any) {
         console.log(error.message);
+        return res.status(500).json({ message: "Internal server error" });
         
     }
 }

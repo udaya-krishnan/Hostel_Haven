@@ -12,7 +12,7 @@ function Otp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [timer, setTimer] = useState(60); // Set initial time (e.g., 150 seconds or 2 minutes 30 seconds)
+  const [timer, setTimer] = useState(90); // Set initial time (e.g., 150 seconds or 2 minutes 30 seconds)
   const [otpExpired, setOtpExpired] = useState(false); // To track if OTP is expired
 
   useEffect(() => {
@@ -47,57 +47,89 @@ function Otp() {
   };
 
   async function onSubmit() {
-    if (otpExpired) {
-      alert("OTP has expired. Please request a new OTP.");
-      return;
-    }
-    let otp = "";
-    for (let i = 0; i < inputs.current.length; i++) {
-      otp += inputs.current[i].value;
-    }
-    if (otp.length !== 6) {
-      for (let i = 0; i < inputs.current.length; i++) {
-        inputs.current[i].style.border = "1px solid red";
+    try {
+      if (otpExpired) {
+        alert("OTP has expired. Please request a new OTP.");
+        return;
       }
-
-      document.getElementById("error").style.display = "block";
-    } else {
-      console.log("OTP submitted:", otp);
-
+  
+      let otp = "";
       for (let i = 0; i < inputs.current.length; i++) {
-        inputs.current[i].style.border = "";
+        otp += inputs.current[i].value;
       }
-      document.getElementById("error").style.display = "none";
-
-      const result = await dispatch(otpVerify({otp}));
-
-      console.log(result,"rrrrrrrrrrrrrrres");
-      
-
-      if (result.message === "Incorrect OTP") {
+  
+      if (otp.length !== 6) {
         for (let i = 0; i < inputs.current.length; i++) {
           inputs.current[i].style.border = "1px solid red";
         }
         document.getElementById("error").style.display = "block";
-      } else if(result.message==="OTP verified and registration successful"){
-        toast.success('Register Success', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 })
-        setTimeout(()=>{
-          navigate("/");
-        },2000)
-      }else if(result.message==="Otp verified "){
-        console.log('forgot pAGE');
-        
-        toast.success('Otp verified', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 })
-        setTimeout(()=>{
-          navigate('/forgot')
-        },2000)
+      } else {
+        console.log("OTP submitted:", otp);
+  
+        for (let i = 0; i < inputs.current.length; i++) {
+          inputs.current[i].style.border = "";
+        }
+        document.getElementById("error").style.display = "none";
+  
+        // Dispatch the OTP verification and handle the result properly
+        const result = await dispatch(otpVerify({ otp })).unwrap(); // Unwrap only if dispatch can return correct result
+        console.log(result, "OTP verification response");
+  
+        if (result.message === "OTP verified, registration successful") {
+          console.log('OTP verified success');
+          
+          toast.success('Register Success');
+          setTimeout(() => {
+            console.log("Timeout finished, redirecting...");
+            navigate("/");
+          }, 5000); // Delay navigation for 5 seconds;
+        } else if (result.message === "Otp verified ") {
+          console.log('Forgot page redirect');
+          
+          toast.success('Otp verified', { hideProgressBar: true, className: 'custom-toast-success', autoClose: 2000 });
+          setTimeout(() => {
+            navigate('/forgot');
+          }, 2000);
+        } else {
+          throw new Error(result.message);
+        }
+      }
+    } catch (error) {
 
+      console.log(error, "this is error");
+ 
+      if (error.response) {
+
+        const statusCode = error.response.status;
+        const errorMessage = error.response.data.message;
+
+
+        if (statusCode === 401) {
+
+          toast.error("Session expired. Please register again.");
+
+          navigate('/register');
+
+        } else if (statusCode === 400) {
+          // Show incorrect OTP message
+          for (let i = 0; i < inputs.current.length; i++) {
+            inputs.current[i].style.border = "1px solid red";
+          }
+          document.getElementById("error").style.display = "block";
+          document.getElementById("error").innerText = errorMessage; // Display backend error message
+        } else {
+          toast.error("Something went wrong on our end. Please try again later.");
+        }
+      } else {
+        toast.error("Network error. Please try again.");
       }
     }
   }
+  
 
   const resendOtpa = async() => {
-    setTimer(30);
+    try {
+      setTimer(90);
     setOtpExpired(false); 
     inputs.current.forEach(input => (input.value = ""));
     inputs.current.forEach(input=>(input.style.border="1px solid gray"))
@@ -105,6 +137,17 @@ function Otp() {
     console.log("OTP resent!");
 
     await dispatch(resendOtp())
+    } catch (error) {
+      console.log(error,"error");
+      
+      if(error.response.status===401){
+        toast.error("Session expired Please Again Register")
+        navigate('/register')
+      }else{
+        toast.error("Something went wrong on our end. Please try again later.")
+      }
+    }
+    
   };
 
   return (

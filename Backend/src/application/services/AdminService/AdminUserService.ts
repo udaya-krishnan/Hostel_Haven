@@ -18,4 +18,9 @@ export class AdminUserService implements AdminUserCase{
         const action =await this.adminRepository.userDetails(id)
         return action
     }
+
+    async fetch(): Promise<any | null> {
+        const [totalUser,totalHost,totalProperty,Wallet,reservations]=await this.adminRepository.fetch()
+        return [totalUser,totalHost,totalProperty,Wallet,reservations]
+    }
 }

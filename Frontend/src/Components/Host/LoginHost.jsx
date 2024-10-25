@@ -8,23 +8,19 @@ import { useDispatch } from "react-redux";
 import { hostLogin } from "../../features/Host/auth/authAction";
 
 function LoginHost() {
-  
   const dispatch = useDispatch();
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
-  const handleSubmit = async(values) => {
-    console.log(values);
-   const res = await dispatch(hostLogin(values.email, values.password,toast));
-   console.log(res);
-   
-   if(res==="otp send success"){
-    navigate('/host/otp')
-   }
+  const handleSubmit = async (values) => {
+    const res = await dispatch(hostLogin(values.email, values.password, toast));
+    
+    if (res === "otp send success") {
+      navigate('/host/otp');
+    }
   };
 
   return (
     <main className="flex-grow bg-gray-100">
-
       <ToastContainer 
         position="top-right" 
         autoClose={5000} 
@@ -42,21 +38,22 @@ function LoginHost() {
         className="h-screen flex justify-center bg-cover bg-center"
         style={{ backgroundImage: `url(${background})` }}
       >
-        <div className="flex flex-col md:flex-row bg-black bg-opacity-50 w-full h-full p-6 md:p-20">
-          <div className="absolute top-0 left-0 p-6 md:p-10">
+        <div className="flex flex-col md:flex-row bg-black bg-opacity-50 w-full h-full p-6 md:p-10">
+          <div className="absolute top-0 left-0 p-6">
             <h1 className="text-2xl md:text-4xl font-extrabold text-white">
               HOSTEL HAVEN
             </h1>
           </div>
 
-          <div className="text-left text-white md:w-1/2 mr-auto my-auto flex flex-col justify-center h-full">
+          <div className="text-left text-white md:w-1/2 my-auto flex flex-col justify-center h-24">
             <h1 className="text-2xl md:text-4xl font-extrabold mb-2">
               Growing your
             </h1>
             <p className="text-sm md:text-2xl">business made easy</p>
           </div>
 
-          <div className="bg-bgcolor shadow-md rounded-lg overflow-hidden p-6 md:p-10 w-full md:w-2/5 ml-auto my-auto">
+          {/* Adjust the top margin to bring the login form higher */}
+          <div className="bg-white shadow-md rounded-lg overflow-hidden p-6 md:p-10 w-full md:w-2/5 lg:w-1/3 mx-auto my-10 md:my-auto ">
             <h2 className="text-xl md:text-2xl font-bold mb-4 text-btncolor">
               Enter Your Details
             </h2>
@@ -73,9 +70,7 @@ function LoginHost() {
                       name="email"
                       type="email"
                       className={`w-full mt-2 px-2 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-btncolor ${
-                        errors.email && touched.email
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors.email && touched.email ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter Your Email"
                     />
@@ -91,9 +86,7 @@ function LoginHost() {
                       name="password"
                       type="password"
                       className={`w-full mt-2 px-2 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-btncolor ${
-                        errors.password && touched.password
-                          ? "border-red-500"
-                          : "border-gray-300"
+                        errors.password && touched.password ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter Your Password"
                     />

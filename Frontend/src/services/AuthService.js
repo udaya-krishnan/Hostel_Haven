@@ -4,20 +4,31 @@ import { HOST_RESEND } from '../features/Host/auth/authTypes';
 const API_URL='http://localhost:3000';
 
 const register=async(name,email,password)=>{
-    let userType="user"
-    const response=await axios.post(API_URL+REGISTER_URL,{name,email,password,userType},{withCredentials:true});
-    console.log(response.data);
-    return response.data
+    try {
+        let userType="user"
+        const response=await axios.post(API_URL+REGISTER_URL,{name,email,password,userType},{withCredentials:true});
+        console.log(response.data);
+        return response.data
+    } catch (error) {
+        throw error
+    }
+   
 }
 
 
 const otpVerify=async(otp)=>{
-    console.log("otpverify in service");
+    try {
+        console.log("otpverify in service");
     
-    const response =await axios.post(API_URL+VERIFY_OTP,{otp},{withCredentials:true})
-    console.log(response.data);
-    
-    return response.data
+        const response =await axios.post(API_URL+VERIFY_OTP,{otp},{withCredentials:true})
+        console.log(response.data);
+        
+        return response.data
+    } catch (error) {
+        console.log(error,'errrrr');
+        
+        throw error
+    }
 }
 
 const loginverify=async(email,password)=>{
@@ -28,12 +39,15 @@ const loginverify=async(email,password)=>{
 }
 
 const resendOtp=async()=>{
-    console.log("resend otp  in service")
-    const response=await axios.get(API_URL +RESEND, { withCredentials: true });
-    console.log(response);
-    
-
-    return response.data
+    try {
+        console.log("resend otp  in service")
+        const response=await axios.get(API_URL +RESEND, { withCredentials: true });
+        console.log(response);
+        return response.data
+    } catch (error) {
+        throw error
+    }
+   
 }
 
 const googleRegister=async(data)=>{
@@ -43,16 +57,26 @@ const googleRegister=async(data)=>{
 }
 
 const verifyEmail=async(email)=>{
-    const response =await axios.post(API_URL+VERIFY_EMAIL,{email},{withCredentials:true})
-    console.log(response.data,"service");
-    
-    return response.data
+    try {
+        const response =await axios.post(API_URL+VERIFY_EMAIL,{email},{withCredentials:true})
+        console.log(response.data,"service");
+        
+        return response.data
+    } catch (error) {
+        throw error
+    }
+  
 }
 
 const forgotpass=async(data)=>{
-    const response=await axios.patch(API_URL+FORGOT_PASS,{data},{withCredentials:true})
+    try {
+        const response=await axios.patch(API_URL+FORGOT_PASS,{data},{withCredentials:true})
     console.log(response.data,"service")
     return response.data
+    } catch (error) {
+        throw error
+    }
+    
 }
 
 const AuthService={

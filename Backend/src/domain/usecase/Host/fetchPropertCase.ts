@@ -6,4 +6,5 @@ export interface FetchProperty{
     updateproperty(data:any,id:string):Promise<any|null>
     available(id:string):Promise<any|null>
     fetchreservation(id:string):Promise<any|null>
+    fetchRating(proId:string):Promise<any|null>
 }

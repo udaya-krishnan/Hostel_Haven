@@ -17,6 +17,8 @@ import ReservationList from "../../Pages/User/ReservationList";
 import ReservationDetails from "../../Pages/User/ReservationDetails";
 import IsLogged from "../../Components/User/middlewares/isLogged";
 import Chat from "../../Pages/User/Chat";
+import Notification from "../../Pages/User/Notification";
+import Wallet from "../../Pages/User/Wallet";
 
 function UserRoute() {
   return (
@@ -36,6 +38,8 @@ function UserRoute() {
         <Route path={'/reservationlist'} element={<IsLogged><ReservationList/></IsLogged>}/>
         <Route path={'/reservationdetails'} element={<IsLogged><ReservationDetails/></IsLogged>}/>
         <Route path={'/chat'} element={<IsLogged><Chat/></IsLogged>}/>
+        <Route path={'/notifications'} element={<IsLogged><Notification/></IsLogged>}/>
+        <Route path={'/wallet'} element={<IsLogged><Wallet/></IsLogged>}/>
       </Routes>
     </>
   );

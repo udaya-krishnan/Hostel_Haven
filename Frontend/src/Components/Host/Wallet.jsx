@@ -15,7 +15,7 @@ const Wallet = () => {
   const [allTransactions, setAllTransactions] = useState([]);
   const [totalBalance, setTotalBalance] = useState(0);
   const [todayAmount, setTodayAmount] = useState(0);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [monthlyPayments, setMonthlyPayments] = useState(Array(12).fill(0)); // Array to store monthly payment totals (Jan to Dec)
 
   const xLabels = [
@@ -75,11 +75,8 @@ const Wallet = () => {
     });
 
     if (add) {
-
-      const response=await dispatch(addingAmount(add))
-      console.log(response);
-
-      const {amount,currency,id}=response.order
+      const response = await dispatch(addingAmount(add));
+      const { amount, currency, id } = response.order;
 
       const rzp1 = new window.Razorpay(
         AddAmount(
@@ -95,35 +92,20 @@ const Wallet = () => {
           setAllTransactions,
           todayAmount,
           setTodayAmount
-
         )
       );
       rzp1.open();
-
-
-      // Swal.fire({
-      //   title: "Amount Added",
-      //   text: `₹${amount} has been added to your wallet.`,
-      //   icon: "success",
-      //   toast: true,
-      //   position: "top-end",
-      //   timer: 3000,
-      //   timerProgressBar: true,
-      //   showConfirmButton: false,
-      // });
     }
   };
 
   return (
-    <div className="h-auto bg-white p-5 max-w-7xl mx-auto">
-      <Toaster/>
+    <div className="h-auto bg-white p-4 sm:p-5 max-w-7xl mx-auto">
+      <Toaster />
       {/* Header */}
-      <header className="flex justify-between items-center mb-6 bg-white shadow p-6 rounded-lg">
-        <div className="flex flex-col">
+      <header className="flex flex-col sm:flex-row justify-between items-center mb-6 bg-white shadow p-4 rounded-lg">
+        <div className="flex flex-col mb-4 sm:mb-0">
           <h1 className="text-xl text-btncolor font-bold">Total Balance</h1>
-          <h2 className="text-3xl text-btncolor font-semibold">
-            ₹{totalBalance}
-          </h2>
+          <h2 className="text-3xl text-btncolor font-semibold">₹{totalBalance}</h2>
           <p className="text-green-500">+ ₹{todayAmount} (Today)</p>
         </div>
 

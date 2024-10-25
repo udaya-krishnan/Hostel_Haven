@@ -140,3 +140,24 @@ export const editBanner=(formdata)=>async()=>{
     const response=await AdminService.editbanner(formdata)
     return response
 }
+
+export const fetchWalletHistory=()=>async()=>{
+    const response= await AdminService.fetchWallet()
+    return response
+}
+
+export const fetchAllData=()=>async()=>{
+    const response= await AdminService.fetchAll()
+    return response
+}
+
+export const fetchRating=()=>async()=>{
+    const response=await AdminService.fetchRating()
+    return response
+}
+
+
+export const sendNotification=(data)=>async()=>{
+    const response=await AdminService.sendnotification(data)
+    return response
+}

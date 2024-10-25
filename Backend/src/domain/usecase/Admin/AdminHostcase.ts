@@ -5,5 +5,6 @@ export interface AdminHostCase{
     propertyDetails(id:string):Promise<any|null>
     approveproperty(id:string):Promise<any|null>
     rejectproperty(id:string):Promise<any|null>
+    fetchRating():Promise<any|null>
     // actionUser(id:string):Promise<any|null>
 }

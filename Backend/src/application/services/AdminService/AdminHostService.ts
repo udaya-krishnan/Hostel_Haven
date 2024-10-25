@@ -35,4 +35,9 @@ export class AdminHostService implements AdminHostCase{
         const property=await this.adminRepository.rejectproperty(id)
         return property
     }
+
+    async fetchRating(): Promise<any | null> {
+        const response=await this.adminRepository.fetchRating()
+        return response
+    }
 }

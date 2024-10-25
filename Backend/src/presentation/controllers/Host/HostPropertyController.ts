@@ -16,6 +16,7 @@ export const fetchamenities=async(req:Request,res:Response)=>{
         res.status(200).json({allamenities:allamenities})
     } catch (error:any) {
         console.log(error.message)
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -26,6 +27,7 @@ export const fetchsafety=async(req:Request,res:Response)=>{
         res.status(200).json({allsafety:allsafety})
     } catch (error:any) {
         console.log(error.messae);
+        return res.status(500).json({ message: "Internal server error" });
         
     }
 }
@@ -96,7 +98,7 @@ export const addproperty=async(req:Request,res:Response)=>{
         
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -113,7 +115,7 @@ export const fetchProperty=async(req:Request,res:Response)=>{
 
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -169,7 +171,7 @@ export const updateProperty=async (req:Request,res:Response)=>{
         
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -187,7 +189,7 @@ export const availableProperty=async(req:Request,res:Response)=>{
         }
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -203,6 +205,25 @@ export const fetchReservation=async(req:Request,res:Response)=>{
         res.status(200).json({reservation:response})
     } catch (error:any) {
         console.log(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+
+export const fetchRating=async(req:Request,res:Response)=>{
+    try {
+        const proId=typeof req.query.proId === 'string' ? req.query.proId : '';
+
+
+        const response=await hostrepository.fetchRating(proId)
+
+        console.log(response,"hai sdjfsdjfsdjfsd");
         
+
+        res.status(200).json({response:response})
+    } catch (error:any) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal server error" });
     }
 }

@@ -26,6 +26,13 @@ export interface UserRepository {
     bookingdetails(id:string):Promise<any|null>
     retrypayment(id:string):Promise<any|null>
     connecthost(userId:string,hostId:string,data:Data):Promise<any|null>
-    fetchHost(hostId:string):Promise<any|null>
+    fetchHost(hostId:string,userId:string):Promise<any|null>
     fetchConnection(userId:string):Promise<any|null>
+    fetchusermessage(hostId:string,userId:string):Promise<any|null>
+    fetchnearme(lat:number,lng:number):Promise<any|null>
+    rateProperty(userId:string,proId:string,rate:number,review:string):Promise<any|null>
+    fetchReview(proId:string):Promise<any|null>
+    fetchNotifications():Promise<any|null>
+    deleteNotification(id:string):Promise<any|null>
+    cancelResrevation(resId:string):Promise<any|null>
 }

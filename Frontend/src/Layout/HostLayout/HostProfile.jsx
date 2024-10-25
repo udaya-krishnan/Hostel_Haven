@@ -1,14 +1,12 @@
 import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-// import { uploadphoto } from "../../features/User/auth/authAction";
-import {toast,Toaster} from 'sonner'
+import { toast, Toaster } from 'sonner';
 import { hostuploadphoto } from "../../features/Host/auth/authAction";
 
 function HostProfile({ change, value, hostData }) {
   const fileInputRef = useRef(null);
   const [error, setError] = useState(""); 
-  const dispatch=useDispatch()
-
+  const dispatch = useDispatch();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -50,7 +48,7 @@ function HostProfile({ change, value, hostData }) {
 
   return (
     <>
-      <div className="w-1/3 bg-gray-200 p-6 rounded-lg">
+      <div className="w-full md:w-1/3 bg-gray-200 p-4 md:p-6 rounded-lg">
         <div className="flex flex-col items-center mb-6">
           <div className="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-center mb-4 overflow-hidden">
             <img
@@ -71,7 +69,6 @@ function HostProfile({ change, value, hostData }) {
             Upload a Photo
           </button>
 
-          
           <input
             type="file"
             ref={fileInputRef}
@@ -90,9 +87,8 @@ function HostProfile({ change, value, hostData }) {
         </div>
         <div className="mb-4">
           <h3 className="font-bold">{hostData.name}</h3>
-        
           <p className="text-sm text-green-500">✓ Email Confirmed</p>
-          {hostData.mobile&&  <p className="text-sm text-green-500">✓ Mobile Confirmed</p>}
+          {hostData.mobile && <p className="text-sm text-green-500">✓ Mobile Confirmed</p>}
         </div>
         <button
           className="bg-gray-300 text-btncolor py-2 px-4 rounded-md w-full"
@@ -101,7 +97,7 @@ function HostProfile({ change, value, hostData }) {
           Change password
         </button>
       </div>
-      <Toaster/>
+      <Toaster />
     </>
   );
 }

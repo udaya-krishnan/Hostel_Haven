@@ -12,9 +12,7 @@ function Addproperty9({
   handleImageFileChange,
   handleLocationChange,
 }) {
-  // State to store the property location
   const [propertyLocation, setPropertyLocation] = useState("");
-  // State to store the image previews
   const [imagePreviews, setImagePreviews] = useState([]);
 
   const handleLocationUpdate = (location) => {
@@ -28,8 +26,6 @@ function Addproperty9({
       toast.error("Please upload at least 5 images.");
     } else {
       handleImageFileChange(e);
-
-      // Create previews for selected images
       const filePreviews = files.map((file) => URL.createObjectURL(file));
       setImagePreviews(filePreviews);
     }
@@ -50,15 +46,15 @@ function Addproperty9({
   };
 
   return (
-    <div className="flex justify-between p-8 bg-background mt-14">
-      <div className="w-2/3">
-        <div className="flex flex-col p-8 bg-background">
+    <div className="flex flex-col md:flex-row justify-between p-4 md:p-8 bg-background mt-14">
+      <div className="w-full md:w-2/3 mb-4 md:mb-0">
+        <div className="flex flex-col p-4 bg-background rounded-lg shadow">
           <h1 className="text-3xl font-bold text-primary mb-6">
             Add Your Property Details
           </h1>
-          <div className="flex space-x-8">
+          <div className="flex flex-col md:flex-row space-x-0 md:space-x-8">
             {/* Image Upload Section */}
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center mb-4 md:mb-0">
               <div className="border border-border rounded p-4">
                 <div className="w-24 h-24 bg-gray-200 flex items-center justify-center">
                   <span className="text-gray-600">Add image</span>
@@ -72,7 +68,7 @@ function Addproperty9({
               </div>
 
               {/* Preview Images */}
-              <div className="mt-4 grid grid-cols-3 gap-4">
+              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {imagePreviews.map((src, index) => (
                   <img
                     key={index}
@@ -98,7 +94,7 @@ function Addproperty9({
                 type="text"
                 placeholder="Property Location"
                 name="propertyLocation"
-                value={propertyLocation} // Display the property location
+                value={propertyLocation}
                 readOnly
                 className="border border-border rounded px-4 py-2"
               />
@@ -143,14 +139,14 @@ function Addproperty9({
             </button>
             <button
               className="px-8 py-2 bg-btncolor text-white rounded-lg"
-              onClick={handleFormSubmit} // Use the new handleFormSubmit function
+              onClick={handleFormSubmit}
             >
               Submit
             </button>
           </div>
         </div>
       </div>
-      <div className="w-1/3">
+      <div className="w-full md:w-1/3 md:pl-4">
         <PropertyMap onLocationSelect={handleLocationUpdate} />
       </div>
 

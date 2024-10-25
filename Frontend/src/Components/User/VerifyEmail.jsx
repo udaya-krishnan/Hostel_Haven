@@ -12,14 +12,21 @@ function EmailVerify() {
     const dispatch=useDispatch()
     const navigate=useNavigate()
     const handleSubmit = async(values) => {
-      console.log(values);
-       const res=await  dispatch(verifyEmail(values.email))
-
-       if(res.message==="otp send success"){
-        navigate('/otp')
-       }else{
-        toast.error('User Not Found', { hideProgressBar: true, className: 'custom-toast-error', autoClose: 2000 })
-       }
+      try {
+        console.log(values);
+        const res=await  dispatch(verifyEmail(values.email))
+ 
+        if(res.message==="OTP sent successfully"){
+         navigate('/otp')
+        }
+      } catch (error) {
+        if(error.response.status===404){
+          toast.error('User Not Found', { hideProgressBar: true, className: 'custom-toast-error', autoClose: 2000 })
+         }else{
+          toast.error("Something went wrong on our end. Please try again later.")
+         }
+      }
+     
       // Handle form submission
     };
   

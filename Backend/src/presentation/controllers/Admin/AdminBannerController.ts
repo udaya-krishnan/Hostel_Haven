@@ -12,7 +12,7 @@ export const fetchBanner=async(req:Request,res:Response)=>{
         res.status(200).json({allbanner:allbanner})
     } catch (error) {
         console.log(error);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -30,6 +30,6 @@ export const editBanner=async(req:Request,res:Response)=>{
         
         // const update=await adminBannerRepo.editBanner()
     } catch (error:any) {
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }

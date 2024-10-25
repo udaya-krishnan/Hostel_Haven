@@ -1,14 +1,24 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchHostel, fetchRoom, findwish } from "../../features/User/auth/authAction";
-import { FaHeart, FaRegHeart, FaSearch, FaTimes, FaFilter } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import {
+  fetchHostel,
+  fetchRoom,
+  findwish,
+} from "../../features/User/auth/authAction";
+import {
+  FaHeart,
+  FaRegHeart,
+  FaSearch,
+  FaTimes,
+  FaFilter,
+} from "react-icons/fa";
+import { useLocation, useNavigate } from "react-router-dom";
 import WishlistsIcon from "../../Layout/UserLayout/WishlistsIcon";
 import { selectUser } from "../../features/User/auth/authSelectors";
 import FilterSidebar from "./../../Layout/UserLayout/FilterModal";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import debounce from "lodash.debounce";  // Import debounce
+import debounce from "lodash.debounce"; // Import debounce
 
 function Hostellisting() {
   const [hostels, setHostels] = useState([]);
@@ -23,7 +33,9 @@ function Hostellisting() {
   const [wish, setWish] = useState([]);
   const dispatch = useDispatch();
   const [appliedFilters, setAppliedFilters] = useState({});
+  const [sortOption, setSortOption] = useState("default"); // State for sorting option
   const userData = useSelector(selectUser);
+  const location = useLocation();
 
   // Debounced search function using lodash
   const debouncedSearch = useCallback(
@@ -45,7 +57,7 @@ function Hostellisting() {
   }, [userData, dispatch]);
 
   const handleSearchChange = (e) => {
-    debouncedSearch(e.target.value);  // Use the debounced search function
+    debouncedSearch(e.target.value); // Use the debounced search function
   };
 
   const clearSearch = () => {
@@ -71,11 +83,38 @@ function Hostellisting() {
     fetchData();
   }, [dispatch, isHostelSelected, searchText]);
 
+  // Sorting function
+  // Sorting function
+  const sortItems = (items) => {
+    switch (sortOption) {
+      case "priceAsc":
+        return items.sort(
+          (a, b) =>
+            (a.offerPrice || a.regularPrice) - (b.offerPrice || b.regularPrice)
+        );
+      case "priceDesc":
+        return items.sort(
+          (a, b) =>
+            (b.offerPrice || b.regularPrice) - (a.offerPrice || a.regularPrice)
+        );
+      case "nameAsc":
+        return items.sort((a, b) => a.name.localeCompare(b.name));
+      case "nameDesc":
+        return items.sort((a, b) => b.name.localeCompare(a.name));
+      case "ratingDesc": // Sort by rating from highest to lowest
+        return items.sort((a, b) => (b.avgRating || 0) - (a.avgRating || 0));
+      case "ratingAsc": // Sort by rating from lowest to highest
+        return items.sort((a, b) => (a.avgRating || 0) - (b.avgRating || 0));
+      default:
+        return items;
+    }
+  };
+
   const getFilteredItems = () => {
     const lowercasedSearchText = searchText.toLowerCase();
     const items = isHostelSelected ? hostels : rooms;
 
-    return items
+    const filteredItems = items
       .filter(
         (item) =>
           item.name.toLowerCase().includes(lowercasedSearchText) ||
@@ -111,6 +150,8 @@ function Hostellisting() {
 
         return passesFilter;
       });
+
+    return sortItems(filteredItems); // Sort filtered items
   };
 
   const getCurrentItems = () => {
@@ -131,12 +172,12 @@ function Hostellisting() {
   };
 
   return (
-    <div className="container mx-auto py-12">
+    <div className="container mx-auto px-4 py-6 md:py-12">
       {/* Header: Navigation and Search */}
-      <div className="flex justify-between items-center py-5 px-6 bg-white">
-        <div className="flex items-center space-x-8">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 py-3 md:py-5 px-3 md:px-6 bg-white">
+        <div className="flex items-center space-x-4 md:space-x-8 w-full md:w-auto">
           <button
-            className={`font-semibold ${
+            className={`font-semibold text-sm md:text-base ${
               isHostelSelected
                 ? "text-[#3C3633] border-b-2 border-[#3C3633]"
                 : "text-gray-500"
@@ -149,7 +190,7 @@ function Hostellisting() {
             Hostels
           </button>
           <button
-            className={`font-semibold ${
+            className={`font-semibold text-sm md:text-base ${
               !isHostelSelected
                 ? "text-[#3C3633] border-b-2 border-[#3C3633]"
                 : "text-gray-500"
@@ -164,11 +205,12 @@ function Hostellisting() {
         </div>
 
         {/* Search Bar */}
-        <div className="flex items-center w-full max-w-lg bg-white rounded-full shadow-md px-4">
-          <FaSearch className="text-gray-400" />
+        <div className="flex items-center w-full md:max-w-lg bg-white rounded-full shadow-md px-4">
+          <FaSearch className="text-gray-400 text-sm md:text-base" />
+
           <input
             type="text"
-            className="flex-grow px-2 py-2 outline-none"
+            className="flex-grow px-2 py-2 text-sm md:text-base outline-none w-full"
             placeholder="Search by name or location"
             onChange={handleSearchChange}
           />
@@ -179,13 +221,33 @@ function Hostellisting() {
           )}
         </div>
 
+        {/* Sort Option - Keep this section compact and without changing layout */}
+        <div className="flex justify-end items-center gap-4 mb-4">
+
+        <select
+            className="border rounded px-2 py-1 text-sm md:text-base bg-white"
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+          >
+            <option value="default">Sort by</option>
+            <option value="priceAsc">Price: Low to High</option>
+            <option value="priceDesc">Price: High to Low</option>
+            <option value="nameAsc">Name: A to Z</option>
+            <option value="nameDesc">Name: Z to A</option>
+            <option value="ratingDesc">Rating: High to Low</option>{" "}
+            {/* New option */}
+            <option value="ratingAsc">Rating: Low to High</option>{" "}
+            {/* New option */}
+          </select>
+        </div>
+
         <button
-          className="flex items-center text-gray-600 space-x-2"
-          onClick={() => setShowFilterSidebar(true)}
-        >
-          <FaFilter />
-          <span>Filters</span>
-        </button>
+            className="flex items-center text-gray-600 space-x-2 text-sm md:text-base bg-white px-3 py-1 rounded border"
+            onClick={() => setShowFilterSidebar(true)}
+          >
+            <FaFilter />
+            <span className="hidden md:inline">Filters</span>
+          </button>
       </div>
 
       {/* Filter Sidebar */}
@@ -196,89 +258,108 @@ function Hostellisting() {
       />
 
       {/* Listing */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {isLoading ? (
-          [...Array(8)].map((_, index) => (
-            <div key={index} className="relative bg-white shadow-lg rounded-lg">
-              <Skeleton height={192} className="w-full h-48 object-cover rounded-t-lg" />
-              <div className="p-4">
-                <Skeleton height={20} width="60%" />
-                <Skeleton height={20} width="80%" />
-                <Skeleton height={20} width="40%" />
-                <Skeleton height={20} width="50%" />
-              </div>
-            </div>
-          ))
-        ) : (
-          getCurrentItems().map((item) => {
-            const {
-              image,
-              regularPrice,
-              offerPrice,
-              location,
-              _id,
-              title,
-              name,
-            } = item;
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 mt-6">
 
-            const discountPercentage = offerPrice
-              ? Math.round(((regularPrice - offerPrice) / regularPrice) * 100)
-              : null;
-
-            return (
-              <div key={_id} className="relative bg-white shadow-lg rounded-lg">
-                <img
-                  src={image[0]}
-                  alt={title}
+        {isLoading
+          ? [...Array(8)].map((_, index) => (
+              <div
+                key={index}
+                className="relative bg-white shadow-lg rounded-lg"
+              >
+                <Skeleton
+                  height={192}
                   className="w-full h-48 object-cover rounded-t-lg"
                 />
-                <WishlistsIcon proId={_id} wish={wish} />
-                <div className="p-4" onClick={() => navigate(`/propertydetails?propertyid=${_id}`)}>
-                  <h3 className="font-bold text-lg text-[#3C3633]">{name}</h3>
-                  <h3 className="font-semibold text-[#3C3633]">{title}</h3>
-                  {offerPrice ? (
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-[#3C3633] text-lg font-bold">
-                        ₹{offerPrice}
-                      </span>
-                      <span className="line-through text-red-500">₹{regularPrice}</span>
-                      <span className="text-sm text-green-600">
-                        {discountPercentage}% off
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-[#3C3633] text-lg font-bold">
-                        ₹{regularPrice}
-                      </span>
-                    </div>
-                  )}
-                  <div className="text-sm text-gray-500">{location}</div>
+                <div className="p-4">
+                  <Skeleton height={20} width="60%" />
+                  <Skeleton height={20} width="80%" />
+                  <Skeleton height={20} width="40%" />
                 </div>
               </div>
-            );
-          })
-        )}
+            ))
+          : getCurrentItems().map((item) => {
+              const {
+                image,
+                regularPrice,
+                offerPrice,
+                location,
+                _id,
+                title,
+                name,
+                avgRating
+              } = item;
+
+              const discountPercentage = offerPrice
+                ? Math.round(((regularPrice - offerPrice) / regularPrice) * 100)
+                : null;
+
+              return (
+                <div
+                  key={_id}
+                  className="relative bg-white shadow-lg rounded-lg"
+                >
+                  <img
+                    src={image[0]}
+                    alt={title}
+                    className="w-full h-48 object-cover rounded-t-lg"
+                  />
+                  <WishlistsIcon proId={_id} wish={wish} />
+                  <div
+                    className="p-4"
+                    onClick={() =>
+                      navigate(`/propertydetails?propertyid=${_id}`)
+                    }
+                  >
+                  <h3 className="font-bold text-base md:text-lg text-[#3C3633] line-clamp-1">{name}</h3>
+                  <h3 className="font-semibold text-sm md:text-base text-[#3C3633] line-clamp-1">{title}</h3>
+                    {avgRating && (
+                       <div className="text-xs md:text-sm text-yellow-500">
+                        Rating: {avgRating.toFixed()} ⭐
+                      </div> // Display the rating
+                    )}
+                    {offerPrice ? (
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-[#3C3633] text-base md:text-lg font-bold">
+                          ₹{offerPrice}
+                        </span>
+                        <span className="line-through text-red-500 text-sm">
+                          ₹{regularPrice}
+                        </span>
+                        <span className="text-xs md:text-sm text-green-600">
+                          {discountPercentage}% off
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#3C3633] text-base md:text-lg font-bold">
+                          ₹{regularPrice}
+                        </span>
+                      </div>
+                    )}
+                 <div className="text-xs md:text-sm text-gray-500 line-clamp-1">{location}
+                 </div>
+                  </div>
+                </div>
+              );
+            })}
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="mt-8 flex justify-center">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              className={`mx-1 px-4 py-2 rounded ${
-                currentPage === i + 1
-                  ? "bg-[#3C3633] text-white"
-                  : "bg-gray-200 text-gray-600"
-              }`}
-              onClick={() => handlePageChange(i + 1)}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
-      )}
+      <div className="flex justify-center mt-4">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={`mx-1 px-2 md:px-3 py-1 rounded text-sm md:text-base ${
+              currentPage === index + 1
+                ? "bg-[#3C3633] text-white"
+                : "bg-gray-200 hover:bg-gray-300"
+            }`}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

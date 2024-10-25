@@ -1,5 +1,7 @@
 import axios from "axios";
-import { ADD_PROPERTY, FETCH_AMENITIES ,FETCH_PROPERTY,FETCH_SAFETY, UPDATE_PROPERTY,AVAILABLE, FETCH_RESERVATION, ACTION_RESERVATION} from "../features/Host/auth/authTypes";
+import { ADD_PROPERTY, FETCH_AMENITIES ,FETCH_PROPERTY,FETCH_SAFETY, UPDATE_PROPERTY,AVAILABLE, FETCH_RESERVATION, ACTION_RESERVATION, FETCH_RATING} from "../features/Host/auth/authTypes";
+import { FaTruckMonster } from "react-icons/fa";
+import { responsiveFontSizes } from "@mui/material";
 const API_URL='http://localhost:3000';
 
 
@@ -58,6 +60,11 @@ const actionOnReservation=async(action,id)=>{
     return response.data
 }
 
+const fetchRatings=async(proId)=>{
+    const response=await axios.get(`${API_URL}${FETCH_RATING}?proId=${proId}`,{withCredentials:true})
+    return response.data
+}
+
 
 
 const AddPropertyService={
@@ -68,7 +75,8 @@ const AddPropertyService={
     updateproperty,
     available,
     reservation,
-    actionOnReservation
+    actionOnReservation,
+    fetchRatings
 }
 
 export default AddPropertyService

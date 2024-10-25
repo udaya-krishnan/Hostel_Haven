@@ -30,6 +30,7 @@ export const fetchPayment = async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -46,6 +47,7 @@ export const addAmount = async (req: Request, res: Response) => {
     res.status(200).json({ order: order });
   } catch (error: any) {
     console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -74,5 +76,6 @@ export const verifyAmount = async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../../../Layout/AdminLayout/Sidebar';
 import Header from '../../../Layout/AdminLayout/Header';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { userdatails } from '../../../features/Admin/auth/authAction';
 
@@ -12,6 +12,7 @@ function UserDetailes() {
   const dispatch = useDispatch();
   const [userData, setData] = useState({});
   const [place, setPlace] = useState('');
+  const navigate=useNavigate()
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -45,13 +46,24 @@ function UserDetailes() {
     }
   }, [userData.latitude, userData.longitude]); // Add latitude and longitude as dependencies
 
+  const handleBack = () => {
+    navigate(-1); // Change this to the appropriate route
+  };
+
   return (
     <div className="flex">
       <Sidebar />
       <div className="flex-1 bg-gray-100">
         <Header />
         <div className="p-6 mt-20">
+       
           <div className="bg-white ml-64 p-4 rounded-xl w-94 shadow mt-4">
+          <button
+              className="mb-4 bg-gray-600 text-white py-2 px-4 rounded-md"
+              onClick={handleBack}
+            >
+              Back
+            </button>
             <div className="flex items-center">
               <img
                 src={

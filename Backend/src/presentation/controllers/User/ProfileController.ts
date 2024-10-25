@@ -31,7 +31,7 @@ export const updateProfile=async(req:Request,res:Response)=>{
         
     } catch (error:any){
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -49,7 +49,7 @@ export const uploadImag=async(req:Request,res:Response)=>{
         
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -68,6 +68,6 @@ export const changepassword=async (req:Request,res:Response)=>{
         }
     } catch (error:any) {
         console.log(error.message);
-        
+        return res.status(500).json({ message: "Internal server error" });
     }
 }

@@ -7,9 +7,12 @@ import UserResService from "../../../services/UserReservationService";
 import ChatService from "../../../services/ChatService";
 
 export const register=(name,email,password)=>async()=>{
+  try {
     const data=await AuthService.register(name,email,password)
     return data
-    
+  } catch (error) {
+    throw error
+  }
 }
 
 // export const otpVerify=(otp)=>async()=>{
@@ -17,15 +20,24 @@ export const register=(name,email,password)=>async()=>{
 //     return data
 // }
 
-export const otpVerify=createAsyncThunk(
+export const otpVerify = createAsyncThunk(
   'auth/otpVerify',
-  async({otp},{rejectWithValue})=>{
-    const res=await AuthService.otpVerify(otp)
-    if(res.message==="OTP verified and registration successful"){
-      return res
+  async ({ otp }, { rejectWithValue }) => {
+    try {
+      const res = await AuthService.otpVerify(otp);
+      console.log(res,"response");
+      
+      if (res.message === "OTP verified, registration successful"||res.message==="Otp verified " ) {
+        return res;
+      } else {
+        return rejectWithValue({ message: "OTP verification failed", status: 400 });
+      }
+    } catch (error) {
+      // Capture and reject the error with response details
+      return rejectWithValue(error || { error: error });
     }
   }
-)
+);
 
 
 
@@ -56,9 +68,14 @@ export const login =createAsyncThunk(
 
 export const resendOtp = createAsyncThunk(
     'auth/resendOtp',
-    async () => {
-      const response = await AuthService.resendOtp()
+    async (_,{rejectWithValue}) => {
+      try {
+        const response = await AuthService.resendOtp()
       return response.data;
+      } catch (error) {
+        return rejectWithValue(error)
+      }
+      
     }
   );
 
@@ -76,14 +93,23 @@ export const resendOtp = createAsyncThunk(
 
 
   export const verifyEmail=(email)=>async()=>{
-    const data=await AuthService.verifyEmail(email)
-    console.log(data,"data");
-    return data
+    try {
+      const data=await AuthService.verifyEmail(email)
+      console.log(data,"data");
+      return data
+    } catch (error) {
+      throw error
+    }
   }
 
   export const forgotPass=(data)=>async()=>{
-    const res=await AuthService.forgotpass(data)
-    return res
+    try {
+      const res=await AuthService.forgotpass(data)
+      return res
+    } catch (error) {
+      throw error
+    }
+   
   }
 
   // Edit Profile
@@ -284,11 +310,13 @@ export const changePassword = createAsyncThunk(
 
   export const  fetchHost=createAsyncThunk(
     'auth/fetchHost',
-    async(hostId,thunkAPI)=>{
+    async({hostId,userId},thunkAPI)=>{
       try {
-        console.log(hostId);
+        console.log(hostId,userId,'from the action');
         
-        const res=await ChatService.fetchHost(hostId)
+        const res=await ChatService.fetchHost(hostId,userId)
+        console.log(res,"it from action");
+        
         return res
       } catch (error) {
         return thunkAPI.rejectWithValue(error.message);
@@ -310,4 +338,93 @@ export const changePassword = createAsyncThunk(
       }
     }
   )
+
+
+  export const fetchUserMessage=createAsyncThunk(
+    'auth/fetchUserMessage',
+    async({hostId,userId},thunkAPI)=>{
+      try {
+        console.log(userId);
+        const res=await ChatService.fetchUserMessages(hostId,userId)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+
+
+  export const fetchNearme=createAsyncThunk(
+    'auth/fetchNearme',
+    async({lat,lng},thunkAPI)=>{
+      try {
+        // console.log(userId);
+        const res=await propertyService.nearMe(lat,lng)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+
+  export const rateProperty=createAsyncThunk(
+    'auth/rateProperty',
+    async({userId,proId,rate,review},thunkAPI)=>{
+      try {
+        // console.log(userId);
+        const res=await UserResService.ratingProperty(userId,proId,rate,review)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+
+
+  export const fetchReview=createAsyncThunk(
+    'auth/fetchReview',
+    async(proId,thunkAPI)=>{
+      try {
+        // console.log(userId);
+        const res=await propertyService.fetchReview(proId)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+
+
+  export const fetchNotifications=createAsyncThunk(
+    'auth/fetchNotifications',
+    async(_,thunkAPI)=>{
+      try {
+        // console.log(userId);
+        const res=await AccountService.fetchNotifications()
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+
+  export const cancelReservation=createAsyncThunk(
+    'auth/cancelReservation',
+    async(resId,thunkAPI)=>{
+      try {
+        // console.log(userId);
+        const res=await UserResService.cancelReservation(resId)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+
 

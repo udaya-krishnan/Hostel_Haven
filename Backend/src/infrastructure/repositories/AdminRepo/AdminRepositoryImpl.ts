@@ -8,6 +8,14 @@ import PropertyModel from "../../database/models/PropertyModel";
 import CouponModel from "../../database/models/CouponModel";
 import { CouponData } from "../../../domain/entities/Coupon";
 import BannerModel from "../../database/models/BannerModel";
+import { config } from "dotenv";
+import WalletModel from "../../database/models/WalletModel";
+import TransactionModel from "../../database/models/TransactionModel";
+import ReservationModel from "../../database/models/ReserveModel";
+import RatingModel from "../../database/models/RatingModel";
+import { NotificationData } from "../../../domain/entities/Notification";
+import NotificationModel from "../../database/models/NotificationModel";
+config()
 
 export class AdminRepositoryImpl implements AdminRepository{
 
@@ -246,5 +254,46 @@ export class AdminRepositoryImpl implements AdminRepository{
         })
 
         return update
+    }
+
+    async fetchwalletHistory(): Promise<any | null> {
+        const walletId=process.env.ADMIN_WALLET_ID
+
+        const [wallet,transation]=await Promise.all([
+            WalletModel.findById({_id:walletId}),
+            TransactionModel.find({wallet_Id:walletId})
+        ])
+
+        return [wallet,transation]
+    }
+
+    async fetch(): Promise<any | null> {
+        const walletId=process.env.ADMIN_WALLET_ID
+
+        const [totalUser,totalHost,totalProperty,Wallet,reservations]=await Promise.all([
+            UserModel.find({userType:'user'}).countDocuments(),
+            UserModel.find({userType:'host'}).countDocuments(),
+            PropertyModel.find().countDocuments(),
+            WalletModel.findById({_id:walletId}),
+            ReservationModel.find({})
+        ])
+
+        return [totalUser,totalHost,totalProperty,Wallet,reservations]
+    }
+
+    async fetchRating(): Promise<any | null> {
+        
+        const response=await RatingModel.find({}).populate('property_id')
+        return response
+    }
+
+    async sendNotification(data: NotificationData): Promise<any | null> {
+        const sendNoti=await NotificationModel.create({
+            message:data.message,
+            recipient:data.recipient,
+            type:data.messageType
+        })
+
+        return sendNoti
     }
 }

@@ -1,22 +1,23 @@
 import axios from "axios";
 // import storage from 'redux-persist/lib/storage';
-import { FECTH_HOSTEL, FECTH_WISHLIST, FETCH_ROOM, FETCH_WISH, FIND_WISH, PROPERTY_DETAILS, REMOVE_WISH, WISHLIST } from "../features/User/auth/authTypes";
+import { FECTH_HOSTEL, FECTH_WISHLIST, FETCH_REVIEW, FETCH_ROOM, FETCH_WISH, FIND_WISH, NEARME, PROPERTY_DETAILS, REMOVE_WISH, WISHLIST } from "../features/User/auth/authTypes";
 import { removeAuthPersistedState } from "../utils/PersistedUser";
+import { lastDayOfDecade } from "date-fns";
 
 
 const API_URL='http://localhost:3000';
 
 const fetchhostel=async(search)=>{
-    const response =await axios.post(API_URL+FECTH_HOSTEL,{search})
+    const response =await axios.get(`${API_URL}${FECTH_HOSTEL}?search=${search}`)
     return response.data
 }
 const fetchRoom=async(search)=>{
-    const response=await axios.post(API_URL+FETCH_ROOM,{search})
+    const response =await axios.get(`${API_URL}${FETCH_ROOM}?search=${search}`)
     return response.data
 }
 
 const propertyDetails=async(id)=>{
-    const response=await axios.post(API_URL+PROPERTY_DETAILS,{id})
+    const response =await axios.get(`${API_URL}${PROPERTY_DETAILS}?id=${id}`)
     return response.data
 }
 
@@ -91,6 +92,25 @@ const fetchWish=async(id,userId)=>{
    
 }
 
+const nearMe=async(lat,lng)=>{
+    try {
+        const fetch=await axios.get(`${API_URL}${NEARME}?lat=${lat}&&lng=${lng}`,{withCredentials:true})
+        return fetch.data
+    } catch (error) {
+        throw error
+    }
+}
+
+
+const fetchReview=async(proId)=>{
+    try {
+        const fetch=await axios.get(`${API_URL}${FETCH_REVIEW}?proId=${proId}`,{withCredentials:true})
+        return fetch.data
+    } catch (error) {
+        throw error
+    }
+}
+
 
 const propertyService={
     fetchhostel,
@@ -100,7 +120,9 @@ const propertyService={
     findwish,
     fetchwishlist,
     removeWish,
-    fetchWish
+    fetchWish,
+    nearMe,
+    fetchReview
 }
 
 export default propertyService

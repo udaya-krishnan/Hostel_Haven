@@ -11,10 +11,10 @@ export class ChatService implements  ChatUseCase{
         return response
     }
 
-    async fetchHost(hostId: string): Promise<any | null> {
+    async fetchHost(hostId: string,userId:string): Promise<any | null> {
         try {
-            const fetch=await this.userRepository.fetchHost(hostId)
-            return fetch
+            const {fetch,message}=await this.userRepository.fetchHost(hostId,userId)
+            return {fetch,message}
             
         } catch (error) {
             throw error
@@ -27,6 +27,25 @@ export class ChatService implements  ChatUseCase{
             const fetch=await this.userRepository.fetchConnection(userId)
             return fetch
             
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async fetchUserMessage(hostId: string, userId: string): Promise<any | null> {
+        try {
+            const fetch=await this.userRepository.fetchusermessage(hostId,userId)
+            return fetch
+        } catch (error) {
+            throw error
+        }
+    }
+
+
+    async fetchNotifications(): Promise<any | null> {
+        try {
+            const fetch=await this.userRepository.fetchNotifications()
+            return fetch
         } catch (error) {
             throw error
         }

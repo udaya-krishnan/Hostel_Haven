@@ -2,6 +2,7 @@ import { createAsyncThunk, isRejectedWithValue } from "@reduxjs/toolkit";
 import HostAuthService from "../../../services/HostAuthService"
 import HostAccountService from "../../../services/HostAccountService";
 import AddPropertyService from "../../../services/HostPropertyService";
+import ChatService from "../../../services/ChatService";
 
 
 export const hostLogin=(email, password, toast) => async (dispatch) => {
@@ -234,3 +235,75 @@ export const hostuploadphoto=createAsyncThunk(
       
     }
   }
+
+
+  export const  fetchHostConnection=createAsyncThunk(
+    'hostAuth/fetchHostConnection',
+    async(hostId,thunkAPI)=>{
+      try {
+        // console.log(userId);
+        
+        const res=await ChatService.fetchHostConnection(hostId)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+
+  export const  connectUser=createAsyncThunk(
+    'hostAuth/connectHost',
+    async({userId,hostId,data},thunkAPI)=>{
+      try {
+        const res=await ChatService.connectUser(userId,hostId,data)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+  export const fetchHostMessage=createAsyncThunk(
+    'hostAuth/fetchHostMessage',
+    async({hostId,userId},thunkAPI)=>{
+      try {
+        console.log(userId);
+        const res=await ChatService.fetchHostMessages(hostId,userId)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+
+
+
+  export const fetchRating=createAsyncThunk(
+    'hostAuth/fetchRating',
+    async(proId,thunkAPI)=>{
+      try {
+        // console.log(userId);
+        const res=await AddPropertyService.fetchRatings(proId)
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
+
+  export const fetchNotifications=createAsyncThunk(
+    'hostauth/fetchNotifications',
+    async(_,thunkAPI)=>{
+      try {
+        // console.log(userId);
+        const res=await HostAccountService.fetchNotifications()
+        return res
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+    }
+  )
+
