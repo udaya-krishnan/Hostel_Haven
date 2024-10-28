@@ -8,10 +8,11 @@ import { AddAmount } from "../../config/Razorpay/Razorpay";
 import { toast, Toaster } from "sonner";
 import 'sweetalert2/src/sweetalert2.scss'; // Optional for default Swal styles
 import { useNavigate } from "react-router-dom";
+import { selectUser } from "../../features/User/auth/authSelectors";
 
 const UserWallet = () => {
   const dispatch = useDispatch();
-  const hostData = useSelector(selectHost);
+  const userData = useSelector(selectUser);
   const [allTransactions, setAllTransactions] = useState([]);
   const [totalBalance, setTotalBalance] = useState(0);
   const [todayAmount, setTodayAmount] = useState(0);
@@ -44,7 +45,7 @@ const UserWallet = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      const response = await dispatch(fetchPayment(hostData._id));
+      const response = await dispatch(fetchPayment(userData._id));
       if (response.message === "payment history success") {
         const wallet = response.findWallet;
         const transactions = response.allTransactions;
@@ -62,7 +63,7 @@ const UserWallet = () => {
       }
     };
     fetch();
-  }, [dispatch, hostData._id]);
+  }, [dispatch, userData._id]);
 
   const handleAddAmount = async () => {
     const { value: add } = await Swal.fire({
@@ -88,7 +89,7 @@ const UserWallet = () => {
           id,
           dispatch,
           toast,
-          hostData._id,
+          userData._id,
           add,
           totalBalance,
           setTotalBalance,

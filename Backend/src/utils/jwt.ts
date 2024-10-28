@@ -15,19 +15,22 @@ export const createToken = async (data: any, res: Response) => {
       const refreshToken = jwt.sign(data, JWT_AUTHCSEC, { expiresIn: '15m' });
   
      
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true,     
-        secure: process.env.NODE_ENV === "production", 
-        sameSite: "strict",  
-        maxAge: 10 * 60 * 1000 
-      });
-  
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 15 * 60 * 1000 
-      });
+     // Set accessToken cookie to expire in 30 minutes
+res.cookie("accessToken", accessToken, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "strict",
+  maxAge: 30 * 60 * 1000 // 30 minutes in milliseconds
+});
+
+// Set refreshToken cookie to expire in 15 days
+res.cookie("refreshToken", refreshToken, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "strict",
+  maxAge: 15 * 24 * 60 * 60 * 1000 // 15 days in milliseconds
+});
+
 
       return accessToken;
     } catch (error: any) {

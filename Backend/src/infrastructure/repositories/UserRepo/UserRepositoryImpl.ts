@@ -85,6 +85,7 @@ export class UserRepositoryImpl implements UserRepository {
     let filter: any = {
       property_type: "hostel",
       propertyVerified: "approved",
+      available:true
     };
 
     // If the search value is not empty, add a regex condition for name or location
@@ -103,6 +104,7 @@ export class UserRepositoryImpl implements UserRepository {
     let filter: any = {
       property_type: "room",
       propertyVerified: "approved",
+      available:true
     };
 
     if (search) {
@@ -637,16 +639,67 @@ async deleteNotification(id: string): Promise<any | null> {
 
 async cancelResrevation(resId: string): Promise<any | null> {
   try {
-    const update=await ReservationModel.findByIdAndUpdate({_id:resId},{
-      $set:{
-        booking_status:'canceled'
+    const update = await ReservationModel.findByIdAndUpdate(
+      { _id: resId },
+      { $set: { booking_status: 'canceled' } }
+    );
+
+    if (update) {
+      const [findUserWallet, property, payment] = await Promise.all([
+        WalletModel.findOne({ user_Id: update.user_id }),
+        PropertyModel.findById({ _id: update.property_id }),
+        PaymentModel.findById({ _id: update.payment_Id })
+      ]);
+
+      let userWalletId = findUserWallet?._id;
+
+      if (!findUserWallet) {
+        // Create a new wallet if the user has no existing wallet
+        const newWallet = await WalletModel.create({
+          user_Id: update.user_id,
+          balance: payment?.amount || 0
+        });
+        userWalletId = newWallet._id;
       }
-    })
-    return update
-  
+
+      if (!payment) {
+        throw new Error("Payment not found");
+      }
+
+      // Add amount to the user's wallet
+      await WalletModel.findByIdAndUpdate(
+        { _id: userWalletId },
+        { $inc: { balance: payment?.amount || 0 } }
+      );
+
+      // Create transaction for user wallet credit
+      await TransactionModel.create({
+        wallet_Id: userWalletId,
+        amount: payment?.amount,
+        transaction_type: 'Credited'
+      });
+
+      // Deduct amount from host's wallet
+      if (property?.host_id) {
+        const hostUpdate = await WalletModel.findOneAndUpdate(
+          { user_Id: property.host_id },
+          { $inc: { balance: -payment?.amount || 0 } }
+        );
+
+        if (hostUpdate) {
+          // Create transaction for host wallet debit
+          await TransactionModel.create({
+            wallet_Id: hostUpdate._id,
+            amount: payment?.amount,
+            transaction_type: 'Debited'
+          });
+        }
+      }
+    }
+    return update;
   } catch (error) {
-    throw error
+    throw error;
   }
-  
 }
+
 }

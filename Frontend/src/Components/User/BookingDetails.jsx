@@ -213,6 +213,11 @@ const BookingDetails = () => {
                   Payment failed and check-in time has passed.
                 </p>
               )}
+
+             { Details?.booking_status === "canceled" && (
+          <p className="text-red-600 font-bold text-center mt-4">
+            This reservation has been canceled.
+          </p>)}
     
               {Details?.payment_Id?.payment_status === "success" &&
                 checkInDayMidnight < currentDate &&
@@ -243,7 +248,7 @@ const BookingDetails = () => {
               {cancelMessage && (
                 <p className="mt-4 text-red-600 font-bold">{cancelMessage}</p>
               )}
-              {canCancelReservation && (
+              {canCancelReservation&&Details?.booking_status !== "canceled"&& (
                 <button
                   className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg cursor-pointer"
                   onClick={() => handleCancelReservation(Details._id)}
