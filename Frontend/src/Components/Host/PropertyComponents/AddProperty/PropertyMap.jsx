@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Map, { Marker, NavigationControl } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { SearchBox } from '@mapbox/search-js-react';
-import { REACT_APP_MAPBOX_TOKEN } from '../../../../secure';
 
 const mapboxToken = import.meta.env.VITE_REACT_APP_MAPBOX_TOKEN
 function PropertyMap({ onLocationSelect }) {
