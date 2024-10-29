@@ -6,7 +6,7 @@ let io:SocketServer;
 const configSocketIo=(server:HttpServer)=>{
     io = new SocketServer(server, {
         cors: {
-           origin: "http://localhost:5173",
+           origin: "https://hostel-haven.vercel.app/",
            methods: ["GET", "POST"],
         },
      });

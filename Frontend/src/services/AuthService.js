@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { FORGOT_PASS, GOOGLE_AUTH, LOGIN, REGISTER_URL, RESEND, VERIFY_EMAIL, VERIFY_OTP } from '../features/User/auth/authTypes';
 import { HOST_RESEND } from '../features/Host/auth/authTypes';
-const API_URL='http://localhost:3000';
+const API_URL='https://hostelhaven.site';
 
 const register=async(name,email,password)=>{
     try {

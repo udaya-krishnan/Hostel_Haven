@@ -1,7 +1,7 @@
 import axios from "axios";
 import { BOOKING_DETAILS, CANCEL_RES, CONTINUE_PAYMENT, FETCH_RESERVATION, RATING } from "../features/User/auth/authTypes";
 
-const API_URL='http://localhost:3000';
+const API_URL='https://hostelhaven.site';
 
 
 const fechReservation=async(id)=>{

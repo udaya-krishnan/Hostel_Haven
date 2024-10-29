@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { CHANGE_PASS, EDIT_PROFILE, FETCH_NOTIFICATIONS, PROFILE_UPLOAD } from '../features/User/auth/authTypes';
 
-const API_URL='http://localhost:3000';
+const API_URL='https://hostelhaven.site';
 
 const editProfile = async (values) => {
     try {

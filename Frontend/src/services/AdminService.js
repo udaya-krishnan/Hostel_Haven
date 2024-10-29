@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ACTION_USER, ADMIN_LOGIN, FETCH_USER ,FETCH_HOST, USER_DETAILS, HOST_DETAILS, ADD_AMENITIES, FETCH_AMENITIES, ACTION_AMENITIES, UPDATE_AMENITIES, ADD_SAFETY, FETCH_SAFETY, ACTION_SAFETY, UPDATE_SAFETY, FECTH_HOST_PROPERTY, PROPERTY_DETAILS, APPROVE_PROPERTY, REJECT_PROPERTY, ADDCOUPON, FETCHCOUPON, ACTION_COUPON, EDIT_COUPON, FETCH_BANNER, EDIT_BANNER, FETCH_WALLET, FETCH_ALL_DATA, FETCH_RATING, SEND_NOTIFICATION} from "../features/Admin/auth/authType";
 
-const API_URL='http://localhost:3000';
+const API_URL='https://hostelhaven.site';
 
 const adminlogin=async(email,password)=>{
     console.log(email,password,"in service");
@@ -11,9 +11,9 @@ const adminlogin=async(email,password)=>{
 
 const FetchingUser=async()=>{
     const response=await axios.get(API_URL+FETCH_USER)
-
     return response.data
 }
+
 const FetchingHost=async()=>{
     const response=await axios.get(API_URL+FETCH_HOST)
     console.log("respose",response);

@@ -5,7 +5,7 @@ import { removeAuthPersistedState } from "../utils/PersistedUser";
 import { lastDayOfDecade } from "date-fns";
 
 
-const API_URL='http://localhost:3000';
+const API_URL='https://hostelhaven.site';
 
 const fetchhostel=async(search)=>{
     const response =await axios.get(`${API_URL}${FECTH_HOSTEL}?search=${search}`)

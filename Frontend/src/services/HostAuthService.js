@@ -2,7 +2,7 @@ import axios from "axios";
 import { HOST_LOGIN, HOST_RESEND, HOST_VERIFY } from "../features/Host/auth/authTypes";
 
 
-const API_URL='http://localhost:3000';
+const API_URL='https://hostelhaven.site';
 
 const LoginHost=async(email,password)=>{
     console.log(email,password,"in service");

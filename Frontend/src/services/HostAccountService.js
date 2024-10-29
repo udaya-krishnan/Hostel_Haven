@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { ADDAMOUNT, FETCH_NOTIFICATIONS, FETCHPAYMENT, HOST_CHANGE_PASS, HOST_EDIT_PROFILE, HOST_UPLOAD_PHOTO, VERIFYAMOUNT } from '../features/Host/auth/authTypes';
 
-const API_URL='http://localhost:3000';
+const API_URL='https://hostelhaven.site';
 
 
 const hosteditProfile=async(values)=>{

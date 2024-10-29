@@ -5,7 +5,7 @@ import { connectHost, fetchHost } from '../../features/User/auth/authAction';
 import { selectUser } from '../../features/User/auth/authSelectors';
 import { io } from 'socket.io-client';
 
-const socket = io("http://localhost:3000");
+const socket = io("https://hostelhaven.site");
 
 function UserChat({ selectedHostData, message, setMessage }) {
   const [newHost, setNewHost] = useState(null);

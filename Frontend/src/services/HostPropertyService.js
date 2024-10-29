@@ -2,7 +2,7 @@ import axios from "axios";
 import { ADD_PROPERTY, FETCH_AMENITIES ,FETCH_PROPERTY,FETCH_SAFETY, UPDATE_PROPERTY,AVAILABLE, FETCH_RESERVATION, ACTION_RESERVATION, FETCH_RATING} from "../features/Host/auth/authTypes";
 import { FaTruckMonster } from "react-icons/fa";
 import { responsiveFontSizes } from "@mui/material";
-const API_URL='http://localhost:3000';
+const API_URL='https://hostelhaven.site';
 
 
 const fetchamenities=async()=>{

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { GUSET_INFO, PAYMENT_FAILED, RAZOPAY_VERIFY, RAZORPAY, RETRY_VERIFY } from "../features/PaymentType";
 
-const API_URL='http://localhost:3000';
+const API_URL='https://hostelhaven.site';
 
 const rezorpay=async(amount,guestId,userId,proId,durationInMonths,checkInDate,checkOutDate)=>{
     try {

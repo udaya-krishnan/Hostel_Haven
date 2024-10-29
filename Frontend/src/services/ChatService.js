@@ -2,7 +2,7 @@ import axios from "axios";
 import { CONNECT_HOST, FETCH_CONNECT, FETCH_HOST, FETCH_USER_MESSAGE } from "../features/User/auth/authTypes";
 import { CONNECT_USER, FETCH_HOST_MESSAGE, FETCH_HOSTCONNECTION } from "../features/Host/auth/authTypes";
 
-const API_URL = "http://localhost:3000";
+const API_URL = 'https://hostelhaven.site';
 
 const connectHost = async (userId, hostId, data) => {
   try {
