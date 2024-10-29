@@ -191,7 +191,7 @@ export const otpVerify = async (req: Request , res: Response) => {
   try {
     console.log("hai there");
     const token = req.cookies.accessToken
-    // console.log(token);
+    console.log(token,"this is token");
     const decodedData = await verifyToken(token)
     console.log(decodedData);
     
