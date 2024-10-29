@@ -210,7 +210,7 @@ export const otpVerify = async (req: Request , res: Response) => {
         let image='anony.webp'
         const userData=await registerService.execute({ name, email, password, userType ,image});
         
-        const token =await createToken(email,res)
+        const token =await createToken({email:email,userType:userType},res)
         
         return res.status(200).json({ message: "OTP verified, registration successful",userData:userData,token:token });
       } else {

@@ -7,9 +7,7 @@ const PASS=process.env.PASS!
 
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587, // or the appropriate port for your SMTP server
-    secure: false, // true for 465, false for other ports
+   service:"gmail",
     auth: {
       user: EMAIL,
       pass: PASS
@@ -21,7 +19,8 @@ const sendMail=async(email:string,otp:string,name:string)=>{
         console.log(`EMAIL: ${process.env.EMAIL}`);
 console.log(`PASS: ${process.env.PASS}`);
 
-
+console.log("Recipient Email:", email);
+        console.log("SMTP User:", EMAIL);
 
         const date=new Date().toString()
         let message:any={

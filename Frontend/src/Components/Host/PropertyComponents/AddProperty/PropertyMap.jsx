@@ -4,6 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { SearchBox } from '@mapbox/search-js-react';
 import { REACT_APP_MAPBOX_TOKEN } from '../../../../secure';
 
+const mapboxToken = import.meta.env.VITE_REACT_APP_MAPBOX_TOKEN
 function PropertyMap({ onLocationSelect }) {
   const [viewport, setViewport] = useState({
     latitude: 37.7749,
@@ -14,7 +15,6 @@ function PropertyMap({ onLocationSelect }) {
   const [clickedLocation, setClickedLocation] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
 
-  const mapboxToken = REACT_APP_MAPBOX_TOKEN;
 
   // Function to fetch place name using reverse geocoding
   const fetchPlaceName = async (longitude, latitude) => {

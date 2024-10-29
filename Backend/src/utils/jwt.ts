@@ -11,8 +11,8 @@ const JWT_AUTHCSEC =process.env.JWT_AUTHSECRET!;
 export const createToken = async (data: any, res: Response) => {
     try {
 
-      const accessToken = jwt.sign(data, JWT_AUTHCSEC, { expiresIn: '10m' });
-      const refreshToken = jwt.sign(data, JWT_AUTHCSEC, { expiresIn: '15m' });
+      const accessToken = jwt.sign(data, JWT_AUTHCSEC, { expiresIn: '30m' });
+const refreshToken = jwt.sign(data, JWT_AUTHCSEC, { expiresIn: '15d' });
   
      
      // Set accessToken cookie to expire in 30 minutes
