@@ -17,17 +17,17 @@ const refreshToken = jwt.sign(data, JWT_AUTHCSEC, { expiresIn: '15d' });
      
      // Set accessToken cookie to expire in 30 minutes
 res.cookie("accessToken", accessToken, {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "strict",
+   httpOnly: true,
+  sameSite: 'none',
+ secure: true,
   maxAge: 30 * 60 * 1000 // 30 minutes in milliseconds
 });
 
 // Set refreshToken cookie to expire in 15 days
 res.cookie("refreshToken", refreshToken, {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "strict",
+  sameSite: 'none',
+  secure: true,
   maxAge: 15 * 24 * 60 * 60 * 1000 // 15 days in milliseconds
 });
 
