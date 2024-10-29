@@ -23,7 +23,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 
 app.use(cors({
-    origin:'https://hostel-haven.vercel.app/',
+    origin:'https://hostel-haven.vercel.app',
     credentials:true
 }))
 app.use(cookieSession({
