@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import { fetchNotifications } from "../../features/User/auth/authAction";
 
 // Establish socket connection
-const socket = io("http://localhost:3000");
+const socket = io("https://hostelhaven.site");
 
 const NotificationList = () => {
   const [notifications, setNotifications] = useState([]);
