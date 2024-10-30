@@ -38,17 +38,17 @@ const HostFriendsList = ({ onSelectFriend }) => {
             
             <div className="w-12 h-12 bg-gray-400 rounded-full">
               <img
-                src={connect.user_id.image || 'https://via.placeholder.com/50'}
-                alt={connect.user_id.name}
+                src={connect?.user_id?.image || 'https://via.placeholder.com/50'}
+                alt={connect?.user_id?.name}
                 className="w-12 h-12 rounded-full object-cover"
               />
             </div>
             {/* User/Host Details */}
             <div>
-              <p className="font-medium">{connect.user_id.name}</p>
-              {connect.messages.length > 0 ? (
+              <p className="font-medium">{connect?.user_id?.name}</p>
+              {connect?.messages?.length > 0 ? (
                 <p className="text-sm text-gray-500">
-                  Last message: {getTime(connect.messages[connect.messages.length - 1].timestamp)}
+                  Last message: {getTime(connect?.messages[connect.messages.length - 1].timestamp)}
                 </p>
               ) : (
                 <p className="text-sm text-gray-500">No messages yet</p>
