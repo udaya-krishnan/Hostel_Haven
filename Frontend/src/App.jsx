@@ -7,7 +7,6 @@ import AdmnRoutes from './Routes/AdminRoutes/AdmnRoutes'
 
 function App() {
  
-
   return (
    <>
    <BrowserRouter>

@@ -32,10 +32,15 @@ const otpVerify=async(otp)=>{
 }
 
 const loginverify=async(email,password)=>{
-    console.log(email,password,"auth serice");
+    try {
+        console.log(email,password,"auth serice");
     
-    const response= await axios.post(API_URL+LOGIN,{email,password},{withCredentials:true})
-    return response
+        const response= await axios.post(API_URL+LOGIN,{email,password},{withCredentials:true})
+        return response
+    } catch (error) {
+        throw error
+    }
+   
 }
 
 const resendOtp=async()=>{

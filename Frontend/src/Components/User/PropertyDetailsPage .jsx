@@ -172,7 +172,7 @@ const PropertyDetailsPage = () => {
     return <div>Loading...</div>;
   }
 
-  const facilities = proData.facilities[0] || {};
+  const facilities = proData.facilities;
 
   const regularPrice = parseFloat(proData.regularPrice.replace(/₹|,/g, ""));
   const offerPrice = proData.offerPrice
@@ -225,16 +225,16 @@ const PropertyDetailsPage = () => {
           <p className="text-gray-600">{proData.location}</p>
 
           <div className="flex flex-wrap space-x-4 my-4">
-            {facilities.rooms > 0 && (
+            {facilities.bedroom > 0 && (
               <div className="flex items-center space-x-2">
                 <FaBed className="text-gray-600" />
-                <span>{facilities.rooms} Bedrooms</span>
+                <span>{facilities.bedroom} Bedrooms</span>
               </div>
             )}
-            {facilities.bathrooms > 0 && (
+            {facilities.bathroom > 0 && (
               <div className="flex items-center space-x-2">
                 <FaShower className="text-gray-600" />
-                <span>{facilities.bathrooms} Bathrooms</span>
+                <span>{facilities.bathroom} Bathrooms</span>
               </div>
             )}
             {facilities.parking > 0 && (
@@ -268,7 +268,11 @@ const PropertyDetailsPage = () => {
               {" "}
               {/* Ensure the outer div takes full width */}
               <div className="w-full max-w-xs">
-                {" "}
+                <h2 className="text-md font-semibold text-gray-800 text-center">
+                  {facilities.bedroom <= 0
+                    ? "No rooms available"
+                    : `${facilities.bedroom}  Rooms available`}
+                </h2>
                 {/* Limit the width for smaller screens like iPhone SE */}
                 <h2 className="text-md font-semibold text-gray-800 text-center">
                   Select Check-in and Check-out Dates
@@ -297,7 +301,7 @@ const PropertyDetailsPage = () => {
               </div>
             )}
 
-            {startDate && endDate && (
+            {startDate && endDate && facilities.bedroom > 0 && (
               <button
                 className="w-full mt-4 bg-btncolor text-white py-2 rounded-lg hover:bg-btncolor-dark transition duration-200"
                 onClick={handleConfirmDates}
@@ -397,6 +401,12 @@ const PropertyDetailsPage = () => {
             </h2>
 
             <div className="mt-4">
+              <h2 className="text-md font-semibold text-gray-800 text-center">
+                {facilities.bedroom <= 0
+                  ? "No rooms available"
+                  : `${facilities.bedroom}  Rooms available`}
+              </h2>
+
               <h2 className="text-md font-semibold text-gray-800">
                 Select Check-in and Check-out Dates
               </h2>
@@ -423,7 +433,7 @@ const PropertyDetailsPage = () => {
               </div>
             )}
 
-            {startDate && endDate && (
+{startDate && endDate && facilities.bedroom > 0 && (
               <button
                 className="w-full mt-4 bg-btncolor text-white py-2 rounded-lg hover:bg-btncolor-dark transition duration-200"
                 onClick={handleConfirmDates}
@@ -431,6 +441,7 @@ const PropertyDetailsPage = () => {
                 Reserve Now
               </button>
             )}
+
 
             {/* Add to Wishlist Button */}
             <button

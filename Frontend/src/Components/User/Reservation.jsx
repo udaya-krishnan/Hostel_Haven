@@ -83,6 +83,7 @@ const Reservation = ({
 
   const handlePayNow = async () => {
     if (selectedPaymentMethod === "Razorpay") {
+      
       console.log(`Selected Payment Method: ${selectedPaymentMethod}`);
       console.log(userData, "userData");
 

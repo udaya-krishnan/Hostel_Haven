@@ -171,8 +171,21 @@ export class UserRepositoryImpl implements UserRepository {
       check_out_date: checkOutDate,
     });
 
+    const reduceRoom = await PropertyModel.findByIdAndUpdate(
+      { _id: proId }, 
+      {
+        $inc: {
+          "facilities.bedroom": -1,
+        },
+      },
+      { new: true } 
+    );
+    
+
     return createReservation._id;
   }
+
+
   async payment(
     reservationId: string,
     userId: string,
